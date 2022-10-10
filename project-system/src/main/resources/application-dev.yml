@@ -14,3 +14,7 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mapper/*.xml
+
+# ip地址本地解析
+ip:
+  local-parsing: true

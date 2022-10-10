@@ -1,6 +1,7 @@
 package com.software.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.software.annotation.OperationLog;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.dto.ResponseResult;
@@ -43,6 +44,7 @@ public class LogController {
         return new ResponseResult<>(HttpStatus.OK.value(), result ? "删除成功！" : "删除失败！", ids);
     }
 
+    @OperationLog("查询日志")
     @GetMapping("/query-page")
     @ApiOperation("分页查询日志信息")
     public ResponseResult<Page<Log>> queryPage(Log log, QueryRequest queryRequest) {

@@ -35,9 +35,12 @@ public interface StringConstant {
      * 四则运算
      */
     String ADD = "+";
-    String SUBTRACT = "-";;
-    String MULTIPLY = "*";;
-    String DIVIDE = "/";;
+    String SUBTRACT = "-";
+    ;
+    String MULTIPLY = "*";
+    ;
+    String DIVIDE = "/";
+    ;
 
     /**
      * 逻辑运算
@@ -116,4 +119,24 @@ public interface StringConstant {
     String CRLF = "\r\n";
     String ASC = "ASC";
     String DESC = "DESC";
+
+    /**
+     * 用于IP定位转换
+     */
+    public static final String REGION = "内网IP|内网IP";
+    /**
+     * win 系统
+     */
+    public static final String WIN = "win";
+
+    /**
+     * mac 系统
+     */
+    public static final String MAC = "mac";
+
+    /**
+     * 常用接口
+     */
+    String IP_URL = "http://whois.pconline.com.cn/ipJson.jsp?ip=%s&json=true";
+
 }

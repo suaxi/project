@@ -10,6 +10,7 @@ import com.software.mapper.LogMapper;
 import com.software.service.LogService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,11 +23,13 @@ import java.util.List;
 public class LogServiceImpl extends ServiceImpl<LogMapper, Log> implements LogService {
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void add(Log log) {
         this.save(log);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean delete(Long[] ids) {
         if (ids.length > 0) {
             return this.removeByIds(Arrays.asList(ids));

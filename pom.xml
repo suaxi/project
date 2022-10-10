@@ -30,6 +30,7 @@
         <springframework.version>2.2.5.RELEASE</springframework.version>
         <mysql.version>8.0.26</mysql.version>
         <druid.version>1.2.8</druid.version>
+        <aspectjweaver.version>1.9.8</aspectjweaver.version>
         <swagger2.version>2.9.2</swagger2.version>
         <swagger-ui.version>2.0.8</swagger-ui.version>
         <swagger.annotations.version>1.5.22</swagger.annotations.version>
@@ -37,6 +38,8 @@
         <fastjson2.version>2.0.14</fastjson2.version>
         <commons.lang3.version>3.9</commons.lang3.version>
         <commons.beanutils.version>1.9.4</commons.beanutils.version>
+        <ip2region.version>2.6.3</ip2region.version>
+        <yauaa.version>6.11</yauaa.version>
         <nexus.base.server>http://maven.aliyun.com/nexus/content/groups/public/</nexus.base.server>
     </properties>
 
@@ -104,6 +107,14 @@
                 <version>${commons.beanutils.version}</version>
             </dependency>
 
+            <!-- aspectj-weaver -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectjweaver.version}</version>
+            </dependency>
+
+
             <!-- swagger -->
             <dependency>
                 <groupId>io.springfox</groupId>
@@ -133,6 +144,19 @@
                 <version>${fastjson2.version}</version>
             </dependency>
 
+            <!-- ip2region -->
+            <dependency>
+                <groupId>net.dreamlu</groupId>
+                <artifactId>mica-ip2region</artifactId>
+                <version>${ip2region.version}</version>
+            </dependency>
+
+            <!-- yauaa -->
+            <dependency>
+                <groupId>nl.basjes.parse.useragent</groupId>
+                <artifactId>yauaa</artifactId>
+                <version>${yauaa.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
