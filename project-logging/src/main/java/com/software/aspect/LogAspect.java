@@ -56,44 +56,18 @@ public class LogAspect {
 
     @Around("pointcut()")
     public Object sysLogAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object result = null;
+        Object result;
         threadLocal.set(System.currentTimeMillis());
         result = joinPoint.proceed();
         long costTime = System.currentTimeMillis() - threadLocal.get();
         threadLocal.remove();
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-
-        //请求方法
-        Method method = signature.getMethod();
-
-        //描述
-        com.software.annotation.OperationLog operationLog = method.getAnnotation(com.software.annotation.OperationLog.class);
-
-        //方法全路径类名
-        String methodName = joinPoint.getTarget().getClass().getName() + "." + signature.getName() + "()";
-
-        //ip
-        String ip = ProjectUtils.getIp(request);
 
         Log sysLog = new Log();
         sysLog.setLogType("INFO");
-        sysLog.setDescription(operationLog.value());
-        sysLog.setMethod(methodName);
-        sysLog.setParams(this.getParams(method, joinPoint.getArgs()));
-        sysLog.setRequestIp(ip);
         sysLog.setTime(costTime);
-        //sysLog.setUsername();
-        //登录操作信息脱敏
-        if ("login".equals(signature.getName()) && StringUtils.isNotBlank(sysLog.getParams())) {
-            JSONObject obj = JSONUtil.parseObj(sysLog.getParams());
-            sysLog.setUsername(obj.getStr("username", ""));
-            sysLog.setParams(JSONUtil.toJsonStr(Dict.create().set("username", sysLog.getUsername())));
-        }
-        sysLog.setAddress(ProjectUtils.getCityInfo(ip));
-        sysLog.setBrowser(ProjectUtils.getBrowser(request));
-        logService.add(sysLog);
+        this.saveOperationLog(joinPoint, request, sysLog);
         return result;
     }
 
@@ -103,6 +77,21 @@ public class LogAspect {
         long costTime = System.currentTimeMillis() - threadLocal.get();
         threadLocal.remove();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        Log sysLog = new Log();
+        sysLog.setLogType("ERROR");
+        sysLog.setTime(costTime);
+        sysLog.setExceptionDetail(this.getStackTrace(e));
+        this.saveOperationLog((ProceedingJoinPoint) joinPoint, request, sysLog);
+    }
+
+    /**
+     * 保存操作日志
+     *
+     * @param joinPoint 切点
+     * @param request   HttpServletRequest
+     */
+    private void saveOperationLog(ProceedingJoinPoint joinPoint, HttpServletRequest request, Log sysLog) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 
         //请求方法
@@ -117,13 +106,10 @@ public class LogAspect {
         //ip
         String ip = ProjectUtils.getIp(request);
 
-        Log sysLog = new Log();
-        sysLog.setLogType("ERROR");
         sysLog.setDescription(operationLog.value());
         sysLog.setMethod(methodName);
         sysLog.setParams(this.getParams(method, joinPoint.getArgs()));
         sysLog.setRequestIp(ip);
-        sysLog.setTime(costTime);
         //sysLog.setUsername();
         //登录操作信息脱敏
         if ("login".equals(signature.getName()) && StringUtils.isNotBlank(sysLog.getParams())) {
@@ -133,7 +119,6 @@ public class LogAspect {
         }
         sysLog.setAddress(ProjectUtils.getCityInfo(ip));
         sysLog.setBrowser(ProjectUtils.getBrowser(request));
-        sysLog.setExceptionDetail(this.getStackTrace(e));
         logService.add(sysLog);
     }
 
