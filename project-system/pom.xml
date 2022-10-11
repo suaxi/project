@@ -33,12 +33,6 @@
         <!--    <version>1.0-SNAPSHOT</version>-->
         <!--</dependency>-->
 
-        <!-- Spring boot Web -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
         <!-- Spring boot test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
