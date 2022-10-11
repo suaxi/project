@@ -51,13 +51,17 @@ spring:
           config:
             multi-statement-allow: true
 
-
+# MyBatis-Plus
 mybatis-plus:
   global-config:
     banner: false
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mapper/*.xml
+
+# swagger
+swagger:
+  enable: true
 
 # ip地址本地解析
 ip:

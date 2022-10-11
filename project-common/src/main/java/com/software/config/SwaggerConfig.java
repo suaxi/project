@@ -1,5 +1,6 @@
 package com.software.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
@@ -18,9 +19,13 @@ import java.util.Collections;
 @Configuration
 public class SwaggerConfig {
 
+    @Value("${swagger.enable}")
+    private boolean enable;
+
     @Bean
     public Docket defaultApi() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .enable(enable)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.software"))
                 .paths(PathSelectors.any())
@@ -30,7 +35,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "Project-Demo",
+                "Project",
                 "Project-Demo",
                 "1.0.0-SNAPSHOT",
                 null,
