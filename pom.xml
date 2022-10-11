@@ -84,6 +84,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${springframework.version}</version>
             </dependency>
 
             <!-- mybatis-plus -->

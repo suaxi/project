@@ -24,8 +24,7 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
     private static boolean addCallback = true;
 
     /**
-     * 针对 某些初始化方法，在SpringContextHolder 未初始化时 提交回调方法。
-     * 在SpringContextHolder 初始化后，进行回调使用
+     * 在SpringContextHolder初始化前提交一个回调方法，初始化完成后进行回调使用
      *
      * @param callBack 回调函数
      */
@@ -67,7 +66,8 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
         T result = defaultValue;
         try {
             result = getBean(Environment.class).getProperty(property, requiredType);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return result;
     }
 
@@ -97,8 +97,7 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
      */
     private static void assertContextInjected() {
         if (applicationContext == null) {
-            throw new IllegalStateException("applicaitonContext属性未注入, 请在applicationContext" +
-                    ".xml中定义SpringContextHolder或在SpringBoot启动类中注册SpringContextHolder.");
+            throw new IllegalStateException("applicationContext属性未注入, 请在applicationContext.xml中定义SpringContextHolder或在SpringBoot启动类中注册SpringContextHolder");
         }
     }
 
@@ -106,8 +105,7 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
      * 清除SpringContextHolder中的ApplicationContext为Null.
      */
     private static void clearHolder() {
-        log.debug("清除SpringContextHolder中的ApplicationContext:"
-                + applicationContext);
+        log.debug("清除SpringContextHolder中的ApplicationContext:" + applicationContext);
         applicationContext = null;
     }
 
@@ -133,10 +131,10 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
 
     /**
      * 获取 @Service 的所有 bean 名称
+     *
      * @return /
      */
     public static List<String> getAllServiceBeanName() {
-        return new ArrayList<>(Arrays.asList(applicationContext
-                .getBeanNamesForAnnotation(Service.class)));
+        return new ArrayList<>(Arrays.asList(applicationContext.getBeanNamesForAnnotation(Service.class)));
     }
 }
