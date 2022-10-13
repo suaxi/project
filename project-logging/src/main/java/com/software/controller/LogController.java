@@ -28,14 +28,14 @@ public class LogController {
 
     @PostMapping
     @ApiOperation("新增")
-    public ResponseResult<Log> queryLog(Log log) {
+    public ResponseResult<Log> add(Log log) {
         logService.add(log);
         return new ResponseResult<>(HttpStatus.OK.value(), log);
     }
 
     @DeleteMapping
     @ApiOperation("删除")
-    public ResponseResult<String> queryLog(String ids) {
+    public ResponseResult<String> delete(String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");
         }
@@ -43,7 +43,7 @@ public class LogController {
         return new ResponseResult<>(HttpStatus.OK.value(), result ? "删除成功！" : "删除失败！", ids);
     }
 
-    @GetMapping("/query-page")
+    @GetMapping("/queryPage")
     @ApiOperation("分页查询日志信息")
     public ResponseResult<Page<Log>> queryPage(Log log, QueryRequest queryRequest) {
         return new ResponseResult<>(HttpStatus.OK.value(), logService.queryPage(log, queryRequest));
