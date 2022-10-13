@@ -72,7 +72,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements JobSe
         if (StringUtils.isNotBlank(job.getName())) {
             queryWrapper.lambda().eq(Job::getName, job.getName());
         }
-        if (StringUtils.isNotBlank(job.getEnabled())) {
+        if (job.getEnabled() != null) {
             queryWrapper.lambda().eq(Job::getEnabled, job.getEnabled());
         }
         if (job.getSort() != null) {

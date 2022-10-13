@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -32,7 +33,7 @@ public class DeptController {
     @OperationLog("新增部门")
     @PostMapping
     @ApiOperation("新增")
-    public ResponseResult<Dept> add(Dept dept) {
+    public ResponseResult<Dept> add(@Validated @RequestBody Dept dept) {
         if (deptService.add(dept)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "新增成功！", dept);
         }
@@ -42,7 +43,7 @@ public class DeptController {
     @OperationLog("修改部门")
     @PutMapping
     @ApiOperation("修改")
-    public ResponseResult<Dept> update(Dept dept) {
+    public ResponseResult<Dept> update(@Validated @RequestBody Dept dept) {
         if (deptService.update(dept)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "修改成功！", dept);
         }
@@ -52,7 +53,7 @@ public class DeptController {
     @OperationLog("删除部门")
     @DeleteMapping
     @ApiOperation("删除")
-    public ResponseResult<String> delete(String ids) {
+    public ResponseResult<String> delete(@RequestBody String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");
         }

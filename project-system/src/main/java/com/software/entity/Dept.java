@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,9 +16,9 @@ import java.util.Date;
  */
 @Data
 @ApiModel("部门表")
-@TableName("sys_user")
+@TableName("sys_dept")
 public class Dept implements Serializable {
-
+    
     @ApiModelProperty("id")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -29,13 +31,15 @@ public class Dept implements Serializable {
     @TableField("sub_count")
     private Integer subCount;
 
+    @NotBlank
     @ApiModelProperty("名称")
     @TableField("name")
     private String name;
 
+    @NotNull
     @ApiModelProperty(value = "状态", notes = "1启用 0禁用")
     @TableField("enabled")
-    private String enabled;
+    private Boolean enabled;
 
     @ApiModelProperty("排序")
     @TableField("sort")

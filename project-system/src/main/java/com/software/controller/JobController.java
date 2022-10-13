@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -32,7 +33,7 @@ public class JobController {
     @OperationLog("新增岗位")
     @PostMapping
     @ApiOperation("新增")
-    public ResponseResult<Job> add(Job job) {
+    public ResponseResult<Job> add(@Validated @RequestBody Job job) {
         if (jobService.add(job)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "新增成功！", job);
         }
@@ -42,7 +43,7 @@ public class JobController {
     @OperationLog("修改岗位")
     @PutMapping
     @ApiOperation("修改")
-    public ResponseResult<Job> update(Job job) {
+    public ResponseResult<Job> update(@Validated @RequestBody Job job) {
         if (jobService.update(job)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "修改成功！", job);
         }
@@ -52,7 +53,7 @@ public class JobController {
     @OperationLog("删除岗位")
     @DeleteMapping
     @ApiOperation("删除")
-    public ResponseResult<String> delete(String ids) {
+    public ResponseResult<String> delete(@RequestBody String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");
         }

@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -32,7 +33,7 @@ public class MenuController {
     @OperationLog("新增菜单")
     @PostMapping
     @ApiOperation("新增")
-    public ResponseResult<Menu> add(Menu menu) {
+    public ResponseResult<Menu> add(@Validated @RequestBody Menu menu) {
         if (menuService.add(menu)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "新增成功！", menu);
         }
@@ -42,7 +43,7 @@ public class MenuController {
     @OperationLog("修改菜单")
     @PutMapping
     @ApiOperation("修改")
-    public ResponseResult<Menu> update(Menu menu) {
+    public ResponseResult<Menu> update(@Validated @RequestBody Menu menu) {
         if (menuService.update(menu)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "修改成功！", menu);
         }
@@ -52,7 +53,7 @@ public class MenuController {
     @OperationLog("删除菜单")
     @DeleteMapping
     @ApiOperation("删除")
-    public ResponseResult<String> delete(String ids) {
+    public ResponseResult<String> delete(@RequestBody String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");
         }

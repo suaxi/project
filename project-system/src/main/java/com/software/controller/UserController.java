@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -32,7 +33,7 @@ public class UserController {
     @OperationLog("新增用户")
     @PostMapping
     @ApiOperation("新增")
-    public ResponseResult<User> add(User user) {
+    public ResponseResult<User> add(@Validated @RequestBody User user) {
         if (userService.add(user)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "新增成功！", user);
         }
@@ -42,7 +43,7 @@ public class UserController {
     @OperationLog("修改用户")
     @PutMapping
     @ApiOperation("修改")
-    public ResponseResult<User> update(User user) {
+    public ResponseResult<User> update(@Validated @RequestBody User user) {
         if (userService.update(user)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "修改成功！", user);
         }
@@ -52,7 +53,7 @@ public class UserController {
     @OperationLog("删除用户")
     @DeleteMapping
     @ApiOperation("删除")
-    public ResponseResult<String> delete(String ids) {
+    public ResponseResult<String> delete(@RequestBody String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");
         }

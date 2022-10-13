@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -37,6 +38,7 @@ public class Menu implements Serializable {
     @TableField("title")
     private String title;
 
+    @NotBlank
     @ApiModelProperty("名称")
     @TableField("name")
     private String name;

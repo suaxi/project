@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -25,10 +28,12 @@ public class User implements Serializable {
     @TableField("dept_id")
     private Long deptId;
 
+    @NotBlank
     @ApiModelProperty("用户名")
     @TableField("username")
     private String username;
 
+    @NotBlank
     @ApiModelProperty("昵称")
     @TableField("nick_name")
     private String nickName;
@@ -37,10 +42,13 @@ public class User implements Serializable {
     @TableField("sex")
     private String sex;
 
+    @NotBlank
     @ApiModelProperty("电话")
     @TableField("phone")
     private String phone;
 
+    @Email
+    @NotBlank
     @ApiModelProperty("邮箱")
     @TableField("email")
     private String email;
@@ -61,9 +69,10 @@ public class User implements Serializable {
     @TableField("is_admin")
     private String isAdmin;
 
+    @NotNull
     @ApiModelProperty(value = "状态", notes = "1启用 0禁用")
     @TableField("enabled")
-    private String enabled;
+    private Boolean enabled;
 
     @ApiModelProperty("创建人")
     @TableField("create_by")

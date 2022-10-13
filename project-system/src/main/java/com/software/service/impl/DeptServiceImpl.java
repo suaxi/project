@@ -72,7 +72,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
         if (StringUtils.isNotBlank(dept.getName())) {
             queryWrapper.lambda().eq(Dept::getName, dept.getName());
         }
-        if (StringUtils.isNotBlank(dept.getEnabled())) {
+        if (dept.getEnabled() != null) {
             queryWrapper.lambda().eq(Dept::getEnabled, dept.getEnabled());
         }
         if (dept.getSort() != null) {

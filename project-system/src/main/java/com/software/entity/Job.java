@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,7 +23,8 @@ public class Job implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty("用户名")
+    @NotBlank
+    @ApiModelProperty("名称")
     @TableField("name")
     private String name;
 
@@ -29,9 +32,10 @@ public class Job implements Serializable {
     @TableField("sort")
     private Integer sort;
 
+    @NotNull
     @ApiModelProperty(value = "状态", notes = "1启用 0禁用")
     @TableField("enabled")
-    private String enabled;
+    private Boolean enabled;
 
     @ApiModelProperty("创建人")
     @TableField("create_by")

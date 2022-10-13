@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -20,6 +21,7 @@ public class Role {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @NotBlank
     @ApiModelProperty("名称")
     @TableField("name")
     private String name;
