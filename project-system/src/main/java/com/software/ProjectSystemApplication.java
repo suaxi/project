@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @date 2022/10/8 22:47
  */
 @EnableSwagger2
-@MapperScan({"com.software.mapper"})
+@MapperScan({"com.software.mapper", "com.software.*.mapper"})
 @SpringBootApplication
 public class ProjectSystemApplication {
     public static void main(String[] args) {

@@ -70,3 +70,11 @@ swagger:
 # ip地址本地解析
 ip:
   local-parsing: true
+
+# 登录
+login:
+  # 是否限制单用户登录
+  single-login: false
+  # redis缓存用户过期时间（秒）
+  user-cache:
+    idle-time: 7200
