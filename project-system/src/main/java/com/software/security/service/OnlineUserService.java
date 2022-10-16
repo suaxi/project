@@ -117,18 +117,20 @@ public class OnlineUserService {
      * 登录时检查该用户是否已登录，已登录则踢出
      *
      * @param username     用户名
-     * @param encryptToken encryptToken
+     * @param normalToken token
      */
-    public void checkLoginByUsername(String username, String encryptToken) {
+    public void checkLoginByUsername(String username, String normalToken) {
         List<OnlineUserDto> onlineUserDtoList = this.queryList(username);
         if (onlineUserDtoList != null && onlineUserDtoList.size() > 0) {
             for (OnlineUserDto onlineUserDto : onlineUserDtoList) {
                 if (onlineUserDto.getUsername().equals(username)) {
                     try {
-                        String token = EncryptUtils.desDecrypt(encryptToken);
-                        if (StringUtils.isNotBlank(encryptToken) && !encryptToken.equals(token)) {
+                        String token = EncryptUtils.desDecrypt(onlineUserDto.getToken());
+                        if (StringUtils.isNotBlank(normalToken) && !normalToken.equals(token)) {
+                            //保留本次登录生成的token
                             this.kickOut(token);
-                        } else if (StringUtils.isBlank(encryptToken)) {
+                        } else if (StringUtils.isBlank(normalToken)) {
+                            //其他情况，删除当前登录用户已存在的token
                             this.kickOut(token);
                         }
                     } catch (Exception e) {
@@ -157,7 +159,7 @@ public class OnlineUserService {
                     log.error("根据用户名踢出登录用户加密token解析异常");
                     e.printStackTrace();
                 }
-                kickOut(token);
+                this.kickOut(token);
             }
         }
     }
