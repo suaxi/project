@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.software.entity.Log;
 import com.software.service.LogService;
 import com.software.utils.ProjectUtils;
+import com.software.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -110,7 +111,7 @@ public class LogAspect {
         sysLog.setMethod(methodName);
         sysLog.setParams(this.getParams(method, joinPoint.getArgs()));
         sysLog.setRequestIp(ip);
-        //sysLog.setUsername();
+        sysLog.setUsername(SecurityUtils.getCurrentUsername());
         //登录操作信息脱敏
         if ("login".equals(signature.getName()) && StringUtils.isNotBlank(sysLog.getParams())) {
             JSONObject obj = JSONUtil.parseObj(sysLog.getParams());
