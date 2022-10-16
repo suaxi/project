@@ -1,7 +1,7 @@
 package com.software.security.service;
 
 import com.software.exception.BadRequestException;
-import com.software.security.dto.LoginUser;
+import com.software.security.dto.LoginUserDto;
 import com.software.system.entity.User;
 import com.software.system.service.MenuService;
 import com.software.system.service.RoleService;
@@ -35,7 +35,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        LoginUser loginUser = userCacheManager.getUserCache(s);
+        LoginUserDto loginUser = userCacheManager.getUserCache(s);
         if (loginUser == null) {
             User user = userService.queryByName(s);
 
@@ -50,7 +50,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
             List<Long> daScopeList = roleService.queryDataScopeByUserId(user.getId());
             //菜单权限
             List<String> permissionList = menuService.queryUserPermissionByUserId(user.getId());
-            loginUser = new LoginUser(user, daScopeList, permissionList);
+            loginUser = new LoginUserDto(user, daScopeList, permissionList);
             //添加缓存
             userCacheManager.addUserCache(user.getUsername(), loginUser);
         }

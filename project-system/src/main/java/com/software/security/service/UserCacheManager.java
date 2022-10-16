@@ -1,7 +1,7 @@
 package com.software.security.service;
 
 import cn.hutool.core.util.RandomUtil;
-import com.software.security.dto.LoginUser;
+import com.software.security.dto.LoginUserDto;
 import com.software.security.properties.LoginProperties;
 import com.software.utils.RedisUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,11 +31,11 @@ public class UserCacheManager {
      * @param username 用户名
      * @return
      */
-    public LoginUser getUserCache(String username) {
+    public LoginUserDto getUserCache(String username) {
         if (StringUtils.isNotBlank(username)) {
             Object obj = redisUtils.hget(LoginProperties.CACHE_KEY, username);
             if (obj != null) {
-                return (LoginUser) obj;
+                return (LoginUserDto) obj;
             }
         }
         return null;

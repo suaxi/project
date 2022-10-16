@@ -78,3 +78,21 @@ login:
   # redis缓存用户过期时间（秒）
   user-cache:
     idle-time: 7200
+
+# jwt
+jwt:
+  header: Authorization
+  # token前缀
+  token-start-with: Bearer
+  # 88位Base64编码
+  base64-secret: b2hzZG9maWpzb2RmanNsa2FkZmpvbHNqMDk4MjM0bGtqMmwzaDRtMjNuNGpraDEyazNqaDEyazNoMzQ1MzRqaGpoMjM0MjM0NTZpOWZkbGtqZmxpaWpr
+  # 令牌过期时间（秒）默认4小时
+  token-validity-in-seconds: 14400000
+  # 在线用户key
+  online-key: online-token-
+  # 验证码
+  code-key: code-key-
+  # token续期检查间隔时间（毫秒）
+  detect: 1800000
+  # 续期时间（毫秒）默认半小时
+  renew: 3600000

@@ -61,6 +61,7 @@ public class User implements Serializable {
     @TableField("avatar_path")
     private String avatarPath;
 
+    @NotBlank
     @ApiModelProperty("密码")
     @TableField("password")
     private String password;

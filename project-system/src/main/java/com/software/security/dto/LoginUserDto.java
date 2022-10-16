@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @NoArgsConstructor
-public class LoginUser implements UserDetails {
+public class LoginUserDto implements UserDetails {
 
     private User user;
 
@@ -27,7 +27,7 @@ public class LoginUser implements UserDetails {
 
     private List<GrantedAuthority> authorities;
 
-    public LoginUser(User user, List<Long> dataScopes, List<String> permissions) {
+    public LoginUserDto(User user, List<Long> dataScopes, List<String> permissions) {
         this.user = user;
         this.dataScopes = dataScopes;
         this.permissions = permissions;
