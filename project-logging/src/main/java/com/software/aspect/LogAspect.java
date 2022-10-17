@@ -111,7 +111,7 @@ public class LogAspect {
         sysLog.setMethod(methodName);
         sysLog.setParams(this.getParams(method, joinPoint.getArgs()));
         sysLog.setRequestIp(ip);
-        sysLog.setUsername(SecurityUtils.getCurrentUsername());
+        sysLog.setUsername(this.getCurrentUsername());
         //登录操作信息脱敏
         if ("login".equals(signature.getName()) && StringUtils.isNotBlank(sysLog.getParams())) {
             JSONObject obj = JSONUtil.parseObj(sysLog.getParams());
@@ -169,6 +169,19 @@ public class LogAspect {
         try (PrintWriter printWriter = new PrintWriter(stringWriter)) {
             e.printStackTrace(printWriter);
             return stringWriter.toString();
+        }
+    }
+
+    /**
+     * 获取当前用户名
+     *
+     * @return
+     */
+    private String getCurrentUsername() {
+        try {
+            return SecurityUtils.getCurrentUsername();
+        } catch (Exception e) {
+            return "";
         }
     }
 }
