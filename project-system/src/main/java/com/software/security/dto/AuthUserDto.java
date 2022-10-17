@@ -22,4 +22,10 @@ public class AuthUserDto implements Serializable {
     @NotBlank
     @ApiModelProperty("用户名")
     private String password;
+
+    @ApiModelProperty("验证码")
+    private String code;
+
+    @ApiModelProperty("验证码key")
+    private String uuid = "";
 }

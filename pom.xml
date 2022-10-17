@@ -40,6 +40,7 @@
         <commons.beanutils.version>1.9.4</commons.beanutils.version>
         <ip2region.version>2.6.3</ip2region.version>
         <yauaa.version>6.11</yauaa.version>
+        <captcha.version>1.6.2</captcha.version>
         <nexus.base.server>http://maven.aliyun.com/nexus/content/groups/public/</nexus.base.server>
     </properties>
 
@@ -195,6 +196,13 @@
                 <groupId>nl.basjes.parse.useragent</groupId>
                 <artifactId>yauaa</artifactId>
                 <version>${yauaa.version}</version>
+            </dependency>
+
+            <!-- captcha -->
+            <dependency>
+                <groupId>com.github.whvcse</groupId>
+                <artifactId>easy-captcha</artifactId>
+                <version>${captcha.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -50,6 +50,16 @@ spring:
         wall:
           config:
             multi-statement-allow: true
+  redis:
+    database: 2
+    host: 127.0.0.1
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
 
 # MyBatis-Plus
 mybatis-plus:
@@ -78,6 +88,22 @@ login:
   # redis缓存用户过期时间（秒）
   user-cache:
     idle-time: 7200
+  # 登录验证码
+  login-code:
+    # 验证码类型
+    code-type: arithmetic
+    # 有效期（分钟）
+    expiration: 1
+    # 宽度
+    width: 111
+    # 高度
+    height: 36
+    # 内容长度（默认2位）
+    length: 2
+    # 字体（为空使用默认值）
+    font-name:
+    # 字体大小
+    font-size: 25
 
 # jwt
 jwt:

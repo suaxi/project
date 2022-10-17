@@ -54,6 +54,6 @@ public class SecurityProperties {
     private Long renew;
 
     public String getTokenStartWith() {
-        return tokenStartWith + "";
+        return tokenStartWith + " ";
     }
 }
