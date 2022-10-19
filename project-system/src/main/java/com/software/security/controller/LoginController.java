@@ -2,6 +2,7 @@ package com.software.security.controller;
 
 import cn.hutool.core.util.IdUtil;
 import com.software.annotation.OperationLog;
+import com.software.constant.KeyPair;
 import com.software.constant.StringConstant;
 import com.software.dto.ResponseResult;
 import com.software.exception.BadRequestException;
@@ -13,6 +14,7 @@ import com.software.security.properties.LoginProperties;
 import com.software.security.properties.SecurityProperties;
 import com.software.security.service.OnlineUserService;
 import com.software.utils.RedisUtils;
+import com.software.utils.RsaUtils;
 import com.wf.captcha.base.Captcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,7 +63,7 @@ public class LoginController {
     @OperationLog("用户登录")
     @ApiOperation("用户登录")
     @PostMapping("/login")
-    public ResponseResult<Map<String, Object>> login(@Validated @RequestBody AuthUserDto user, HttpServletRequest request) {
+    public ResponseResult<Map<String, Object>> login(@Validated @RequestBody AuthUserDto user, HttpServletRequest request) throws Exception {
         //验证码校验
         String code = (String) redisUtils.get(user.getUuid());
         //清除对应的验证码
@@ -74,7 +76,7 @@ public class LoginController {
         }
 
         //认证授权
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), RsaUtils.decryptByPrivateKey(KeyPair.PRIVATE_KEY, user.getPassword()));
         Authentication authenticate = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token = tokenProvider.createToken(authenticate);
