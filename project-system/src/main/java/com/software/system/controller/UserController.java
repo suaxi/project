@@ -7,12 +7,14 @@ import com.software.dto.QueryRequest;
 import com.software.dto.ResponseResult;
 import com.software.system.entity.User;
 import com.software.system.service.UserService;
+import com.software.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,4 +80,11 @@ public class UserController {
     public ResponseResult<Page<User>> queryPage(User user, QueryRequest queryRequest) {
         return new ResponseResult<>(HttpStatus.OK.value(), userService.queryPage(user, queryRequest));
     }
+
+    @ApiOperation("获取用户信息")
+    @GetMapping("/getUserInfo")
+    public ResponseResult<UserDetails> getUserInfo() {
+        return new ResponseResult<>(HttpStatus.OK.value(), SecurityUtils.getCurrentUser());
+    }
+
 }

@@ -88,7 +88,7 @@ public class JwtAuthenticationTokenFilter extends GenericFilterBean {
             // 去掉令牌前缀（注意Bearer与token之间的空格）
             return bearerToken.replace(properties.getTokenStartWith(), "");
         } else {
-            log.error("Token不合法：{}", bearerToken);
+            log.debug("Token不合法：{}", bearerToken);
         }
         return null;
     }
