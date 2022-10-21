@@ -22,6 +22,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException {
         log.error("未授权");
         e.printStackTrace();
-        httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "未授权");
+        httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "未授权");
     }
 }
