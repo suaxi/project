@@ -70,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //druid
                 .antMatchers("/druid/**").permitAll()
                 //认证授权接口
-                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/auth/login", "/auth/getCaptcha").anonymous()
                 .anyRequest().authenticated();
 
         //jwt认证过滤器

@@ -6,6 +6,7 @@ import com.software.exception.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,6 +32,12 @@ public class GlobalExceptionHandler {
     public ResponseResult<?> badRequestException(BadRequestException e) {
         e.printStackTrace();
         return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseResult<?> httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        e.printStackTrace();
+        return new ResponseResult<>(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage());
     }
 
     /**
