@@ -30,9 +30,9 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @OperationLog("新增角色")
-    @PostMapping
     @ApiOperation("新增")
+    @PostMapping
+    @OperationLog("新增角色")
     public ResponseResult<Role> add(@Validated @RequestBody Role role) {
         if (roleService.add(role)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "新增成功！", role);
@@ -40,9 +40,9 @@ public class RoleController {
         return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "新增失败！", role);
     }
 
-    @OperationLog("修改角色")
-    @PutMapping
     @ApiOperation("修改")
+    @PutMapping
+    @OperationLog("修改角色")
     public ResponseResult<Role> update(@Validated @RequestBody Role role) {
         if (roleService.update(role)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "修改成功！", role);
@@ -50,9 +50,9 @@ public class RoleController {
         return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "修改失败！", role);
     }
 
-    @OperationLog("删除角色")
-    @DeleteMapping
     @ApiOperation("删除")
+    @DeleteMapping
+    @OperationLog("删除角色")
     public ResponseResult<String> delete(@RequestBody String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");
@@ -61,20 +61,20 @@ public class RoleController {
         return new ResponseResult<>(HttpStatus.OK.value(), result ? "删除成功！" : "删除失败！", ids);
     }
 
-    @GetMapping("/roleInfo/id/{id}")
     @ApiOperation("根据id查询角色信息")
+    @GetMapping("/id/{id}")
     public ResponseResult<Role> queryById(@NotNull @PathVariable("id") Long id) {
         return new ResponseResult<>(HttpStatus.OK.value(), roleService.queryById(id));
     }
 
-    @GetMapping("/roleInfo/name/{name}")
     @ApiOperation("根据名称查询角色信息")
+    @GetMapping("/name/{name}")
     public ResponseResult<Role> queryByName(@NotNull @PathVariable("name") String name) {
         return new ResponseResult<>(HttpStatus.OK.value(), roleService.queryByName(name));
     }
 
-    @GetMapping("/queryPage")
     @ApiOperation("分页查询角色信息")
+    @GetMapping("/queryPage")
     public ResponseResult<Page<Role>> queryPage(Role role, QueryRequest queryRequest) {
         return new ResponseResult<>(HttpStatus.OK.value(), roleService.queryPage(role, queryRequest));
     }

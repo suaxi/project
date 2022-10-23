@@ -33,9 +33,9 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
-    @OperationLog("新增菜单")
-    @PostMapping
     @ApiOperation("新增")
+    @PostMapping
+    @OperationLog("新增菜单")
     public ResponseResult<Menu> add(@Validated @RequestBody Menu menu) {
         if (menuService.add(menu)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "新增成功！", menu);
@@ -43,9 +43,9 @@ public class MenuController {
         return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "新增失败！", menu);
     }
 
-    @OperationLog("修改菜单")
-    @PutMapping
     @ApiOperation("修改")
+    @PutMapping
+    @OperationLog("修改菜单")
     public ResponseResult<Menu> update(@Validated @RequestBody Menu menu) {
         if (menuService.update(menu)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "修改成功！", menu);
@@ -53,9 +53,9 @@ public class MenuController {
         return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "修改失败！", menu);
     }
 
-    @OperationLog("删除菜单")
-    @DeleteMapping
     @ApiOperation("删除")
+    @DeleteMapping
+    @OperationLog("删除菜单")
     public ResponseResult<String> delete(@RequestBody String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");
@@ -64,20 +64,20 @@ public class MenuController {
         return new ResponseResult<>(HttpStatus.OK.value(), result ? "删除成功！" : "删除失败！", ids);
     }
 
-    @GetMapping("/menuInfo/id/{id}")
     @ApiOperation("根据id查询菜单信息")
+    @GetMapping("/id/{id}")
     public ResponseResult<Menu> queryById(@NotNull @PathVariable("id") Long id) {
         return new ResponseResult<>(HttpStatus.OK.value(), menuService.queryById(id));
     }
 
-    @GetMapping("/menuInfo/name/{name}")
     @ApiOperation("根据名称查询菜单信息")
+    @GetMapping("/name/{name}")
     public ResponseResult<Menu> queryByName(@NotNull @PathVariable("name") String name) {
         return new ResponseResult<>(HttpStatus.OK.value(), menuService.queryByName(name));
     }
 
-    @GetMapping("/queryPage")
     @ApiOperation("分页查询菜单信息")
+    @GetMapping("/queryPage")
     public ResponseResult<Page<Menu>> queryPage(Menu menu, QueryRequest queryRequest) {
         return new ResponseResult<>(HttpStatus.OK.value(), menuService.queryPage(menu, queryRequest));
     }

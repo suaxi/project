@@ -30,9 +30,9 @@ public class DeptController {
     @Autowired
     private DeptService deptService;
 
-    @OperationLog("新增部门")
-    @PostMapping
     @ApiOperation("新增")
+    @PostMapping
+    @OperationLog("新增部门")
     public ResponseResult<Dept> add(@Validated @RequestBody Dept dept) {
         if (deptService.add(dept)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "新增成功！", dept);
@@ -40,9 +40,9 @@ public class DeptController {
         return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "新增失败！", dept);
     }
 
-    @OperationLog("修改部门")
-    @PutMapping
     @ApiOperation("修改")
+    @PutMapping
+    @OperationLog("修改部门")
     public ResponseResult<Dept> update(@Validated @RequestBody Dept dept) {
         if (deptService.update(dept)) {
             return new ResponseResult<>(HttpStatus.OK.value(), "修改成功！", dept);
@@ -50,9 +50,9 @@ public class DeptController {
         return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "修改失败！", dept);
     }
 
-    @OperationLog("删除部门")
-    @DeleteMapping
     @ApiOperation("删除")
+    @DeleteMapping
+    @OperationLog("删除部门")
     public ResponseResult<String> delete(@RequestBody String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");
@@ -61,20 +61,20 @@ public class DeptController {
         return new ResponseResult<>(HttpStatus.OK.value(), result ? "删除成功！" : "删除失败！", ids);
     }
 
-    @GetMapping("/deptInfo/id/{id}")
     @ApiOperation("根据id查询部门信息")
+    @GetMapping("/id/{id}")
     public ResponseResult<Dept> queryById(@NotNull @PathVariable("id") Long id) {
         return new ResponseResult<>(HttpStatus.OK.value(), deptService.queryById(id));
     }
 
-    @GetMapping("/deptInfo/name/{name}")
     @ApiOperation("根据名称查询部门信息")
+    @GetMapping("/name/{name}")
     public ResponseResult<Dept> queryByName(@NotNull @PathVariable("name") String name) {
         return new ResponseResult<>(HttpStatus.OK.value(), deptService.queryByName(name));
     }
 
-    @GetMapping("/queryPage")
     @ApiOperation("分页查询部门信息")
+    @GetMapping("/queryPage")
     public ResponseResult<Page<Dept>> queryPage(Dept dept, QueryRequest queryRequest) {
         return new ResponseResult<>(HttpStatus.OK.value(), deptService.queryPage(dept, queryRequest));
     }
