@@ -47,7 +47,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
             //权限信息
             //TODO 根据当前用户部门id及数据权限查询对应的部门id
-            List<Long> daScopeList = roleService.queryDataScopeByUserId(user.getId());
+            List<String> daScopeList = roleService.queryDataScopeByUserId(user.getId());
             //菜单权限
             List<String> permissionList = menuService.queryUserPermissionByUserId(user.getId());
             loginUser = new LoginUserDto(user, daScopeList, permissionList);

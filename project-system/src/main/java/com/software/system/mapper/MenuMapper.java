@@ -2,6 +2,7 @@ package com.software.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.software.system.entity.Menu;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,4 +21,13 @@ public interface MenuMapper extends BaseMapper<Menu> {
      * @return
      */
     List<String> queryUserPermissionByUserId(Long userId);
+
+    /**
+     * 获取用户路由
+     *
+     * @param userId 用户名
+     * @param type 菜单类型
+     * @return 用户路由
+     */
+    List<Menu> getUserRouters(@Param("userId") Long userId, @Param("type") int type);
 }

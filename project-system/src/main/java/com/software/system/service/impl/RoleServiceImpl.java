@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
+import com.software.exception.BadRequestException;
 import com.software.system.entity.Role;
 import com.software.system.mapper.RoleMapper;
 import com.software.system.service.RoleService;
@@ -92,10 +93,18 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
-    public List<Long> queryDataScopeByUserId(Long userId) {
+    public List<String> queryDataScopeByUserId(Long userId) {
         if (userId != null) {
             return roleMapper.queryDataScopeByUserId(userId);
         }
         return null;
+    }
+
+    @Override
+    public List<Role> queryRoleListByUserId(Long userId) {
+        if (userId == null) {
+            throw new BadRequestException("用户id不能为空");
+        }
+        return roleMapper.queryRoleListByUserId(userId);
     }
 }

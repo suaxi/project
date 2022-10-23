@@ -2,6 +2,7 @@ package com.software.system.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.dto.QueryRequest;
+import com.software.entity.VueRouter;
 import com.software.system.entity.Menu;
 
 import java.util.List;
@@ -75,4 +76,12 @@ public interface MenuService {
      * @return
      */
     List<String> queryUserPermissionByUserId(Long userId);
+
+    /**
+     * 获取用户路由
+     *
+     * @param userId 用户名
+     * @return 用户路由
+     */
+    List<VueRouter<Menu>> getUserRouters(Long userId);
 }

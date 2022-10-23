@@ -73,5 +73,12 @@ public interface RoleService {
      * @param userId
      * @return
      */
-    List<Long> queryDataScopeByUserId(Long userId);
+    List<String> queryDataScopeByUserId(Long userId);
+
+    /**
+     * 根据用户id查询角色列表
+     * @param userId 用户id
+     * @return 角色列表
+     */
+    List<Role> queryRoleListByUserId(Long userId);
 }

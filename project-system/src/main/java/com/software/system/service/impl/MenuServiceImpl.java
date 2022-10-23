@@ -5,15 +5,20 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
+import com.software.entity.RouterMeta;
+import com.software.entity.VueRouter;
 import com.software.system.entity.Menu;
 import com.software.system.mapper.MenuMapper;
 import com.software.system.service.MenuService;
+import com.software.utils.TreeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -100,5 +105,38 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             return menuMapper.queryUserPermissionByUserId(userId);
         }
         return null;
+    }
+
+    @Override
+    public List<VueRouter<Menu>> getUserRouters(Long userId) {
+        List<VueRouter<Menu>> routers = new ArrayList<>();
+        List<Menu> menuList = menuMapper.getUserRouters(userId, 2);
+        if (menuList != null && menuList.size() > 0) {
+            menuList.forEach(menu -> {
+                VueRouter<Menu> router = new VueRouter<>();
+                router.setId(menu.getId());
+                router.setParentId(menu.getPid());
+                router.setPath(menu.getPid() == null ? "/" + menu.getPath() : menu.getPath());
+                router.setName(StringUtils.isNotEmpty(menu.getName()) ? menu.getName() : menu.getTitle());
+                //是否为外链
+                if (!menu.getIFrame().equals(StringConstant.TRUE)) {
+                    if (menu.getPid() == null) {
+                        router.setComponent(StringUtils.isEmpty(menu.getComponent()) ? "Layout" : menu.getComponent());
+                    } else if (menu.getType() == 0) {
+                        //如果不是一级菜单，且菜单类型为目录，则代表是多级菜单
+                        router.setComponent(StringUtils.isEmpty(menu.getComponent()) ? "ParentView" : menu.getComponent());
+                    } else if (StringUtils.isEmpty(menu.getComponent())) {
+                        router.setComponent(menu.getComponent());
+                    } else {
+                        router.setComponent(menu.getComponent());
+                    }
+                }
+                router.setMeta(new RouterMeta(menu.getTitle(), menu.getIcon(), !menu.getCache().equals(StringConstant.TRUE)));
+
+                routers.add(router);
+            });
+            return TreeUtil.buildVueRouter(routers);
+        }
+        return Collections.emptyList();
     }
 }
