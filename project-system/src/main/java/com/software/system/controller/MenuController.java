@@ -6,9 +6,9 @@ import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.dto.ResponseResult;
 import com.software.entity.VueRouter;
-import com.software.exception.BadRequestException;
 import com.software.system.entity.Menu;
 import com.software.system.service.MenuService;
+import com.software.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -82,12 +82,9 @@ public class MenuController {
         return new ResponseResult<>(HttpStatus.OK.value(), menuService.queryPage(menu, queryRequest));
     }
 
-    @GetMapping("/getUserRouters")
     @ApiOperation("获取用户路由")
-    public ResponseResult<List<VueRouter<Menu>>> getUserRouters(@RequestParam("userId") Long userId) {
-        if (userId == null) {
-            throw new BadRequestException("用户id不能为空");
-        }
-        return new ResponseResult<>(HttpStatus.OK.value(), menuService.getUserRouters(userId));
+    @GetMapping("/getUserRouters")
+    public ResponseResult<List<VueRouter<Menu>>> getUserRouters() {
+        return new ResponseResult<>(HttpStatus.OK.value(), menuService.getUserRouters(SecurityUtils.getCurrentUserId()));
     }
 }
