@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @author Wang Hao
@@ -71,6 +72,12 @@ public class JobController {
     @GetMapping("/name/{name}")
     public ResponseResult<Job> queryByName(@NotNull @PathVariable("name") String name) {
         return new ResponseResult<>(HttpStatus.OK.value(), jobService.queryByName(name));
+    }
+
+    @ApiOperation("查询角色列表")
+    @GetMapping("queryList")
+    public ResponseResult<List<Job>> queryList() {
+        return new ResponseResult<>(HttpStatus.OK.value(), jobService.queryList());
     }
 
     @ApiOperation("分页查询岗位信息")

@@ -67,4 +67,11 @@ public interface DeptService {
      * @return
      */
     Page<Dept> queryPage(Dept dept, QueryRequest queryRequest);
+
+    /**
+     * 根据父id查询子级部门
+     * @param pid 父级id
+     * @return 子级部门列表
+     */
+    List<Dept> queryChildListByPid(Long pid);
 }

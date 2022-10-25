@@ -6,12 +6,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.system.entity.User;
+import com.software.system.entity.UserRole;
 import com.software.system.mapper.UserMapper;
+import com.software.system.service.UserRoleService;
 import com.software.system.service.UserService;
+import com.software.utils.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,11 +28,27 @@ import java.util.List;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    private static final String PASSWORD = "123456";
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserRoleService userRoleService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(User user) {
-        //TODO 创建人信息
-        return this.save(user);
+        user.setPassword(passwordEncoder.encode(PASSWORD));
+        user.setUpdateBy(SecurityUtils.getCurrentUserId());
+        boolean flag = this.save(user);
+
+        //用户角色关联关系
+        if (flag) {
+            String[] roleIds = StringUtils.splitByWholeSeparatorPreserveAllTokens(user.getRoleIds(), StringConstant.COMMA);
+            return this.setUserRoles(user.getId(), roleIds);
+        }
+        return false;
     }
 
     @Override
@@ -100,5 +122,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         Page<User> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
         return this.page(page, queryWrapper);
+    }
+
+    /**
+     * 保存用户角色关联数据
+     *
+     * @param userId  用户id
+     * @param roleIds 角色id
+     * @return 用户角色关联数据保存结果
+     */
+    private boolean setUserRoles(Long userId, String[] roleIds) {
+        List<UserRole> userRoles = new ArrayList<>();
+        Arrays.stream(roleIds).map(Long::new).forEach(roleId -> {
+            UserRole userRole = new UserRole();
+            userRole.setUserId(userId);
+            userRole.setRoleId(roleId);
+            userRoles.add(userRole);
+        });
+        return userRoleService.saveBatch(userRoles);
     }
 }

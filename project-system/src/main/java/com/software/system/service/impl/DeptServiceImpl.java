@@ -1,5 +1,6 @@
 package com.software.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -85,5 +86,16 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
         }
         Page<Dept> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
         return this.page(page, queryWrapper);
+    }
+
+    @Override
+    public List<Dept> queryChildListByPid(Long pid) {
+        LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
+        if (pid == null) {
+            queryWrapper.isNull(Dept::getPid);
+        } else {
+            queryWrapper.eq(Dept::getPid, pid);
+        }
+        return this.baseMapper.selectList(queryWrapper);
     }
 }

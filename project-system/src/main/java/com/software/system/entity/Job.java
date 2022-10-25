@@ -39,11 +39,11 @@ public class Job implements Serializable {
 
     @ApiModelProperty("创建人")
     @TableField("create_by")
-    private String createBy;
+    private Long createBy;
 
     @ApiModelProperty("更新人")
     @TableField("update_by")
-    private String updateBy;
+    private Long updateBy;
 
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)

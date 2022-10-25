@@ -38,10 +38,6 @@ public class Role {
     @TableField("data_scope")
     private String dataScope;
 
-    @ApiModelProperty("排序")
-    @TableField("sort")
-    private Long sort;
-
     @ApiModelProperty("创建人")
     @TableField("create_by")
     private String createBy;

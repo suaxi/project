@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @author Wang Hao
@@ -77,5 +78,11 @@ public class DeptController {
     @GetMapping("/queryPage")
     public ResponseResult<Page<Dept>> queryPage(Dept dept, QueryRequest queryRequest) {
         return new ResponseResult<>(HttpStatus.OK.value(), deptService.queryPage(dept, queryRequest));
+    }
+
+    @ApiOperation("根据父id查询子级部门")
+    @GetMapping("/queryChildListByPid")
+    public ResponseResult<List<Dept>> queryChildListByPid(Long pid) {
+        return new ResponseResult<>(HttpStatus.OK.value(), deptService.queryChildListByPid(pid));
     }
 }

@@ -61,7 +61,6 @@ public class User implements Serializable {
     @TableField("avatar_path")
     private String avatarPath;
 
-    @NotBlank
     @ApiModelProperty("密码")
     @TableField("password")
     private String password;
@@ -77,11 +76,11 @@ public class User implements Serializable {
 
     @ApiModelProperty("创建人")
     @TableField("create_by")
-    private String createBy;
+    private Long createBy;
 
     @ApiModelProperty("更新人")
     @TableField("update_by")
-    private String updateBy;
+    private Long updateBy;
 
     @ApiModelProperty("密码修改时间")
     @TableField("pwd_reset_time")
@@ -99,5 +98,9 @@ public class User implements Serializable {
     @TableField(value = "is_delete")
     @ApiModelProperty(value = "逻辑删除")
     private Integer isDelete;
+
+    @TableField(exist = false)
+    @ApiModelProperty(value = "角色ids")
+    private String roleIds;
 
 }
