@@ -101,10 +101,10 @@ public class User implements Serializable {
 
     @TableField(exist = false)
     @ApiModelProperty(value = "角色ids")
-    private Long[] roleIds;
+    private String roleIds;
 
     @TableField(exist = false)
     @ApiModelProperty(value = "岗位ids")
-    private Long[] jobIds;
+    private String jobIds;
 
 }

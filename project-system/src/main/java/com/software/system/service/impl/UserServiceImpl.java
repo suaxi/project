@@ -50,10 +50,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         //用户角色关联关系
         if (flag) {
-            boolean setUserRolesResult = this.setUserRoles(user.getId(), user.getRoleIds());
+            boolean setUserRolesResult = this.setUserRoles(user.getId(), user.getRoleIds().split(StringConstant.COMMA));
             if (setUserRolesResult) {
                 //用户岗位关联关系
-                return this.setUserJobs(user.getId(), user.getJobIds());
+                return this.setUserJobs(user.getId(), user.getJobIds().split(StringConstant.COMMA));
             }
         }
         return false;
@@ -98,38 +98,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Page<User> queryPage(User user, QueryRequest queryRequest) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(user.getUsername())) {
-            queryWrapper.lambda().eq(User::getUsername, user.getUsername());
-        }
-        if (user.getDeptId() != null) {
-            queryWrapper.lambda().eq(User::getDeptId, user.getDeptId());
-        }
-        if (StringUtils.isNotBlank(user.getUsername())) {
-            queryWrapper.lambda().eq(User::getUsername, user.getUsername());
-        }
-        if (StringUtils.isNotBlank(user.getNickName())) {
-            queryWrapper.lambda().eq(User::getNickName, user.getNickName());
-        }
-        if (StringUtils.isNotBlank(user.getPhone())) {
-            queryWrapper.lambda().eq(User::getPhone, user.getPhone());
-        }
-        if (StringUtils.isNotBlank(user.getEmail())) {
-            queryWrapper.lambda().eq(User::getEmail, user.getEmail());
-        }
-        if (StringUtils.isNotBlank(user.getEmail())) {
-            queryWrapper.lambda().eq(User::getEmail, user.getEmail());
-        }
-        if (user.getEnabled() != null) {
-            queryWrapper.lambda().eq(User::getEnabled, user.getEnabled());
-        }
-        if (StringUtils.isNotBlank(queryRequest.getOrder())) {
-            queryWrapper.orderBy(true, StringConstant.ASC.equals(queryRequest.getOrder()), queryRequest.getField());
-        } else {
-            queryWrapper.orderBy(true, false, "create_time");
-        }
         Page<User> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
-        return this.page(page, queryWrapper);
+        return this.baseMapper.queryPage(page, user);
     }
 
     /**
@@ -139,9 +109,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @param roleIds 角色id
      * @return 用户角色关联数据保存结果
      */
-    private boolean setUserRoles(Long userId, Long[] roleIds) {
+    private boolean setUserRoles(Long userId, String[] roleIds) {
         List<UserRole> userRoles = new ArrayList<>();
-        Arrays.stream(roleIds).forEach(roleId -> {
+        Arrays.stream(roleIds).map(Long::new).forEach(roleId -> {
             UserRole userRole = new UserRole();
             userRole.setUserId(userId);
             userRole.setRoleId(roleId);
@@ -157,9 +127,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @param jobIds 岗位id
      * @return 用户岗位关联数据保存结果
      */
-    private boolean setUserJobs(Long userId, Long[] jobIds) {
+    private boolean setUserJobs(Long userId, String[] jobIds) {
         List<UserJob> userJobs = new ArrayList<>();
-        Arrays.stream(jobIds).forEach(jobId -> {
+        Arrays.stream(jobIds).map(Long::new).forEach(jobId -> {
             UserJob userJob = new UserJob();
             userJob.setUserId(userId);
             userJob.setJobId(jobId);

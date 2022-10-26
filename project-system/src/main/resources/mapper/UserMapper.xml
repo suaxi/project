@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.software.system.mapper.UserMapper">
+    <select id="queryPage" resultType="com.software.system.entity.User">
+        SELECT
+            u.id,
+            u.dept_id,
+            u.username,
+            u.nick_name,
+            u.sex,
+            u.phone,
+            u.email,
+            u.avatar_name,
+            u.avatar_path,
+            u.`password`,
+            u.is_admin,
+            u.enabled,
+            u.create_by,
+            u.update_by,
+            u.pwd_reset_time,
+            u.create_time,
+            u.update_time,
+            GROUP_CONCAT( DISTINCT ur.role_id ) AS roleIds,
+            GROUP_CONCAT( DISTINCT uj.job_id ) AS jobIds
+        FROM
+            sys_user u
+                LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+                LEFT JOIN sys_user_job uj ON u.id = uj.user_id
+        WHERE
+            u.is_delete = 0
+        <if test="user.username != null and user.username != ''">
+            AND u.username LIKE CONCAT('%',#{user.username},'%')
+        </if>
+        <if test="user.email != null and user.email != ''">
+            AND u.email = #{user.email}
+        </if>
+        <if test="user.enabled != null and user.enabled != ''">
+            AND u.enabled = #{enabled}
+        </if>
+        GROUP BY
+            u.id,
+            u.dept_id,
+            u.username,
+            u.nick_name,
+            u.sex,
+            u.phone,
+            u.email,
+            u.avatar_name,
+            u.avatar_path,
+            u.`password`,
+            u.is_admin,
+            u.enabled,
+            u.create_by,
+            u.update_by,
+            u.pwd_reset_time,
+            u.create_time,
+            u.update_time
+        ORDER BY
+            u.update_time DESC
+    </select>
+</mapper>
