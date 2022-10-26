@@ -100,6 +100,10 @@ public class User implements Serializable {
     private Integer isDelete;
 
     @TableField(exist = false)
+    @ApiModelProperty(value = "部门名称")
+    private String deptName;
+
+    @TableField(exist = false)
     @ApiModelProperty(value = "角色ids")
     private String roleIds;
 
