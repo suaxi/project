@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.system.entity.User;
+import com.software.system.entity.UserJob;
 import com.software.system.entity.UserRole;
 import com.software.system.mapper.UserMapper;
+import com.software.system.service.UserJobService;
 import com.software.system.service.UserRoleService;
 import com.software.system.service.UserService;
 import com.software.utils.SecurityUtils;
@@ -36,17 +38,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     private UserRoleService userRoleService;
 
+    @Autowired
+    private UserJobService userJobService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(User user) {
         user.setPassword(passwordEncoder.encode(PASSWORD));
-        user.setUpdateBy(SecurityUtils.getCurrentUserId());
+        user.setCreateBy(SecurityUtils.getCurrentUserId());
         boolean flag = this.save(user);
 
         //用户角色关联关系
         if (flag) {
-            String[] roleIds = StringUtils.splitByWholeSeparatorPreserveAllTokens(user.getRoleIds(), StringConstant.COMMA);
-            return this.setUserRoles(user.getId(), roleIds);
+            boolean setUserRolesResult = this.setUserRoles(user.getId(), user.getRoleIds());
+            if (setUserRolesResult) {
+                //用户岗位关联关系
+                return this.setUserJobs(user.getId(), user.getJobIds());
+            }
         }
         return false;
     }
@@ -131,14 +139,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @param roleIds 角色id
      * @return 用户角色关联数据保存结果
      */
-    private boolean setUserRoles(Long userId, String[] roleIds) {
+    private boolean setUserRoles(Long userId, Long[] roleIds) {
         List<UserRole> userRoles = new ArrayList<>();
-        Arrays.stream(roleIds).map(Long::new).forEach(roleId -> {
+        Arrays.stream(roleIds).forEach(roleId -> {
             UserRole userRole = new UserRole();
             userRole.setUserId(userId);
             userRole.setRoleId(roleId);
             userRoles.add(userRole);
         });
         return userRoleService.saveBatch(userRoles);
+    }
+
+    /**
+     * 保存用户岗位关联数据
+     *
+     * @param userId 用户id
+     * @param jobIds 岗位id
+     * @return 用户岗位关联数据保存结果
+     */
+    private boolean setUserJobs(Long userId, Long[] jobIds) {
+        List<UserJob> userJobs = new ArrayList<>();
+        Arrays.stream(jobIds).forEach(jobId -> {
+            UserJob userJob = new UserJob();
+            userJob.setUserId(userId);
+            userJob.setJobId(jobId);
+            userJobs.add(userJob);
+        });
+        return userJobService.saveBatch(userJobs);
     }
 }
