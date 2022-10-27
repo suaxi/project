@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,14 +48,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setPassword(passwordEncoder.encode(PASSWORD));
         user.setCreateBy(SecurityUtils.getCurrentUserId());
         boolean flag = this.save(user);
-
-        //用户角色关联关系
+        //用户关联属性
         if (flag) {
-            boolean setUserRolesResult = this.setUserRoles(user.getId(), user.getRoleIds().split(StringConstant.COMMA));
-            if (setUserRolesResult) {
-                //用户岗位关联关系
-                return this.setUserJobs(user.getId(), user.getJobIds().split(StringConstant.COMMA));
-            }
+            return this.setUserAssociatedProperties(user);
         }
         return false;
     }
@@ -62,7 +58,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(User user) {
-        return this.updateById(user);
+        //删除关联数据
+        Long[] userIds = Collections.singletonList(user.getId()).toArray(new Long[0]);
+        userRoleService.deleteUserRoleByUserId(userIds);
+        userJobService.deleteUserJobByUserId(userIds);
+
+        user.setUpdateBy(SecurityUtils.getCurrentUserId());
+        boolean flag = this.updateById(user);
+        //用户关联属性
+        if (flag) {
+            return this.setUserAssociatedProperties(user);
+        }
+        return false;
     }
 
     @Override
@@ -103,38 +110,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     /**
-     * 保存用户角色关联数据
+     * 设置用户关联属性（角色、岗位）
      *
-     * @param userId  用户id
-     * @param roleIds 角色id
-     * @return 用户角色关联数据保存结果
+     * @param user 用户信息
+     * @return 关联属性保存结果
      */
-    private boolean setUserRoles(Long userId, String[] roleIds) {
+    private boolean setUserAssociatedProperties(User user) {
         List<UserRole> userRoles = new ArrayList<>();
-        Arrays.stream(roleIds).map(Long::new).forEach(roleId -> {
+        Arrays.stream(user.getRoleIds().split(StringConstant.COMMA)).map(Long::new).forEach(roleId -> {
             UserRole userRole = new UserRole();
-            userRole.setUserId(userId);
+            userRole.setUserId(user.getId());
             userRole.setRoleId(roleId);
             userRoles.add(userRole);
         });
-        return userRoleService.saveBatch(userRoles);
-    }
-
-    /**
-     * 保存用户岗位关联数据
-     *
-     * @param userId 用户id
-     * @param jobIds 岗位id
-     * @return 用户岗位关联数据保存结果
-     */
-    private boolean setUserJobs(Long userId, String[] jobIds) {
-        List<UserJob> userJobs = new ArrayList<>();
-        Arrays.stream(jobIds).map(Long::new).forEach(jobId -> {
-            UserJob userJob = new UserJob();
-            userJob.setUserId(userId);
-            userJob.setJobId(jobId);
-            userJobs.add(userJob);
-        });
-        return userJobService.saveBatch(userJobs);
+        if (userRoleService.saveBatch(userRoles)) {
+            List<UserJob> userJobs = new ArrayList<>();
+            Arrays.stream(user.getJobIds().split(StringConstant.COMMA)).map(Long::new).forEach(jobId -> {
+                UserJob userJob = new UserJob();
+                userJob.setUserId(user.getId());
+                userJob.setJobId(jobId);
+                userJobs.add(userJob);
+            });
+            return userJobService.saveBatch(userJobs);
+        }
+        return false;
     }
 }
