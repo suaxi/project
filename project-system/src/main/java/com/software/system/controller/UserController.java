@@ -2,7 +2,6 @@ package com.software.system.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.annotation.OperationLog;
-import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.dto.ResponseResult;
 import com.software.system.entity.User;
@@ -10,8 +9,6 @@ import com.software.system.service.UserService;
 import com.software.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -55,12 +52,14 @@ public class UserController {
     @ApiOperation("删除")
     @DeleteMapping
     @OperationLog("删除用户")
-    public ResponseResult<String> delete(@RequestBody String ids) {
-        if (StringUtils.isBlank(ids)) {
+    public ResponseResult<Long[]> delete(@RequestBody Long[] ids) {
+        if (ids.length == 0) {
             throw new IllegalArgumentException("id不能为空");
         }
-        boolean result = userService.delete((Long[]) ConvertUtils.convert(ids.split(StringConstant.COMMA), Long.class));
-        return new ResponseResult<>(HttpStatus.OK.value(), result ? "删除成功！" : "删除失败！", ids);
+        if (userService.delete(ids)) {
+            return new ResponseResult<>(HttpStatus.OK.value(), "删除成功！", ids);
+        }
+        return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "删除失败！", ids);
     }
 
     @ApiOperation("根据id查询用户信息")

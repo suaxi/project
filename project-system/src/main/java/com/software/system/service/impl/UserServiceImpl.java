@@ -76,7 +76,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional(rollbackFor = Exception.class)
     public boolean delete(Long[] ids) {
         if (ids.length > 0) {
-            return this.removeByIds(Arrays.asList(ids));
+            boolean flag = this.removeByIds(Arrays.asList(ids));
+            if (flag) {
+                userRoleService.deleteUserRoleByUserId(ids);
+                userJobService.deleteUserJobByUserId(ids);
+            }
+            return flag;
         }
         return false;
     }
