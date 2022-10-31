@@ -82,11 +82,12 @@ public class LoginController {
         String token = tokenProvider.createToken(authenticate);
 
         //保存在线用户
-        LoginUserDto loginUserDto = (LoginUserDto) authenticate.getPrincipal();
+        final LoginUserDto loginUserDto = (LoginUserDto) authenticate.getPrincipal();
         onlineUserService.save(loginUserDto, token, request);
 
         Map<String, Object> map = new HashMap<>(1);
         map.put("token", securityProperties.getTokenStartWith() + token);
+        map.put("user", loginUserDto);
 
         if (loginProperties.isSingleLogin()) {
             //单用户登录检查

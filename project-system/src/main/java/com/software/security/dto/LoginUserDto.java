@@ -1,5 +1,6 @@
 package com.software.security.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.software.system.entity.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,31 +45,37 @@ public class LoginUserDto implements UserDetails {
     }
 
     @Override
+    @JSONField(serialize = false)
     public String getPassword() {
         return user.getPassword();
     }
 
     @Override
+    @JSONField(serialize = false)
     public String getUsername() {
         return user.getUsername();
     }
 
     @Override
+    @JSONField(serialize = false)
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JSONField(serialize = false)
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JSONField(serialize = false)
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JSONField(serialize = false)
     public boolean isEnabled() {
         return user.getEnabled();
     }
