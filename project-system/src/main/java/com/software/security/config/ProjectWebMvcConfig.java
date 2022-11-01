@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.StandardCharsets;
@@ -40,6 +41,17 @@ public class ProjectWebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        /*
+         * SpringBoot自动配置本身并不会把/swagger-ui.html
+         * 这个路径映射到对应的目录META-INF/resources/下面
+         * 采用WebMvcConfigurerAdapter将swagger的静态文件进行发布;
+         */
+        registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+    @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         //定义convert转换消息的对象
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
@@ -49,9 +61,24 @@ public class ProjectWebMvcConfig implements WebMvcConfigurer {
         config.setDateFormat("yyyy-MM-dd HH:mm:ss");
         config.setSerializerFeatures(SerializerFeature.DisableCircularReferenceDetect);
 
-        //公共媒体类型
+        //公共媒体类型及中文乱码的问题
         List<MediaType> mediaTypeList = new ArrayList<>();
+        mediaTypeList.add(MediaType.APPLICATION_ATOM_XML);
+        mediaTypeList.add(MediaType.APPLICATION_FORM_URLENCODED);
+        mediaTypeList.add(MediaType.APPLICATION_OCTET_STREAM);
         mediaTypeList.add(MediaType.APPLICATION_JSON);
+        mediaTypeList.add(MediaType.APPLICATION_PDF);
+        mediaTypeList.add(MediaType.APPLICATION_RSS_XML);
+        mediaTypeList.add(MediaType.APPLICATION_XHTML_XML);
+        mediaTypeList.add(MediaType.APPLICATION_XML);
+        mediaTypeList.add(MediaType.IMAGE_GIF);
+        mediaTypeList.add(MediaType.IMAGE_JPEG);
+        mediaTypeList.add(MediaType.IMAGE_PNG);
+        mediaTypeList.add(MediaType.TEXT_EVENT_STREAM);
+        mediaTypeList.add(MediaType.TEXT_HTML);
+        mediaTypeList.add(MediaType.TEXT_MARKDOWN);
+        mediaTypeList.add(MediaType.TEXT_PLAIN);
+        mediaTypeList.add(MediaType.TEXT_XML);
 
         converter.setFastJsonConfig(config);
         converter.setSupportedMediaTypes(mediaTypeList);
