@@ -5,6 +5,7 @@ import com.software.annotation.OperationLog;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.dto.ResponseResult;
+import com.software.dto.Tree;
 import com.software.system.entity.Dept;
 import com.software.system.service.DeptService;
 import io.swagger.annotations.Api;
@@ -13,6 +14,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,5 +86,11 @@ public class DeptController {
     @GetMapping("/queryChildListByPid")
     public ResponseResult<List<Dept>> queryChildListByPid(Long pid) {
         return new ResponseResult<>(HttpStatus.OK.value(), deptService.queryChildListByPid(pid));
+    }
+
+    @ApiOperation("查询部门树")
+    @GetMapping("/queryDeptTree")
+    public ResponseEntity<List<? extends Tree<?>>> queryDeptTree() {
+        return new ResponseEntity<>(deptService.queryDeptTree(), HttpStatus.OK);
     }
 }

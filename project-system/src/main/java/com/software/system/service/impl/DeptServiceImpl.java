@@ -6,14 +6,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
+import com.software.dto.Tree;
+import com.software.system.dto.DeptTree;
 import com.software.system.entity.Dept;
 import com.software.system.mapper.DeptMapper;
 import com.software.system.service.DeptService;
+import com.software.utils.TreeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -91,11 +96,35 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     @Override
     public List<Dept> queryChildListByPid(Long pid) {
         LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Dept::getEnabled, true);
         if (pid == null) {
             queryWrapper.isNull(Dept::getPid);
         } else {
             queryWrapper.eq(Dept::getPid, pid);
         }
         return this.baseMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<? extends Tree<?>> queryDeptTree() {
+        List<Dept> deptList = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getEnabled, true));
+        if (deptList != null && deptList.size() > 0) {
+            List<DeptTree> trees = new ArrayList<>();
+            deptList.forEach(dept -> {
+                DeptTree tree = new DeptTree();
+                tree.setId(dept.getId());
+                tree.setParentId(dept.getPid() == null ? null : dept.getPid());
+                tree.setLabel(dept.getName());
+                tree.setSubCount(dept.getSubCount());
+                tree.setName(dept.getName());
+                tree.setSort(dept.getSort());
+                tree.setCreateBy(dept.getCreateBy());
+                tree.setCreateTime(dept.getCreateTime());
+                tree.setUpdateTime(dept.getUpdateTime());
+                trees.add(tree);
+            });
+            return TreeUtil.build(trees);
+        }
+        return Collections.emptyList();
     }
 }
