@@ -3,7 +3,7 @@ package com.software.system.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.dto.QueryRequest;
 import com.software.dto.Tree;
-import com.software.system.dto.DeptTree;
+import com.software.system.dto.DeptDto;
 import com.software.system.entity.Dept;
 
 import java.util.List;
@@ -76,7 +76,7 @@ public interface DeptService {
      * @param pid 父级id
      * @return 子级部门列表
      */
-    List<Dept> queryChildListByPid(Long pid);
+    List<DeptDto> queryChildListByPid(Long pid);
 
     /**
      * 查询部门树

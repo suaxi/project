@@ -7,12 +7,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.dto.Tree;
+import com.software.system.dto.DeptDto;
 import com.software.system.dto.DeptTree;
 import com.software.system.entity.Dept;
 import com.software.system.mapper.DeptMapper;
 import com.software.system.service.DeptService;
 import com.software.utils.TreeUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Wang Hao
@@ -94,7 +97,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     }
 
     @Override
-    public List<Dept> queryChildListByPid(Long pid) {
+    public List<DeptDto> queryChildListByPid(Long pid) {
         LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Dept::getEnabled, true);
         if (pid == null) {
@@ -102,7 +105,15 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
         } else {
             queryWrapper.eq(Dept::getPid, pid);
         }
-        return this.baseMapper.selectList(queryWrapper);
+        List<Dept> deptList = this.baseMapper.selectList(queryWrapper);
+        if (deptList != null && deptList.size() > 0) {
+            return deptList.stream().map(dept -> {
+                DeptDto deptDto = new DeptDto();
+                BeanUtils.copyProperties(dept, deptDto);
+                return deptDto;
+            }).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 
     @Override

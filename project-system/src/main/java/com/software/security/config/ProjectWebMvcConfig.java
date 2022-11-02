@@ -63,22 +63,7 @@ public class ProjectWebMvcConfig implements WebMvcConfigurer {
 
         //公共媒体类型及中文乱码的问题
         List<MediaType> mediaTypeList = new ArrayList<>();
-        mediaTypeList.add(MediaType.APPLICATION_ATOM_XML);
-        mediaTypeList.add(MediaType.APPLICATION_FORM_URLENCODED);
-        mediaTypeList.add(MediaType.APPLICATION_OCTET_STREAM);
         mediaTypeList.add(MediaType.APPLICATION_JSON);
-        mediaTypeList.add(MediaType.APPLICATION_PDF);
-        mediaTypeList.add(MediaType.APPLICATION_RSS_XML);
-        mediaTypeList.add(MediaType.APPLICATION_XHTML_XML);
-        mediaTypeList.add(MediaType.APPLICATION_XML);
-        mediaTypeList.add(MediaType.IMAGE_GIF);
-        mediaTypeList.add(MediaType.IMAGE_JPEG);
-        mediaTypeList.add(MediaType.IMAGE_PNG);
-        mediaTypeList.add(MediaType.TEXT_EVENT_STREAM);
-        mediaTypeList.add(MediaType.TEXT_HTML);
-        mediaTypeList.add(MediaType.TEXT_MARKDOWN);
-        mediaTypeList.add(MediaType.TEXT_PLAIN);
-        mediaTypeList.add(MediaType.TEXT_XML);
 
         converter.setFastJsonConfig(config);
         converter.setSupportedMediaTypes(mediaTypeList);
