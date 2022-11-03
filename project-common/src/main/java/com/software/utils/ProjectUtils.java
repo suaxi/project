@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
+import java.util.*;
 
 /**
  * @author Wang Hao
@@ -243,5 +241,19 @@ public class ProjectUtils {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    /**
+     * 自定义分页
+     *
+     * @param objects       分页 records
+     * @param totalElements 分页 totalElements
+     * @return Map<String, Object>
+     */
+    public static Map<String, Object> toPageData(Object objects, Object totalElements) {
+        Map<String, Object> map = new LinkedHashMap<>(2);
+        map.put("records", objects);
+        map.put("total", totalElements);
+        return map;
     }
 }

@@ -1,10 +1,10 @@
 package com.software.exception.handler;
 
 import com.software.constant.StringConstant;
-import com.software.dto.ResponseResult;
 import com.software.exception.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,21 +23,21 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
-    public ResponseResult<?> handlerException(Throwable e) {
+    public ResponseEntity<?> handlerException(Throwable e) {
         e.printStackTrace();
-        return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return this.dealExceptionInfo(ResponseErrorResult.error(e.getMessage()));
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseResult<?> badRequestException(BadRequestException e) {
+    public ResponseEntity<?> badRequestException(BadRequestException e) {
         e.printStackTrace();
-        return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return this.dealExceptionInfo(ResponseErrorResult.error(e.getMessage()));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseResult<?> httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public ResponseEntity<?> httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         e.printStackTrace();
-        return new ResponseResult<>(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage());
+        return this.dealExceptionInfo(ResponseErrorResult.error(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage()));
     }
 
     /**
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseResult<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         StringBuilder msg = new StringBuilder();
         for (FieldError fieldError : fieldErrors) {
@@ -55,6 +55,16 @@ public class GlobalExceptionHandler {
         }
         msg = new StringBuilder(msg.substring(0, msg.length() - 1));
         log.error(msg.toString());
-        return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), msg);
+        return this.dealExceptionInfo(ResponseErrorResult.error(msg.toString()));
+    }
+
+    /**
+     * 统一处理异常返回信息
+     *
+     * @param result 异常信息返回结果
+     * @return ResponseEntity
+     */
+    private ResponseEntity<ResponseErrorResult> dealExceptionInfo(ResponseErrorResult result) {
+        return new ResponseEntity<>(result, HttpStatus.valueOf(result.getCode()));
     }
 }

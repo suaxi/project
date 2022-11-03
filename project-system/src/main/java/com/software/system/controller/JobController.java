@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.annotation.OperationLog;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
-import com.software.dto.ResponseResult;
 import com.software.system.entity.Job;
 import com.software.system.service.JobService;
 import io.swagger.annotations.Api;
@@ -13,6 +12,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,55 +34,51 @@ public class JobController {
     @ApiOperation("新增")
     @PostMapping
     @OperationLog("新增岗位")
-    public ResponseResult<Job> add(@Validated @RequestBody Job job) {
-        if (jobService.add(job)) {
-            return new ResponseResult<>(HttpStatus.OK.value(), "新增成功！", job);
-        }
-        return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "新增失败！", job);
+    public ResponseEntity<Job> add(@Validated @RequestBody Job job) {
+        jobService.add(job);
+        return new ResponseEntity<>(job, HttpStatus.OK);
     }
 
     @ApiOperation("修改")
     @PutMapping
     @OperationLog("修改岗位")
-    public ResponseResult<Job> update(@Validated @RequestBody Job job) {
-        if (jobService.update(job)) {
-            return new ResponseResult<>(HttpStatus.OK.value(), "修改成功！", job);
-        }
-        return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "修改失败！", job);
+    public ResponseEntity<Job> update(@Validated @RequestBody Job job) {
+        jobService.update(job);
+        return new ResponseEntity<>(job, HttpStatus.OK);
     }
 
     @ApiOperation("删除")
     @DeleteMapping
     @OperationLog("删除岗位")
-    public ResponseResult<String> delete(@RequestBody String ids) {
+    public ResponseEntity<String> delete(@RequestBody String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");
         }
-        boolean result = jobService.delete((Long[]) ConvertUtils.convert(ids.split(StringConstant.COMMA), Long.class));
-        return new ResponseResult<>(HttpStatus.OK.value(), result ? "删除成功！" : "删除失败！", ids);
+        jobService.delete((Long[]) ConvertUtils.convert(ids.split(StringConstant.COMMA), Long.class));
+        return new ResponseEntity<>(ids, HttpStatus.OK);
     }
 
     @ApiOperation("根据id查询岗位信息")
     @GetMapping("/id/{id}")
-    public ResponseResult<Job> queryById(@NotNull @PathVariable("id") Long id) {
-        return new ResponseResult<>(HttpStatus.OK.value(), jobService.queryById(id));
+    public ResponseEntity<Job> queryById(@NotNull @PathVariable("id") Long id) {
+        return new ResponseEntity<>(jobService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据名称查询岗位信息")
     @GetMapping("/name/{name}")
-    public ResponseResult<Job> queryByName(@NotNull @PathVariable("name") String name) {
-        return new ResponseResult<>(HttpStatus.OK.value(), jobService.queryByName(name));
+    public ResponseEntity<Job> queryByName(@NotNull @PathVariable("name") String name) {
+        return new ResponseEntity<>(jobService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("查询角色列表")
     @GetMapping("queryList")
-    public ResponseResult<List<Job>> queryList() {
-        return new ResponseResult<>(HttpStatus.OK.value(), jobService.queryList());
+    public ResponseEntity<List<Job>> queryList() {
+        return new ResponseEntity<>(jobService.queryList(), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询岗位信息")
     @GetMapping("/queryPage")
-    public ResponseResult<Page<Job>> queryPage(Job job, QueryRequest queryRequest) {
-        return new ResponseResult<>(HttpStatus.OK.value(), jobService.queryPage(job, queryRequest));
+    public ResponseEntity<Page<Job>> queryPage(Job job, QueryRequest queryRequest) {
+        return new ResponseEntity<>(jobService.queryPage(job, queryRequest), HttpStatus.OK);
     }
 }

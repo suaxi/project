@@ -4,7 +4,6 @@ import cn.hutool.core.util.IdUtil;
 import com.software.annotation.OperationLog;
 import com.software.constant.KeyPair;
 import com.software.constant.StringConstant;
-import com.software.dto.ResponseResult;
 import com.software.exception.BadRequestException;
 import com.software.security.config.TokenProvider;
 import com.software.security.dto.AuthUserDto;
@@ -21,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -63,7 +63,7 @@ public class LoginController {
     @OperationLog("用户登录")
     @ApiOperation("用户登录")
     @PostMapping("/login")
-    public ResponseResult<Map<String, Object>> login(@Validated @RequestBody AuthUserDto user, HttpServletRequest request) throws Exception {
+    public ResponseEntity<Map<String, Object>> login(@Validated @RequestBody AuthUserDto user, HttpServletRequest request) throws Exception {
         //验证码校验
         String code = (String) redisUtils.get(user.getUuid());
         //清除对应的验证码
@@ -93,19 +93,19 @@ public class LoginController {
             //单用户登录检查
             onlineUserService.checkLoginByUsername(user.getUsername(), token);
         }
-        return new ResponseResult<>(HttpStatus.OK.value(), "登录成功", map);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @ApiOperation("退出")
     @GetMapping("/logout")
-    public ResponseResult<?> logout(HttpServletRequest request) {
+    public ResponseEntity<?> logout(HttpServletRequest request) {
         onlineUserService.logout(tokenProvider.getToken(request));
-        return new ResponseResult<>(HttpStatus.OK.value(), "退出成功");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ApiOperation("获取验证码")
     @GetMapping("/getCaptcha")
-    public ResponseResult<Map<String, Object>> getCaptcha() {
+    public ResponseEntity<Map<String, Object>> getCaptcha() {
         Captcha captcha = loginProperties.getCaptcha();
         String uuid = securityProperties.getCodeKey() + IdUtil.simpleUUID();
         //当验证码类型为 arithmetic时且长度 >= 2 时，captcha.text()的结果有几率为浮点型
@@ -118,6 +118,6 @@ public class LoginController {
         Map<String, Object> map = new HashMap<>(2);
         map.put("img", captcha.toBase64());
         map.put("uuid", uuid);
-        return new ResponseResult<>(HttpStatus.OK.value(), map);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.annotation.OperationLog;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
-import com.software.dto.ResponseResult;
 import com.software.entity.VueRouter;
 import com.software.system.entity.Menu;
 import com.software.system.service.MenuService;
@@ -15,6 +14,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,55 +36,51 @@ public class MenuController {
     @ApiOperation("新增")
     @PostMapping
     @OperationLog("新增菜单")
-    public ResponseResult<Menu> add(@Validated @RequestBody Menu menu) {
-        if (menuService.add(menu)) {
-            return new ResponseResult<>(HttpStatus.OK.value(), "新增成功！", menu);
-        }
-        return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "新增失败！", menu);
+    public ResponseEntity<Menu> add(@Validated @RequestBody Menu menu) {
+        menuService.add(menu);
+        return new ResponseEntity<>(menu, HttpStatus.OK);
     }
 
     @ApiOperation("修改")
     @PutMapping
     @OperationLog("修改菜单")
-    public ResponseResult<Menu> update(@Validated @RequestBody Menu menu) {
-        if (menuService.update(menu)) {
-            return new ResponseResult<>(HttpStatus.OK.value(), "修改成功！", menu);
-        }
-        return new ResponseResult<>(HttpStatus.BAD_REQUEST.value(), "修改失败！", menu);
+    public ResponseEntity<Menu> update(@Validated @RequestBody Menu menu) {
+        menuService.update(menu);
+        return new ResponseEntity<>(menu, HttpStatus.OK);
     }
 
     @ApiOperation("删除")
     @DeleteMapping
     @OperationLog("删除菜单")
-    public ResponseResult<String> delete(@RequestBody String ids) {
+    public ResponseEntity<String> delete(@RequestBody String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");
         }
-        boolean result = menuService.delete((Long[]) ConvertUtils.convert(ids.split(StringConstant.COMMA), Long.class));
-        return new ResponseResult<>(HttpStatus.OK.value(), result ? "删除成功！" : "删除失败！", ids);
+        menuService.delete((Long[]) ConvertUtils.convert(ids.split(StringConstant.COMMA), Long.class));
+        return new ResponseEntity<>(ids, HttpStatus.OK);
     }
 
     @ApiOperation("根据id查询菜单信息")
     @GetMapping("/id/{id}")
-    public ResponseResult<Menu> queryById(@NotNull @PathVariable("id") Long id) {
-        return new ResponseResult<>(HttpStatus.OK.value(), menuService.queryById(id));
+    public ResponseEntity<Menu> queryById(@NotNull @PathVariable("id") Long id) {
+        return new ResponseEntity<>(menuService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据名称查询菜单信息")
     @GetMapping("/name/{name}")
-    public ResponseResult<Menu> queryByName(@NotNull @PathVariable("name") String name) {
-        return new ResponseResult<>(HttpStatus.OK.value(), menuService.queryByName(name));
+    public ResponseEntity<Menu> queryByName(@NotNull @PathVariable("name") String name) {
+        return new ResponseEntity<>(menuService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询菜单信息")
     @GetMapping("/queryPage")
-    public ResponseResult<Page<Menu>> queryPage(Menu menu, QueryRequest queryRequest) {
-        return new ResponseResult<>(HttpStatus.OK.value(), menuService.queryPage(menu, queryRequest));
+    public ResponseEntity<Page<Menu>> queryPage(Menu menu, QueryRequest queryRequest) {
+        return new ResponseEntity<>(menuService.queryPage(menu, queryRequest), HttpStatus.OK);
     }
 
     @ApiOperation("获取用户路由")
     @GetMapping("/getUserRouters")
-    public ResponseResult<List<VueRouter<Menu>>> getUserRouters() {
-        return new ResponseResult<>(HttpStatus.OK.value(), menuService.getUserRouters(SecurityUtils.getCurrentUserId()));
+    public ResponseEntity<List<VueRouter<Menu>>> getUserRouters() {
+        return new ResponseEntity<>(menuService.getUserRouters(SecurityUtils.getCurrentUserId()), HttpStatus.OK);
     }
 }
