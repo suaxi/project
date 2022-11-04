@@ -1,18 +1,18 @@
 package com.software.system.dto;
 
-import com.software.system.entity.Dept;
+import com.software.system.entity.Menu;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * @author Wang Hao
- * @date 2022/11/2 21:37
+ * @date 2022/11/4 23:00
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel("部门信息dto")
-public class DeptDto extends Dept {
+@ApiModel("菜单信息dto")
+public class MenuDto extends Menu {
 
     public Boolean getHasChildren() {
         return getSubCount() > 0;
@@ -23,6 +23,6 @@ public class DeptDto extends Dept {
     }
 
     public String getLabel() {
-        return getName();
+        return getTitle();
     }
 }

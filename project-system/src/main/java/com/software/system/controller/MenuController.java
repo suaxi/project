@@ -5,8 +5,10 @@ import com.software.annotation.OperationLog;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.entity.VueRouter;
+import com.software.system.dto.MenuDto;
 import com.software.system.entity.Menu;
 import com.software.system.service.MenuService;
+import com.software.utils.ProjectUtils;
 import com.software.utils.SecurityUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Wang Hao
@@ -82,5 +86,19 @@ public class MenuController {
     @GetMapping("/getUserRouters")
     public ResponseEntity<List<VueRouter<Menu>>> getUserRouters() {
         return new ResponseEntity<>(menuService.getUserRouters(SecurityUtils.getCurrentUserId()), HttpStatus.OK);
+    }
+
+    @ApiOperation("根据父id查询全部菜单（懒加载）")
+    @GetMapping("/queryChildListByPid")
+    public ResponseEntity<Map<String, Object>> queryChildListByPid(@RequestParam("pid") Long pid) {
+        List<MenuDto> menuDtoList = menuService.queryChildListByPid(pid);
+        return new ResponseEntity<>(ProjectUtils.toPageData(menuDtoList, menuDtoList.size()), HttpStatus.OK);
+    }
+
+    @ApiOperation("根据id查询子级菜单（包括自身）")
+    @GetMapping("/queryMenuListById")
+    public ResponseEntity<Map<String, Object>> queryMenuListById(@RequestParam("id") Long id) {
+        Set<Menu> menuSet = menuService.queryMenuListById(id);
+        return new ResponseEntity<>(ProjectUtils.toPageData(menuSet, menuSet.size()), HttpStatus.OK);
     }
 }

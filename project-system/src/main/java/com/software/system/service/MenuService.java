@@ -3,9 +3,11 @@ package com.software.system.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.dto.QueryRequest;
 import com.software.entity.VueRouter;
+import com.software.system.dto.MenuDto;
 import com.software.system.entity.Menu;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Wang Hao
@@ -84,4 +86,20 @@ public interface MenuService {
      * @return 用户路由
      */
     List<VueRouter<Menu>> getUserRouters(Long userId);
+
+    /**
+     * 根据父id查询子级菜单
+     *
+     * @param pid 父级id
+     * @return 子级菜单列表
+     */
+    List<MenuDto> queryChildListByPid(Long pid);
+
+    /**
+     * 根据id查询子级菜单（包括自身）
+     *
+     * @param id id
+     * @return 指定id对应的子级菜单列表
+     */
+    Set<Menu> queryMenuListById(Long id);
 }
