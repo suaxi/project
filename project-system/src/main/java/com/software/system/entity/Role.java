@@ -41,11 +41,11 @@ public class Role {
 
     @ApiModelProperty("创建人")
     @TableField("create_by")
-    private String createBy;
+    private Long createBy;
 
     @ApiModelProperty("更新人")
     @TableField("update_by")
-    private String updateBy;
+    private Long updateBy;
 
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
@@ -59,6 +59,10 @@ public class Role {
     @TableField(value = "is_delete")
     @ApiModelProperty(value = "逻辑删除")
     private Integer isDelete;
+
+    @ApiModelProperty("菜单列表")
+    @TableField(exist = false)
+    private List<Dept> depts;
 
     @ApiModelProperty("菜单列表")
     @TableField(exist = false)

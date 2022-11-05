@@ -5,11 +5,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.dto.QueryRequest;
 import com.software.exception.BadRequestException;
+import com.software.system.entity.Dept;
 import com.software.system.entity.Role;
+import com.software.system.entity.RoleDept;
 import com.software.system.entity.RoleMenu;
 import com.software.system.mapper.RoleMapper;
+import com.software.system.service.RoleDeptService;
 import com.software.system.service.RoleMenuService;
 import com.software.system.service.RoleService;
+import com.software.utils.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,11 +37,29 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Autowired
     private RoleMenuService roleMenuService;
 
+    @Autowired
+    private RoleDeptService roleDeptService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(Role role) {
-        //TODO 创建人信息
-        return this.save(role);
+        role.setCreateBy(SecurityUtils.getCurrentUserId());
+        boolean flag = this.save(role);
+        if (flag) {
+            //当角色数据范围是“自定义”时，同步保存 角色-部门 关联数据
+            List<Dept> deptList = role.getDepts();
+            if (deptList != null && deptList.size() >0) {
+                List<RoleDept> roleDeptList = new ArrayList<>();
+                for (Dept dept : deptList) {
+                    RoleDept roleDept = new RoleDept();
+                    roleDept.setRoleId(role.getId());
+                    roleDept.setDeptId(dept.getId());
+                    roleDeptList.add(roleDept);
+                }
+                return roleDeptService.saveBatch(roleDeptList);
+            }
+        }
+        return false;
     }
 
     @Override
