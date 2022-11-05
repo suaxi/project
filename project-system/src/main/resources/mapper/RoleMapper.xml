@@ -66,23 +66,20 @@
             m.create_time AS menuCreateTime,
             m.update_time AS menuUpdateTime
         FROM
-            `sys_role` r,
-            `sys_roles_menus` rm,
-            `sys_menu` m
-        WHERE
-            r.is_delete = 0
-          AND m.is_delete = 0
-          AND r.id = rm.role_id
-          AND rm.menu_id = m.id
-        <if test="role.name != null and role.name != ''">
-            AND r.name LIKE CONCAT('%',#{role.name},'%')
-        </if>
-        <if test="role.description != null and role.description != ''">
-            AND r.description LIKE CONCAT('%',#{role.description},'%')
-        </if>
-        <if test="role.dataScope != null and role.dataScope != ''">
-            AND r.data_scope LIKE CONCAT('%',#{role.dataScope},'%')
-        </if>
+            `sys_role` r
+            LEFT JOIN `sys_roles_menus` rm ON r.id = rm.role_id
+            AND r.is_delete = 0
+            <if test="role.name != null and role.name != ''">
+                AND r.name LIKE CONCAT('%',#{role.name},'%')
+            </if>
+            <if test="role.description != null and role.description != ''">
+                AND r.description LIKE CONCAT('%',#{role.description},'%')
+            </if>
+            <if test="role.dataScope != null and role.dataScope != ''">
+                AND r.data_scope LIKE CONCAT('%',#{role.dataScope},'%')
+            </if>
+            LEFT JOIN `sys_menu` m ON rm.menu_id = m.id
+            AND m.is_delete = 0
     </select>
     
     <resultMap id="RoleMenu" type="com.software.system.entity.Role">
