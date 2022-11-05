@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Wang Hao
@@ -58,5 +59,9 @@ public class Role {
     @TableField(value = "is_delete")
     @ApiModelProperty(value = "逻辑删除")
     private Integer isDelete;
+
+    @ApiModelProperty("菜单列表")
+    @TableField(exist = false)
+    private List<Menu> menus;
 
 }

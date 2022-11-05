@@ -35,4 +35,85 @@
           AND r.is_delete = 0
           AND u.id = #{userId}
     </select>
+
+    <select id="queryPage" resultMap="RoleMenu">
+        SELECT
+            r.id AS roleId,
+            r.`name` AS roleName,
+            r.`level` AS level,
+            r.description AS description,
+            r.data_scope AS dataScope,
+            r.create_by AS roleCreateBy,
+            r.update_by AS roleUpdateBy,
+            r.create_time AS roleCreateTime,
+            r.update_time AS roleUpdateTime,
+            m.id AS menuId,
+            m.pid AS menuPid,
+            m.sub_count AS subCount,
+            m.type AS type,
+            m.title AS title,
+            m.`name` AS menuName,
+            m.component AS component,
+            m.icon AS icon,
+            m.path AS path,
+            m.i_frame AS iFrame,
+            m.`cache` AS menuCache,
+            m.hidden AS hidden,
+            m.permission AS permission,
+            m.sort AS sort,
+            m.create_by AS menuCreateBy,
+            m.update_by AS menuUpdateBy,
+            m.create_time AS menuCreateTime,
+            m.update_time AS menuUpdateTime
+        FROM
+            `sys_role` r,
+            `sys_roles_menus` rm,
+            `sys_menu` m
+        WHERE
+            r.is_delete = 0
+          AND m.is_delete = 0
+          AND r.id = rm.role_id
+          AND rm.menu_id = m.id
+        <if test="role.name != null and role.name != ''">
+            AND r.name LIKE CONCAT('%',#{role.name},'%')
+        </if>
+        <if test="role.description != null and role.description != ''">
+            AND r.description LIKE CONCAT('%',#{role.description},'%')
+        </if>
+        <if test="role.dataScope != null and role.dataScope != ''">
+            AND r.data_scope LIKE CONCAT('%',#{role.dataScope},'%')
+        </if>
+    </select>
+    
+    <resultMap id="RoleMenu" type="com.software.system.entity.Role">
+        <result property="id" column="roleId"/>
+        <result property="name" column="roleName"/>
+        <result property="level" column="level"/>
+        <result property="description" column="description"/>
+        <result property="dataScope" column="dataScope"/>
+        <result property="createBy" column="roleCreateBy"/>
+        <result property="updateBy" column="roleUpdateBy"/>
+        <result property="createTime" column="roleCreateTime"/>
+        <result property="updateTime" column="roleUpdateTime"/>
+        <collection property="menus" ofType="com.software.system.entity.Menu">
+            <result property="id" column="menuId"/>
+            <result property="pid" column="menuPid"/>
+            <result property="subCount" column="subCount"/>
+            <result property="type" column="type"/>
+            <result property="title" column="title"/>
+            <result property="name" column="menuName"/>
+            <result property="component" column="component"/>
+            <result property="icon" column="icon"/>
+            <result property="path" column="path"/>
+            <result property="iFrame" column="iFrame"/>
+            <result property="cache" column="menuCache"/>
+            <result property="hidden" column="hidden"/>
+            <result property="permission" column="permission"/>
+            <result property="sort" column="sort"/>
+            <result property="createBy" column="menuCreateBy"/>
+            <result property="updateBy" column="menuUpdateBy"/>
+            <result property="createTime" column="menuCreateTime"/>
+            <result property="updateTime" column="menuUpdateTime"/>
+        </collection>
+    </resultMap>
 </mapper>

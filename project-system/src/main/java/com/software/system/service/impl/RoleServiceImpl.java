@@ -73,23 +73,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     public Page<Role> queryPage(Role role, QueryRequest queryRequest) {
-        QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(role.getName())) {
-            queryWrapper.lambda().eq(Role::getName, role.getName());
-        }
-        if (role.getLevel() != null) {
-            queryWrapper.lambda().eq(Role::getLevel, role.getLevel());
-        }
-        if (StringUtils.isNotBlank(role.getDataScope())) {
-            queryWrapper.lambda().eq(Role::getDataScope, role.getDataScope());
-        }
-        if (StringUtils.isNotBlank(queryRequest.getOrder())) {
-            queryWrapper.orderBy(true, StringConstant.ASC.equals(queryRequest.getOrder()), queryRequest.getField());
-        } else {
-            queryWrapper.orderBy(true, false, "create_time");
-        }
         Page<Role> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
-        return this.page(page, queryWrapper);
+        return this.baseMapper.queryPage(page, role);
     }
 
     @Override
