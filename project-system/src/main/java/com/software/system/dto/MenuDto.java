@@ -19,7 +19,7 @@ public class MenuDto extends Menu {
     }
 
     public Boolean getLeaf() {
-        return getSubCount() < 0;
+        return getSubCount() <= 0;
     }
 
     public String getLabel() {
