@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.annotation.OperationLog;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
+import com.software.exception.BadRequestException;
+import com.software.system.entity.Menu;
 import com.software.system.entity.Role;
 import com.software.system.service.RoleService;
 import io.swagger.annotations.Api;
@@ -80,5 +82,17 @@ public class RoleController {
     @GetMapping("/queryPage")
     public ResponseEntity<Page<Role>> queryPage(Role role, QueryRequest queryRequest) {
         return new ResponseEntity<>(roleService.queryPage(role, queryRequest), HttpStatus.OK);
+    }
+
+    @ApiOperation("修改角色菜单关联数据")
+    @PutMapping("/menu")
+    @OperationLog("修改角色菜单关联数据")
+    public ResponseEntity<?> updateRoleMenu(@RequestBody Role role) {
+        List<Menu> menus = role.getMenus();
+        if (menus == null) {
+            throw new BadRequestException("菜单id不能为空");
+        }
+        roleService.updateRoleMenu(role.getId(), menus.stream().map(Menu::getId).toArray(Long[]::new));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

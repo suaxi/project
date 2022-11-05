@@ -70,6 +70,7 @@ public interface RoleService {
 
     /**
      * 根据用户id查询数据权限
+     *
      * @param userId
      * @return
      */
@@ -77,8 +78,18 @@ public interface RoleService {
 
     /**
      * 根据用户id查询角色列表
+     *
      * @param userId 用户id
      * @return 角色列表
      */
     List<Role> queryRoleListByUserId(Long userId);
+
+    /**
+     * 根据角色id修改角色关联菜单
+     *
+     * @param roleId  角色id
+     * @param menuIds 菜单ids
+     */
+    void updateRoleMenu(Long roleId, Long[] menuIds);
 }
+

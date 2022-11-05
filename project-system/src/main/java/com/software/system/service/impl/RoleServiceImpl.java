@@ -3,18 +3,21 @@ package com.software.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.exception.BadRequestException;
 import com.software.system.entity.Role;
+import com.software.system.entity.RoleMenu;
 import com.software.system.mapper.RoleMapper;
+import com.software.system.service.RoleMenuService;
 import com.software.system.service.RoleService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,6 +29,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Autowired
     private RoleMapper roleMapper;
+
+    @Autowired
+    private RoleMenuService roleMenuService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -91,5 +97,22 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
             throw new BadRequestException("用户id不能为空");
         }
         return roleMapper.queryRoleListByUserId(userId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateRoleMenu(Long roleId, Long[] menuIds) {
+        //删除关联数据
+        Long[] roleIds = Collections.singletonList(roleId).toArray(new Long[0]);
+        roleMenuService.deleteRoleMenuByRoleId(roleIds);
+
+        List<RoleMenu> roleMenuList = new ArrayList<>();
+        for (Long menuId : menuIds) {
+            RoleMenu roleMenu = new RoleMenu();
+            roleMenu.setRoleId(roleId);
+            roleMenu.setMenuId(menuId);
+            roleMenuList.add(roleMenu);
+        }
+        roleMenuService.saveBatch(roleMenuList);
     }
 }
