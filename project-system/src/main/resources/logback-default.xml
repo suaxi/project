@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+
+    <!-- 日志级别 trace < debug < info < warn < error 若定义的日志级别为info，则不会打印出 trace 和 debug 的相关日志。-->
+
+    <!-- 彩色日志 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+
+    <!-- 日志的存放位置 -->
+    <property name="log.filePath" value="./logs"/>
+
+    <!-- 日志文件最大的保存历史周期-->
+    <property name="log.maxHistory" value="30"/>
+
+    <!-- 日志文件最多大小-->
+    <property name="log.maxFileSize" value="10MB"/>
+
+    <!-- 日志文件最大大小-->
+    <property name="log.totalSizeCap" value="5GB"/>
+
+    <!-- 日志的展现格式 -->
+    <property name="log.console.pattern" value="${log.console.pattern:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %L %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="log.file.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}.%M  %L  - %msg%n"/>
+
+    <!-- 定义appender (日志的输出和存放位置等). -->
+    <!-- 控制台设置 -->
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 控制台日志输出格式 -->
+            <pattern>${log.console.pattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!-- DEBUG -->
+    <!-- 日志文件会滚动 -->
+    <appender name="debugAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件路径 -->
+        <!-- 当前的日志文件存放路径 -->
+        <file>${log.filePath}/debug.log</file>
+        <!-- 日志滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 历史日志文件的存放路径和名称 -->
+            <fileNamePattern>${log.filePath}/debug/debug.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>${log.maxHistory}</maxHistory>
+            <!--            <maxFileSize>${log.maxFileSize}</maxFileSize>-->
+            <!--            <totalSizeCap>${log.totalSizeCap}</totalSizeCap>-->
+        </rollingPolicy>
+        <encoder>
+            <!-- 日志文件中日志的格式 -->
+            <pattern>${log.file.pattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 用过滤器，只接受DEBUG级别的日志信息，其余全部过滤掉 -->
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- INFO -->
+    <!-- 日志文件会滚动 -->
+    <appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件路径 -->
+        <!-- 当前的日志文件存放路径 -->
+        <file>${log.filePath}/info.log</file>
+        <!-- 日志滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 历史日志文件的存放路径和名称 -->
+            <fileNamePattern>${log.filePath}/info/info.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>${log.maxHistory}</maxHistory>
+            <!--            <maxFileSize>${log.maxFileSize}</maxFileSize>-->
+            <!--            <totalSizeCap>${log.totalSizeCap}</totalSizeCap>-->
+        </rollingPolicy>
+        <encoder>
+            <!-- 日志文件中日志的格式 -->
+            <pattern>${log.file.pattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 用过滤器，只接受INFO级别的日志信息，其余全部过滤掉 -->
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- ERROR-->
+    <!-- 日志文件会滚动 -->
+    <appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件路径 -->
+        <!-- 当前的日志文件存放路径 -->
+        <file>${log.filePath}/error.log</file>
+        <!-- 日志滚动策略 -->
+        <!-- TimeBased默认是一天更新一次 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 历史日志文件的存放路径和名称 -->
+            <fileNamePattern>${log.filePath}/error/error.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>${log.maxHistory}</maxHistory>
+            <!--            <maxFileSize>${log.maxFileSize}</maxFileSize>-->
+            <!--            <totalSizeCap>${log.totalSizeCap}</totalSizeCap>-->
+        </rollingPolicy>
+        <encoder>
+            <!-- 日志文件中日志的格式 -->
+            <pattern>${log.file.pattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 用过滤器，只接受ERROR级别的日志信息，其余全部过滤掉 -->
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+</included>

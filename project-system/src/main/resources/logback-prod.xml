@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <include resource="logback-default.xml"/>
+
+    <!-- 定义全局参数常量 -->
+    <property name="log.level" value="info"/>
+
+    <!-- logger标签用于和appender进行绑定，并告诉logback哪些包（name属性）的日志信息需要记录 -->
+    <!-- logger将会继承root标签，在加上additivity="true"的属性后 root标签中的level将会被logger的level覆盖 -->
+    <!--
+　　　　additivity 它是 子Logger 是否继承 父Logger(这里为root) 的 输出源（appender）的标志位。
+　　　　具体说，默认情况下子Logger会继承父Logger的appender，也就是说子Logger会在父Logger的appender里输出。
+　　　　若是additivity设为false，则子Logger只会在自己的appender里输出，而不会在父Logger的appender里输出。
+　　　　子Logger继承父Logger后，level以子logger配置的level为准
+　　-->
+    <!-- level表示只记录哪一个级别以上的日志与appender进行绑定 -->
+    <logger name="com.software" level="${log.level}" additivity="true">
+        <appender-ref ref="debugAppender"/>
+        <appender-ref ref="infoAppender"/>
+        <appender-ref ref="errorAppender"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="consoleAppender"/>
+    </root>
+
+</configuration>
