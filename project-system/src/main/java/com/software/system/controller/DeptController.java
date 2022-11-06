@@ -6,9 +6,11 @@ import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.dto.Tree;
 import com.software.system.dto.DeptDto;
+import com.software.system.dto.DeptDtoTree;
 import com.software.system.entity.Dept;
 import com.software.system.service.DeptService;
 import com.software.utils.ProjectUtils;
+import com.software.utils.TreeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -20,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -91,5 +94,34 @@ public class DeptController {
     @GetMapping("/queryDeptTree")
     public ResponseEntity<List<? extends Tree<?>>> queryDeptTree() {
         return new ResponseEntity<>(deptService.queryDeptTree(), HttpStatus.OK);
+    }
+
+    @ApiOperation("根据id查找同级与上级部门树")
+    @PostMapping("/querySuperiorListByIds")
+    public ResponseEntity<Map<String, Object>> querySuperiorListByIds(@RequestBody List<Long> ids) {
+        List<Dept> deptList = new ArrayList<>();
+        if (ids != null && ids.size() > 0) {
+            if (ids.contains(0L)) {
+                throw new IllegalArgumentException("查询参数不合法，部门id不能为0");
+            }
+            for (Long id : ids) {
+                Dept dept = deptService.queryById(id);
+                deptService.querySuperiorList(dept, deptList);
+            }
+            List<DeptDtoTree> trees = new ArrayList<>();
+            deptList.forEach(item -> {
+                DeptDtoTree tree = new DeptDtoTree();
+                tree.setId(item.getId());
+                tree.setParentId(item.getPid() == null ? null : item.getPid());
+                tree.setLabel(item.getName());
+                tree.setSubCount(item.getSubCount());
+                tree.setName(item.getName());
+                tree.setSort(item.getSort());
+                trees.add(tree);
+            });
+            List<? extends Tree<?>> treeResult = TreeUtil.build(trees);
+            return new ResponseEntity<>(ProjectUtils.toPageData(treeResult, treeResult.size()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(ProjectUtils.toPageData(null, 0), HttpStatus.OK);
     }
 }

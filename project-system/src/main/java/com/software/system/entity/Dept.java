@@ -43,7 +43,7 @@ public class Dept implements Serializable {
 
     @ApiModelProperty("排序")
     @TableField("sort")
-    private Long sort;
+    private Integer sort;
 
     @ApiModelProperty("创建人")
     @TableField("create_by")

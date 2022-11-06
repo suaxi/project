@@ -1,24 +1,19 @@
 package com.software.system.dto;
 
+import com.software.dto.Tree;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.io.Serializable;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Wang Hao
  * @date 2022/11/2 21:37
  */
 @Data
-@ApiModel("部门信息dto")
-public class DeptDto implements Serializable {
-
-    @ApiModelProperty("id")
-    private Long id;
-
-    @ApiModelProperty("父级部门id")
-    private Long pid;
+@EqualsAndHashCode(callSuper = true)
+@ApiModel("部门信息dto树")
+public class DeptDtoTree extends Tree<DeptDto> {
 
     @ApiModelProperty("子部门数量")
     private Integer subCount;
@@ -38,9 +33,5 @@ public class DeptDto implements Serializable {
 
     public Boolean getLeaf() {
         return getSubCount() <= 0;
-    }
-
-    public String getLabel() {
-        return getName();
     }
 }

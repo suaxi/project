@@ -8,7 +8,7 @@ import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.dto.Tree;
 import com.software.system.dto.DeptDto;
-import com.software.system.dto.DeptTree;
+import com.software.system.dto.DeptDtoTree;
 import com.software.system.entity.Dept;
 import com.software.system.mapper.DeptMapper;
 import com.software.system.service.DeptService;
@@ -120,22 +120,30 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     public List<? extends Tree<?>> queryDeptTree() {
         List<Dept> deptList = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getEnabled, true));
         if (deptList != null && deptList.size() > 0) {
-            List<DeptTree> trees = new ArrayList<>();
+            List<DeptDtoTree> trees = new ArrayList<>();
             deptList.forEach(dept -> {
-                DeptTree tree = new DeptTree();
+                DeptDtoTree tree = new DeptDtoTree();
                 tree.setId(dept.getId());
                 tree.setParentId(dept.getPid() == null ? null : dept.getPid());
                 tree.setLabel(dept.getName());
                 tree.setSubCount(dept.getSubCount());
                 tree.setName(dept.getName());
                 tree.setSort(dept.getSort());
-                tree.setCreateBy(dept.getCreateBy());
-                tree.setCreateTime(dept.getCreateTime());
-                tree.setUpdateTime(dept.getUpdateTime());
                 trees.add(tree);
             });
             return TreeUtil.build(trees);
         }
         return Collections.emptyList();
     }
+
+    @Override
+    public List<Dept> querySuperiorList(Dept dept, List<Dept> deptList) {
+        if (dept.getPid() == null) {
+            deptList.addAll(this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().isNull(Dept::getPid)));
+            return deptList;
+        }
+        deptList.addAll(this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, dept.getPid())));
+        return querySuperiorList(this.getById(dept.getPid()), deptList);
+    }
+
 }
