@@ -93,11 +93,14 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean delete(Long[] ids) {
-        if (ids.length > 0) {
-            return this.removeByIds(Arrays.asList(ids));
+    public boolean delete(List<Long> ids) {
+        boolean flag = this.removeByIds(ids);
+        if (flag) {
+            //删除角色-菜单，角色-部门关联数据
+            roleMenuService.deleteRoleMenuByRoleId(ids);
+            roleDeptService.deleteRoleDeptByRoleId(ids);
         }
-        return false;
+        return flag;
     }
 
     @Override
@@ -146,10 +149,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateRoleMenu(Long roleId, Long[] menuIds) {
+    public void updateRoleMenu(Long roleId, List<Long> menuIds) {
         //删除关联数据
-        Long[] roleIds = Collections.singletonList(roleId).toArray(new Long[0]);
-        roleMenuService.deleteRoleMenuByRoleId(roleIds);
+        roleMenuService.deleteRoleMenuByRoleId(Collections.singletonList(roleId));
 
         List<RoleMenu> roleMenuList = new ArrayList<>();
         for (Long menuId : menuIds) {

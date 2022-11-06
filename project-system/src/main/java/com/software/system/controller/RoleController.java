@@ -2,7 +2,6 @@ package com.software.system.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.annotation.OperationLog;
-import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.exception.BadRequestException;
 import com.software.system.entity.Menu;
@@ -10,8 +9,6 @@ import com.software.system.entity.Role;
 import com.software.system.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Wang Hao
@@ -52,12 +50,12 @@ public class RoleController {
     @ApiOperation("删除")
     @DeleteMapping
     @OperationLog("删除角色")
-    public ResponseEntity<String> delete(@RequestBody String ids) {
-        if (StringUtils.isBlank(ids)) {
+    public ResponseEntity<String> delete(@RequestBody List<Long> ids) {
+        if (ids.size() == 0) {
             throw new IllegalArgumentException("id不能为空");
         }
-        roleService.delete((Long[]) ConvertUtils.convert(ids.split(StringConstant.COMMA), Long.class));
-        return new ResponseEntity<>(ids, HttpStatus.OK);
+        roleService.delete(ids);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ApiOperation("根据id查询角色信息")
@@ -92,7 +90,7 @@ public class RoleController {
         if (menus == null) {
             throw new BadRequestException("菜单id不能为空");
         }
-        roleService.updateRoleMenu(role.getId(), menus.stream().map(Menu::getId).toArray(Long[]::new));
+        roleService.updateRoleMenu(role.getId(), menus.stream().map(Menu::getId).collect(Collectors.toList()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

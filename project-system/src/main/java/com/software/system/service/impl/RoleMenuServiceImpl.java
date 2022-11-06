@@ -8,7 +8,7 @@ import com.software.system.service.RoleMenuService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Wang Hao
@@ -19,9 +19,9 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> i
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteRoleMenuByRoleId(Long[] roleIds) {
-        if (roleIds.length > 0) {
-            this.baseMapper.delete(new LambdaQueryWrapper<RoleMenu>().in(RoleMenu::getRoleId, Arrays.asList(roleIds)));
+    public void deleteRoleMenuByRoleId(List<Long> roleIds) {
+        if (roleIds.size() > 0) {
+            this.baseMapper.delete(new LambdaQueryWrapper<RoleMenu>().in(RoleMenu::getRoleId, roleIds));
         }
     }
 }

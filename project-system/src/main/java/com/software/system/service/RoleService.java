@@ -34,7 +34,7 @@ public interface RoleService {
      * @param ids ids
      * @return
      */
-    boolean delete(Long[] ids);
+    boolean delete(List<Long> ids);
 
     /**
      * 根据id查询角色信息
@@ -90,6 +90,6 @@ public interface RoleService {
      * @param roleId  角色id
      * @param menuIds 菜单ids
      */
-    void updateRoleMenu(Long roleId, Long[] menuIds);
+    void updateRoleMenu(Long roleId, List<Long> menuIds);
 }
 
