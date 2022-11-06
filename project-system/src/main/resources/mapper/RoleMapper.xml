@@ -63,6 +63,15 @@
     </select>
     
     <resultMap id="RoleMenuDept" type="com.software.system.entity.Role">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="level" column="level"/>
+        <result property="description" column="description"/>
+        <result property="dataScope" column="data_scope"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
         <collection property="menus" javaType="ArrayList" ofType="com.software.system.entity.Menu" select="queryRoleMenuByRoleId" column="id"/>
         <collection property="depts" javaType="ArrayList" ofType="com.software.system.entity.Dept" select="queryRoleDeptByRoleId" column="id"/>
     </resultMap>

@@ -65,7 +65,30 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(Role role) {
-        return this.updateById(role);
+        //角色名称校验
+        Role roleById = this.getById(role.getId());
+        Role roleByName = this.queryByName(role.getName());
+        if (roleByName != null && !roleByName.getId().equals(roleById.getId())) {
+            throw new BadRequestException("该角色名称已存在，请重新输入");
+        }
+        role.setUpdateBy(SecurityUtils.getCurrentUserId());
+        boolean flag = this.updateById(role);
+        if (flag) {
+            //当角色数据范围是“自定义”时，同步保存 角色-部门 关联数据
+            List<Dept> deptList = role.getDepts();
+            if (deptList != null && deptList.size() >0) {
+                roleDeptService.deleteRoleDeptByRoleId(Collections.singletonList(role.getId()));
+                List<RoleDept> roleDeptList = new ArrayList<>();
+                for (Dept dept : deptList) {
+                    RoleDept roleDept = new RoleDept();
+                    roleDept.setRoleId(role.getId());
+                    roleDept.setDeptId(dept.getId());
+                    roleDeptList.add(roleDept);
+                }
+                return roleDeptService.saveBatch(roleDeptList);
+            }
+        }
+        return false;
     }
 
     @Override
