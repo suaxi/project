@@ -90,7 +90,7 @@
             m.is_delete
         FROM
             sys_role r,
-            sys_roles_menus rm,
+            sys_role_menu rm,
             sys_menu m
         WHERE
             r.id = rm.role_id

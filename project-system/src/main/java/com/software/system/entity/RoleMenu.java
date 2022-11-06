@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel("角色菜单关联表")
-@TableName("sys_roles_menus")
+@TableName("sys_role_menu")
 public class RoleMenu implements Serializable {
 
     @ApiModelProperty("id")
