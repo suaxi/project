@@ -36,81 +36,91 @@
           AND u.id = #{userId}
     </select>
 
-    <select id="queryPage" resultMap="RoleMenu">
+    <select id="queryPage" resultMap="RoleMenuDept">
         SELECT
-            r.id AS roleId,
-            r.`name` AS roleName,
-            r.`level` AS level,
-            r.description AS description,
-            r.data_scope AS dataScope,
-            r.create_by AS roleCreateBy,
-            r.update_by AS roleUpdateBy,
-            r.create_time AS roleCreateTime,
-            r.update_time AS roleUpdateTime,
-            m.id AS menuId,
-            m.pid AS menuPid,
-            m.sub_count AS subCount,
-            m.type AS type,
-            m.title AS title,
-            m.`name` AS menuName,
-            m.component AS component,
-            m.icon AS icon,
-            m.path AS path,
-            m.i_frame AS iFrame,
-            m.`cache` AS menuCache,
-            m.hidden AS hidden,
-            m.permission AS permission,
-            m.sort AS sort,
-            m.create_by AS menuCreateBy,
-            m.update_by AS menuUpdateBy,
-            m.create_time AS menuCreateTime,
-            m.update_time AS menuUpdateTime
+            id,
+            `name`,
+            `level`,
+            description,
+            data_scope,
+            create_by,
+            update_by,
+            create_time,
+            update_time
         FROM
-            `sys_role` r
-            LEFT JOIN `sys_roles_menus` rm ON r.id = rm.role_id
-            AND r.is_delete = 0
+            sys_role
+        WHERE
+            is_delete = 0
             <if test="role.name != null and role.name != ''">
-                AND r.name LIKE CONCAT('%',#{role.name},'%')
+                AND name LIKE CONCAT('%',#{role.name},'%')
             </if>
             <if test="role.description != null and role.description != ''">
-                AND r.description LIKE CONCAT('%',#{role.description},'%')
+                AND description LIKE CONCAT('%',#{role.description},'%')
             </if>
             <if test="role.dataScope != null and role.dataScope != ''">
-                AND r.data_scope LIKE CONCAT('%',#{role.dataScope},'%')
+                AND data_scope LIKE CONCAT('%',#{role.dataScope},'%')
             </if>
-            LEFT JOIN `sys_menu` m ON rm.menu_id = m.id
-            AND m.is_delete = 0
     </select>
     
-    <resultMap id="RoleMenu" type="com.software.system.entity.Role">
-        <result property="id" column="roleId"/>
-        <result property="name" column="roleName"/>
-        <result property="level" column="level"/>
-        <result property="description" column="description"/>
-        <result property="dataScope" column="dataScope"/>
-        <result property="createBy" column="roleCreateBy"/>
-        <result property="updateBy" column="roleUpdateBy"/>
-        <result property="createTime" column="roleCreateTime"/>
-        <result property="updateTime" column="roleUpdateTime"/>
-        <collection property="menus" ofType="com.software.system.entity.Menu">
-            <result property="id" column="menuId"/>
-            <result property="pid" column="menuPid"/>
-            <result property="subCount" column="subCount"/>
-            <result property="type" column="type"/>
-            <result property="title" column="title"/>
-            <result property="name" column="menuName"/>
-            <result property="component" column="component"/>
-            <result property="icon" column="icon"/>
-            <result property="path" column="path"/>
-            <result property="iFrame" column="iFrame"/>
-            <result property="cache" column="menuCache"/>
-            <result property="hidden" column="hidden"/>
-            <result property="permission" column="permission"/>
-            <result property="sort" column="sort"/>
-            <result property="createBy" column="menuCreateBy"/>
-            <result property="updateBy" column="menuUpdateBy"/>
-            <result property="createTime" column="menuCreateTime"/>
-            <result property="updateTime" column="menuUpdateTime"/>
-        </collection>
+    <resultMap id="RoleMenuDept" type="com.software.system.entity.Role">
+        <collection property="menus" javaType="ArrayList" ofType="com.software.system.entity.Menu" select="queryRoleMenuByRoleId" column="id"/>
+        <collection property="depts" javaType="ArrayList" ofType="com.software.system.entity.Dept" select="queryRoleDeptByRoleId" column="id"/>
     </resultMap>
+
+    <select id="queryRoleMenuByRoleId" resultType="com.software.system.entity.Menu">
+        SELECT
+            m.id,
+            m.pid,
+            m.sub_count,
+            m.type,
+            m.title,
+            m.`name`,
+            m.component,
+            m.icon,
+            m.path,
+            m.i_frame,
+            m.`cache`,
+            m.hidden,
+            m.permission,
+            m.sort,
+            m.create_by,
+            m.update_by,
+            m.create_time,
+            m.update_time,
+            m.is_delete
+        FROM
+            sys_role r,
+            sys_roles_menus rm,
+            sys_menu m
+        WHERE
+            r.id = rm.role_id
+          AND rm.menu_id = m.id
+          AND m.is_delete = 0
+          AND r.id = #{id}
+    </select>
+
+    <select id="queryRoleDeptByRoleId" resultType="com.software.system.entity.Dept">
+        SELECT
+            d.id,
+            d.pid,
+            d.sub_count,
+            d.`name`,
+            d.enabled,
+            d.sort,
+            d.create_by,
+            d.update_by,
+            d.create_time,
+            d.update_time,
+            d.is_delete
+        FROM
+            sys_role r,
+            sys_role_dept rd,
+            sys_dept d
+        WHERE
+            r.id = rd.role_id
+          AND rd.dept_id = d.id
+          AND d.enabled = 1
+          AND d.is_delete = 0
+          AND r.id = #{id}
+    </select>
 </mapper>
