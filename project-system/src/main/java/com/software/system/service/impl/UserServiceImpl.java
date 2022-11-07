@@ -13,6 +13,7 @@ import com.software.system.service.UserJobService;
 import com.software.system.service.UserRoleService;
 import com.software.system.service.UserService;
 import com.software.utils.SecurityUtils;
+import com.software.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -111,6 +112,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Page<User> queryPage(User user, QueryRequest queryRequest) {
         Page<User> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
+        SortUtil.handlePageSort(queryRequest, page, "updateTime", StringConstant.DESC, true);
         return this.baseMapper.queryPage(page, user);
     }
 

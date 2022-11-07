@@ -60,7 +60,6 @@
             u.create_time,
             u.update_time,
             d.`name`
-        ORDER BY
-            u.update_time DESC
+
     </select>
 </mapper>
