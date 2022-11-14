@@ -38,8 +38,8 @@
         <if test="user.email != null and user.email != ''">
             AND u.email = #{user.email}
         </if>
-        <if test="user.enabled != null and user.enabled != ''">
-            AND u.enabled = #{enabled}
+        <if test="user.enabled != null and user.enabled != '' or user.enabled == false">
+            AND u.enabled = #{user.enabled}
         </if>
         GROUP BY
             u.id,
