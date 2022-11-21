@@ -1,6 +1,8 @@
 package com.software.utils;
 
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.software.exception.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -8,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,6 +63,7 @@ public class SecurityUtils {
      */
     public static List<Long> getCurrentUserDataScope() {
         UserDetails userDetails = getCurrentUser();
-        return Collections.singletonList(new JSONObject(new JSONObject(userDetails).get("dataScope")).get("dataScope", Long.class));
+        JSONArray jsonArr = JSONUtil.parseArray(new JSONObject(userDetails).get("dataScopes"));
+        return JSONUtil.toList(jsonArr, Long.class);
     }
 }

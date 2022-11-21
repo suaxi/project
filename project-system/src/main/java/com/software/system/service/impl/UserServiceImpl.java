@@ -111,9 +111,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Page<User> queryPage(User user, QueryRequest queryRequest) {
+        List<Long> dataScope = SecurityUtils.getCurrentUserDataScope();
         Page<User> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
         SortUtil.handlePageSort(queryRequest, page, "updateTime", StringConstant.DESC, true);
-        return this.baseMapper.queryPage(page, user);
+        return this.baseMapper.queryPage(page, user, dataScope);
     }
 
     /**

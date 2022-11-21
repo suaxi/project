@@ -34,28 +34,26 @@ public class DataScopeServiceImpl implements DataScopeService {
 
     @Override
     public List<Long> getDeptIds(User user) {
-        if (user != null) {
-            Set<Long> deptIds = new HashSet<>();
-            //当前用户角色
-            List<Role> roleList = roleService.queryRoleListByUserId(user.getId());
-            //角色对应的部门id
-            for (Role role : roleList) {
-                DataScopeEnum dataScopeEnum = DataScopeEnum.parseOf(role.getDataScope());
-                switch (Objects.requireNonNull(dataScopeEnum)) {
-                    case ALL:
-                        return new ArrayList<>(deptIds);
-                    case THIS_LEVEL:
-                        deptIds.add(user.getDeptId());
-                        break;
-                    case CUSTOMIZE:
-                        deptIds.addAll(this.getCustomize(deptIds, role));
-                        break;
-                    default:
-                        break;
-                }
+        Set<Long> deptIds = new HashSet<>();
+        //当前用户角色
+        List<Role> roleList = roleService.queryRoleListByUserId(user.getId());
+        //角色对应的部门id
+        for (Role role : roleList) {
+            DataScopeEnum dataScopeEnum = DataScopeEnum.parseOf(role.getDataScope());
+            switch (Objects.requireNonNull(dataScopeEnum)) {
+                case ALL:
+                    return new ArrayList<>(deptIds);
+                case THIS_LEVEL:
+                    deptIds.add(user.getDeptId());
+                    break;
+                case CUSTOMIZE:
+                    deptIds.addAll(this.getCustomize(deptIds, role));
+                    break;
+                default:
+                    break;
             }
         }
-        return null;
+        return new ArrayList<>(deptIds);
     }
 
     /**
@@ -83,6 +81,6 @@ public class DataScopeServiceImpl implements DataScopeService {
                 }
             }
         }
-        return Collections.emptySet();
+        return deptIds;
     }
 }

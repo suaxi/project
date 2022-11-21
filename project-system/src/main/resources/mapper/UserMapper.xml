@@ -41,6 +41,12 @@
         <if test="user.enabled != null and user.enabled != '' or user.enabled == false">
             AND u.enabled = #{user.enabled}
         </if>
+        <if test="dataScope != null and dataScope.size() > 0">
+            AND d.id IN
+            <foreach collection="dataScope" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         GROUP BY
             u.id,
             u.dept_id,
@@ -60,6 +66,5 @@
             u.create_time,
             u.update_time,
             d.`name`
-
     </select>
 </mapper>
