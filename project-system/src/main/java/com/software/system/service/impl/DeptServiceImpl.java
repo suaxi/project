@@ -146,4 +146,19 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
         return querySuperiorList(this.getById(dept.getPid()), deptList);
     }
 
+    @Override
+    public List<Dept> queryDeptChildren(List<Dept> deptList) {
+        List<Dept> result = new ArrayList<>();
+        if (deptList != null && deptList.size() > 0) {
+            for (Dept dept : deptList) {
+                List<Dept> depts = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, dept.getId()));
+                if (depts != null && depts.size() > 0) {
+                    result.addAll(queryDeptChildren(depts));
+                }
+                result.add(dept);
+            }
+        }
+        return result;
+    }
+
 }

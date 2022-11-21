@@ -3,9 +3,10 @@ package com.software.security.service;
 import com.software.exception.BadRequestException;
 import com.software.security.dto.LoginUserDto;
 import com.software.system.entity.User;
+import com.software.system.service.DataScopeService;
 import com.software.system.service.MenuService;
-import com.software.system.service.RoleService;
 import com.software.system.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Wang Hao
@@ -25,7 +27,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private UserService userService;
 
     @Autowired
-    private RoleService roleService;
+    private DataScopeService dataScopeService;
 
     @Autowired
     private MenuService menuService;
@@ -45,11 +47,10 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 throw new BadRequestException("账号未激活，请联系管理员");
             }
 
-            //权限信息
-            //TODO 根据当前用户部门id及数据权限查询对应的部门id
-            List<String> daScopeList = roleService.queryDataScopeByUserId(user.getId());
+            //数据权限信息
+            List<Long> daScopeList = dataScopeService.getDeptIds(user);
             //菜单权限
-            List<String> permissionList = menuService.queryUserPermissionByUserId(user.getId());
+            List<String> permissionList = menuService.queryUserPermissionByUserId(user.getId()).stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
             loginUser = new LoginUserDto(user, daScopeList, permissionList);
             //添加缓存
             userCacheManager.addUserCache(user.getUsername(), loginUser);

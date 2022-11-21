@@ -8,6 +8,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Wang Hao
  * @date 2022/10/16 22:46
@@ -50,5 +53,15 @@ public class SecurityUtils {
     public static Long getCurrentUserId() {
         UserDetails userDetails = getCurrentUser();
         return new JSONObject(new JSONObject(userDetails).get("user")).get("id", Long.class);
+    }
+
+    /**
+     * 获取当前登录用户数据权限集合
+     *
+     * @return 当前登录用户数据权限集合
+     */
+    public static List<Long> getCurrentUserDataScope() {
+        UserDetails userDetails = getCurrentUser();
+        return Collections.singletonList(new JSONObject(new JSONObject(userDetails).get("dataScope")).get("dataScope", Long.class));
     }
 }

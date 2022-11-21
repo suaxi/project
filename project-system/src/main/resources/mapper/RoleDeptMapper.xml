@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.software.system.mapper.RoleDeptMapper">
+    <select id="queryByRoleId" resultType="com.software.system.entity.Dept">
+        SELECT
+            d.*
+        FROM
+            sys_role_dept r,
+            sys_dept d
+        WHERE
+            r.dept_id = d.id
+          AND d.is_delete = 0
+          AND r.role_id = #{roleId}
+    </select>
+</mapper>

@@ -94,4 +94,12 @@ public interface DeptService {
      */
     List<Dept> querySuperiorList(Dept dept, List<Dept> deptList);
 
+    /**
+     * 查询指定部门的子级部门
+     *
+     * @param deptList 指定部门集合
+     * @return 指定部门子级部门集合（包含父级）
+     */
+    List<Dept> queryDeptChildren(List<Dept> deptList);
+
 }

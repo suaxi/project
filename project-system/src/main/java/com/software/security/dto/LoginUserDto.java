@@ -23,13 +23,13 @@ public class LoginUserDto implements UserDetails {
 
     private User user;
 
-    private List<String> dataScopes;
+    private List<Long> dataScopes;
 
     private List<String> permissions;
 
     private List<GrantedAuthority> authorities;
 
-    public LoginUserDto(User user, List<String> dataScopes, List<String> permissions) {
+    public LoginUserDto(User user, List<Long> dataScopes, List<String> permissions) {
         this.user = user;
         this.dataScopes = dataScopes;
         this.permissions = permissions;
