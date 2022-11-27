@@ -78,7 +78,7 @@ public class MenuController {
 
     @ApiOperation("分页查询菜单信息")
     @GetMapping("/queryPage")
-    public ResponseEntity<Page<Menu>> queryPage(Menu menu, QueryRequest queryRequest) {
+    public ResponseEntity<Page<MenuDto>> queryPage(Menu menu, QueryRequest queryRequest) {
         return new ResponseEntity<>(menuService.queryPage(menu, queryRequest), HttpStatus.OK);
     }
 

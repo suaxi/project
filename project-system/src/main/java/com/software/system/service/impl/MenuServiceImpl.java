@@ -77,13 +77,15 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public Page<Menu> queryPage(Menu menu, QueryRequest queryRequest) {
+    public Page<MenuDto> queryPage(Menu menu, QueryRequest queryRequest) {
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
+        //默认查询一级菜单
+        queryWrapper.lambda().isNull(Menu::getPid);
         if (menu.getType() != null) {
             queryWrapper.lambda().eq(Menu::getType, menu.getType());
         }
         if (StringUtils.isNotBlank(menu.getTitle())) {
-            queryWrapper.lambda().eq(Menu::getTitle, menu.getTitle());
+            queryWrapper.lambda().like(Menu::getTitle, menu.getTitle());
         }
         if (StringUtils.isNotBlank(menu.getName())) {
             queryWrapper.lambda().eq(Menu::getName, menu.getName());
@@ -91,13 +93,15 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         if (menu.getSort() != null) {
             queryWrapper.lambda().eq(Menu::getSort, menu.getSort());
         }
-        if (StringUtils.isNotBlank(queryRequest.getOrder())) {
-            queryWrapper.orderBy(true, StringConstant.ASC.equals(queryRequest.getOrder()), queryRequest.getField());
-        } else {
-            queryWrapper.orderBy(true, false, "create_time");
-        }
         Page<Menu> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
-        return this.page(page, queryWrapper);
+        Page<Menu> result = this.page(page, queryWrapper);
+        List<MenuDto> menuDtoList = result.getRecords().stream().map(item -> {
+            MenuDto menuDto = new MenuDto();
+            BeanUtils.copyProperties(item, menuDto);
+            return menuDto;
+        }).collect(Collectors.toList());
+        Page<MenuDto> menuDtoPage = new Page<>();
+        return menuDtoPage.setRecords(menuDtoList).setSize(menuDtoList.size());
     }
 
     @Override

@@ -69,7 +69,7 @@ public interface MenuService {
      * @param queryRequest 查询参数
      * @return
      */
-    Page<Menu> queryPage(Menu menu, QueryRequest queryRequest);
+    Page<MenuDto> queryPage(Menu menu, QueryRequest queryRequest);
 
     /**
      * 根据用户id查询用户菜单权限
