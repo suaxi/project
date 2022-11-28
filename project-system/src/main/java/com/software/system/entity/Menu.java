@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -38,7 +37,6 @@ public class Menu implements Serializable {
     @TableField("title")
     private String title;
 
-    @NotBlank
     @ApiModelProperty("名称")
     @TableField("name")
     private String name;
@@ -57,15 +55,15 @@ public class Menu implements Serializable {
 
     @ApiModelProperty("是否外链")
     @TableField("i_frame")
-    private String iFrame;
+    private Boolean iFrame;
 
     @ApiModelProperty("缓存")
     @TableField("cache")
-    private String cache;
+    private Boolean cache;
 
     @ApiModelProperty("隐藏")
     @TableField("hidden")
-    private String hidden;
+    private Boolean hidden;
 
     @ApiModelProperty("权限")
     @TableField("permission")
@@ -73,15 +71,15 @@ public class Menu implements Serializable {
 
     @ApiModelProperty("排序")
     @TableField("sort")
-    private Long sort;
+    private Integer sort;
 
     @ApiModelProperty("创建人")
     @TableField("create_by")
-    private String createBy;
+    private Long createBy;
 
     @ApiModelProperty("更新人")
     @TableField("update_by")
-    private String updateBy;
+    private Long updateBy;
 
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)

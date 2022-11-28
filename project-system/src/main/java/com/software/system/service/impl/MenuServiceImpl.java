@@ -12,6 +12,7 @@ import com.software.system.dto.MenuDto;
 import com.software.system.entity.Menu;
 import com.software.system.mapper.MenuMapper;
 import com.software.system.service.MenuService;
+import com.software.utils.SecurityUtils;
 import com.software.utils.TreeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -35,7 +36,11 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(Menu menu) {
-        //TODO 创建人信息
+        //根节点
+        if (menu.getPid().equals(0L)) {
+            menu.setPid(null);
+        }
+        menu.setCreateBy(SecurityUtils.getCurrentUserId());
         return this.save(menu);
     }
 
@@ -93,15 +98,13 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         if (menu.getSort() != null) {
             queryWrapper.lambda().eq(Menu::getSort, menu.getSort());
         }
-        Page<Menu> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
-        Page<Menu> result = this.page(page, queryWrapper);
-        List<MenuDto> menuDtoList = result.getRecords().stream().map(item -> {
+        Page<Menu> page = this.page(new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize()), queryWrapper);
+        List<MenuDto> menuDtoList = page.getRecords().stream().map(item -> {
             MenuDto menuDto = new MenuDto();
             BeanUtils.copyProperties(item, menuDto);
             return menuDto;
         }).collect(Collectors.toList());
-        Page<MenuDto> menuDtoPage = new Page<>();
-        return menuDtoPage.setRecords(menuDtoList).setSize(menuDtoList.size());
+        return new Page<MenuDto>().setRecords(menuDtoList).setSize(menuDtoList.size());
     }
 
     @Override
