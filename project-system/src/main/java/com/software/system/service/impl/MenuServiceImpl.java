@@ -41,25 +41,49 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             menu.setPid(null);
         }
         menu.setCreateBy(SecurityUtils.getCurrentUserId());
-        return this.save(menu);
+        boolean flag = this.save(menu);
+        if (menu.getPid() != null && flag) {
+            //父节点子菜单数量处理
+            this.dealParentMenuSubCount(menu.getPid());
+        }
+        return flag;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(Menu menu) {
+        //原pid
+        Menu oldMenuData = this.getById(menu.getId());
+        Long pid = oldMenuData.getPid() == null ? null : oldMenuData.getPid();
+
         //根节点
         if (menu.getPid().equals(0L)) {
             menu.setPid(null);
         }
         menu.setUpdateBy(SecurityUtils.getCurrentUserId());
-        return this.updateById(menu);
+        boolean flag = this.updateById(menu);
+        if (pid != null && flag) {
+            //父节点子菜单数量处理
+            this.dealParentMenuSubCount(pid);
+        }
+        return flag;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean delete(List<Long> ids) {
         if (ids.size() > 0) {
-            return this.removeByIds(ids);
+            //子菜单数量处理 - 被删除的是叶子节点的情况
+            List<Menu> menuList = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().in(Menu::getId, ids));
+            Set<Long> pidSet = menuList.stream().map(Menu::getPid).filter(Objects::nonNull).collect(Collectors.toSet());
+            boolean flag = this.removeByIds(ids);
+            for (Long pid : pidSet) {
+                Menu parentMenu = this.getById(pid);
+                int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, pid)).size();
+                parentMenu.setSubCount(subCount);
+                this.updateById(parentMenu);
+            }
+            return flag;
         }
         return false;
     }
@@ -234,5 +258,19 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             }
         }
         return menuSet;
+    }
+
+    /**
+     * 父节点子菜单数量处理
+     *
+     * @param pid 父ID
+     */
+    private void dealParentMenuSubCount(Long pid) {
+        Menu parentMenu = this.queryById(pid);
+        int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, parentMenu.getId())).size();
+        if (parentMenu.getSubCount() != subCount) {
+            parentMenu.setSubCount(subCount);
+            this.updateById(parentMenu);
+        }
     }
 }

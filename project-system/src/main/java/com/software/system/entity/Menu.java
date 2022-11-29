@@ -22,7 +22,7 @@ public class Menu implements Serializable {
     private Long id;
 
     @ApiModelProperty("父级菜单id")
-    @TableField("pid")
+    @TableField(value = "pid", updateStrategy= FieldStrategy.IGNORED)
     private Long pid;
 
     @ApiModelProperty("子菜单数量")
