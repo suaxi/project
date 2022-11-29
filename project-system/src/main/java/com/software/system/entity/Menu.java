@@ -58,7 +58,7 @@ public class Menu implements Serializable {
     private Boolean iFrame;
 
     @ApiModelProperty("缓存")
-    @TableField("cache")
+    @TableField("`cache`")
     private Boolean cache;
 
     @ApiModelProperty("隐藏")

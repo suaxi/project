@@ -37,7 +37,7 @@ public interface MenuService {
      * @param ids ids
      * @return
      */
-    boolean delete(Long[] ids);
+    boolean delete(List<Long> ids);
 
     /**
      * 根据id查询菜单信息
@@ -102,4 +102,12 @@ public interface MenuService {
      * @return 指定id对应的子级菜单列表
      */
     Set<Menu> queryMenuListById(Long id);
+
+    /**
+     * 根据id查询同级与上级菜单列表
+     *
+     * @param id id
+     * @return 同级与上级菜单列表
+     */
+    List<MenuDto> querySameLevelAndSuperiorMenuListById(Long id);
 }

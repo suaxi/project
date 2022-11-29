@@ -47,14 +47,19 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(Menu menu) {
+        //根节点
+        if (menu.getPid().equals(0L)) {
+            menu.setPid(null);
+        }
+        menu.setUpdateBy(SecurityUtils.getCurrentUserId());
         return this.updateById(menu);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean delete(Long[] ids) {
-        if (ids.length > 0) {
-            return this.removeByIds(Arrays.asList(ids));
+    public boolean delete(List<Long> ids) {
+        if (ids.size() > 0) {
+            return this.removeByIds(ids);
         }
         return false;
     }
@@ -182,6 +187,35 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             this.queryChildMenuList(menuList, menuSet);
         }
         return menuSet;
+    }
+
+    @Override
+    public List<MenuDto> querySameLevelAndSuperiorMenuListById(Long id) {
+        List<Menu> menuList = new ArrayList<>();
+        Menu currentMenu = this.getById(id);
+        menuList.add(currentMenu);
+
+        //上级
+        Menu superiorMenu = null;
+        if (currentMenu.getPid() != null) {
+            superiorMenu = this.getById(currentMenu.getPid());
+            menuList.add(superiorMenu);
+        }
+
+        //同级
+        if (superiorMenu != null) {
+            List<Menu> sameLevelMenuList = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, superiorMenu.getId()));
+            menuList.addAll(sameLevelMenuList);
+        }
+
+        if (menuList != null && menuList.size() > 0) {
+            return menuList.stream().map(menu -> {
+                MenuDto menuDto = new MenuDto();
+                BeanUtils.copyProperties(menu, menuDto);
+                return menuDto;
+            }).collect(Collectors.toList());
+        }
+        return null;
     }
 
     /**
