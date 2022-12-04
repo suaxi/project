@@ -86,10 +86,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             if (flag) {
                 if (pidSet.size() > 0) {
                     for (Long pid : pidSet) {
-                        Menu parentMenu = this.getById(pid);
-                        int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, pid)).size();
-                        parentMenu.setSubCount(subCount);
-                        this.updateById(parentMenu);
+                        if (!ids.contains(pid)) {
+                            Menu parentMenu = this.getById(pid);
+                            int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, pid)).size();
+                            parentMenu.setSubCount(subCount);
+                            this.updateById(parentMenu);
+                        }
                     }
                 }
                 if (childrenIds.size() > 0) {

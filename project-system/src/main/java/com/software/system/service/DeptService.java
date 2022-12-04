@@ -36,7 +36,7 @@ public interface DeptService {
      * @param ids ids
      * @return
      */
-    boolean delete(Long[] ids);
+    boolean delete(List<Long> ids);
 
     /**
      * 根据id查询部门信息
@@ -68,7 +68,7 @@ public interface DeptService {
      * @param queryRequest 查询参数
      * @return
      */
-    Page<Dept> queryPage(Dept dept, QueryRequest queryRequest);
+    Page<DeptDto> queryPage(Dept dept, QueryRequest queryRequest);
 
     /**
      * 根据父id查询子级部门

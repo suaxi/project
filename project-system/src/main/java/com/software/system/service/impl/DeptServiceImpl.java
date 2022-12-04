@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.dto.Tree;
 import com.software.system.dto.DeptDto;
@@ -12,16 +11,14 @@ import com.software.system.dto.DeptDtoTree;
 import com.software.system.entity.Dept;
 import com.software.system.mapper.DeptMapper;
 import com.software.system.service.DeptService;
+import com.software.utils.SecurityUtils;
 import com.software.utils.TreeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,21 +31,61 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(Dept dept) {
-        //TODO 创建人信息
-        return this.save(dept);
+        dept.setCreateBy(SecurityUtils.getCurrentUserId());
+        boolean flag = this.save(dept);
+        if (dept.getPid() != null) {
+            Dept parentDept = this.getById(dept.getPid());
+            parentDept.setSubCount(parentDept.getSubCount() + 1);
+            this.updateById(parentDept);
+        }
+        return flag;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(Dept dept) {
-        return this.updateById(dept);
+        //原pid
+        Dept oldDeptData = this.getById(dept.getId());
+        Long pid = oldDeptData.getPid() == null ? null : oldDeptData.getPid();
+        dept.setUpdateBy(SecurityUtils.getCurrentUserId());
+        boolean flag = this.updateById(dept);
+        //原父节点子部门数量处理
+        if (pid != null && flag) {
+            this.dealParentDeptSubCount(pid);
+        }
+        //新父节点子部门数量处理
+        if (dept.getPid() != null && flag) {
+            this.dealParentDeptSubCount(dept.getPid());
+        }
+        return flag;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean delete(Long[] ids) {
-        if (ids.length > 0) {
-            return this.removeByIds(Arrays.asList(ids));
+    public boolean delete(List<Long> ids) {
+        if (ids.size() > 0) {
+            List<Dept> deptList = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().in(Dept::getId, ids));
+            //删除叶子节点时同步更新父节点的子部门数量
+            Set<Long> pidSet = deptList.stream().map(Dept::getPid).filter(Objects::nonNull).collect(Collectors.toSet());
+            //删除父节点时同步删除子节点
+            List<Long> childrenIds = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().in(Dept::getPid, ids)).stream().map(Dept::getId).collect(Collectors.toList());
+            boolean flag = this.removeByIds(ids);
+            if (flag) {
+                if (pidSet.size() > 0) {
+                    for (Long pid : pidSet) {
+                        if (!ids.contains(pid)) {
+                            Dept parentDept = this.getById(pid);
+                            int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, pid)).size();
+                            parentDept.setSubCount(subCount);
+                            this.updateById(parentDept);
+                        }
+                    }
+                }
+                if (childrenIds.size() > 0) {
+                    this.removeByIds(childrenIds);
+                }
+            }
+            return flag;
         }
         return false;
     }
@@ -76,24 +113,25 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     }
 
     @Override
-    public Page<Dept> queryPage(Dept dept, QueryRequest queryRequest) {
+    public Page<DeptDto> queryPage(Dept dept, QueryRequest queryRequest) {
         QueryWrapper<Dept> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(dept.getName())) {
-            queryWrapper.lambda().eq(Dept::getName, dept.getName());
+            queryWrapper.lambda().like(Dept::getName, dept.getName());
         }
         if (dept.getEnabled() != null) {
             queryWrapper.lambda().eq(Dept::getEnabled, dept.getEnabled());
         }
-        if (dept.getSort() != null) {
-            queryWrapper.lambda().eq(Dept::getSort, dept.getSort());
+        if (StringUtils.isBlank(dept.getName()) && dept.getEnabled() == null) {
+            //默认查询一级部门
+            queryWrapper.lambda().isNull(Dept::getPid);
         }
-        if (StringUtils.isNotBlank(queryRequest.getOrder())) {
-            queryWrapper.orderBy(true, StringConstant.ASC.equals(queryRequest.getOrder()), queryRequest.getField());
-        } else {
-            queryWrapper.orderBy(true, false, "create_time");
-        }
-        Page<Dept> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
-        return this.page(page, queryWrapper);
+        Page<Dept> page = this.page(new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize()), queryWrapper);
+        List<DeptDto> deptDtoList = page.getRecords().stream().map(item -> {
+            DeptDto deptDto = new DeptDto();
+            BeanUtils.copyProperties(item, deptDto);
+            return deptDto;
+        }).collect(Collectors.toList());
+        return new Page<DeptDto>().setRecords(deptDtoList).setSize(deptDtoList.size());
     }
 
     @Override
@@ -159,6 +197,20 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
             }
         }
         return result;
+    }
+
+    /**
+     * 父节点子部门数量处理
+     *
+     * @param pid 父ID
+     */
+    private void dealParentDeptSubCount(Long pid) {
+        Dept parentDept = this.queryById(pid);
+        int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, pid)).size();
+        if (parentDept.getSubCount() != subCount) {
+            parentDept.setSubCount(subCount);
+            this.updateById(parentDept);
+        }
     }
 
 }
