@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * @author Wang Hao
  * @date 2022/11/4 23:00
@@ -13,6 +15,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @ApiModel("菜单信息dto")
 public class MenuDto extends Menu {
+
+    private List<MenuDto> children;
 
     public Boolean getHasChildren() {
         return getSubCount() > 0;

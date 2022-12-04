@@ -62,9 +62,13 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         }
         menu.setUpdateBy(SecurityUtils.getCurrentUserId());
         boolean flag = this.updateById(menu);
+        //原父节点子菜单数量处理
         if (pid != null && flag) {
-            //父节点子菜单数量处理
             this.dealParentMenuSubCount(pid);
+        }
+        //新父节点子菜单数量处理
+        if (menu.getPid() != null && flag) {
+            this.dealParentMenuSubCount(menu.getPid());
         }
         return flag;
     }
@@ -73,15 +77,24 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Transactional(rollbackFor = Exception.class)
     public boolean delete(List<Long> ids) {
         if (ids.size() > 0) {
-            //子菜单数量处理 - 被删除的是叶子节点的情况
             List<Menu> menuList = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().in(Menu::getId, ids));
+            //删除叶子节点时同步更新父节点的子菜单数量
             Set<Long> pidSet = menuList.stream().map(Menu::getPid).filter(Objects::nonNull).collect(Collectors.toSet());
+            //删除父节点时同步删除子节点
+            List<Long> childrenIds = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().in(Menu::getPid, ids)).stream().map(Menu::getId).collect(Collectors.toList());
             boolean flag = this.removeByIds(ids);
-            for (Long pid : pidSet) {
-                Menu parentMenu = this.getById(pid);
-                int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, pid)).size();
-                parentMenu.setSubCount(subCount);
-                this.updateById(parentMenu);
+            if (flag) {
+                if (pidSet.size() > 0) {
+                    for (Long pid : pidSet) {
+                        Menu parentMenu = this.getById(pid);
+                        int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, pid)).size();
+                        parentMenu.setSubCount(subCount);
+                        this.updateById(parentMenu);
+                    }
+                }
+                if (childrenIds.size() > 0) {
+                    this.removeByIds(childrenIds);
+                }
             }
             return flag;
         }
@@ -113,19 +126,11 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Override
     public Page<MenuDto> queryPage(Menu menu, QueryRequest queryRequest) {
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
-        //默认查询一级菜单
-        queryWrapper.lambda().isNull(Menu::getPid);
-        if (menu.getType() != null) {
-            queryWrapper.lambda().eq(Menu::getType, menu.getType());
-        }
         if (StringUtils.isNotBlank(menu.getTitle())) {
             queryWrapper.lambda().like(Menu::getTitle, menu.getTitle());
-        }
-        if (StringUtils.isNotBlank(menu.getName())) {
-            queryWrapper.lambda().eq(Menu::getName, menu.getName());
-        }
-        if (menu.getSort() != null) {
-            queryWrapper.lambda().eq(Menu::getSort, menu.getSort());
+        } else {
+            //默认查询一级菜单
+            queryWrapper.lambda().isNull(Menu::getPid);
         }
         Page<Menu> page = this.page(new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize()), queryWrapper);
         List<MenuDto> menuDtoList = page.getRecords().stream().map(item -> {
