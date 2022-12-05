@@ -34,7 +34,7 @@ public interface JobService {
      * @param ids ids
      * @return
      */
-    boolean delete(Long[] ids);
+    boolean delete(List<Long> ids);
 
     /**
      * 根据id查询岗位信息

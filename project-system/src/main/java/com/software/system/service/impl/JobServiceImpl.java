@@ -1,18 +1,18 @@
 package com.software.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.system.entity.Job;
 import com.software.system.mapper.JobMapper;
 import com.software.system.service.JobService;
+import com.software.utils.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,21 +25,22 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements JobSe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(Job job) {
-        //TODO 创建人信息
+        job.setCreateBy(SecurityUtils.getCurrentUserId());
         return this.save(job);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(Job job) {
+        job.setUpdateBy(SecurityUtils.getCurrentUserId());
         return this.updateById(job);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean delete(Long[] ids) {
-        if (ids.length > 0) {
-            return this.removeByIds(Arrays.asList(ids));
+    public boolean delete(List<Long> ids) {
+        if (ids.size() > 0) {
+            return this.removeByIds(ids);
         }
         return false;
     }
@@ -63,25 +64,17 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements JobSe
 
     @Override
     public List<Job> queryList() {
-        return this.list();
+        return this.list(new LambdaQueryWrapper<Job>().eq(Job::getEnabled, true));
     }
 
     @Override
     public Page<Job> queryPage(Job job, QueryRequest queryRequest) {
         QueryWrapper<Job> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(job.getName())) {
-            queryWrapper.lambda().eq(Job::getName, job.getName());
+            queryWrapper.lambda().like(Job::getName, job.getName());
         }
         if (job.getEnabled() != null) {
             queryWrapper.lambda().eq(Job::getEnabled, job.getEnabled());
-        }
-        if (job.getSort() != null) {
-            queryWrapper.lambda().eq(Job::getSort, job.getSort());
-        }
-        if (StringUtils.isNotBlank(queryRequest.getOrder())) {
-            queryWrapper.orderBy(true, StringConstant.ASC.equals(queryRequest.getOrder()), queryRequest.getField());
-        } else {
-            queryWrapper.orderBy(true, false, "create_time");
         }
         Page<Job> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
         return this.page(page, queryWrapper);

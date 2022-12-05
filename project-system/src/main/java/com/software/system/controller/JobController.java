@@ -2,14 +2,11 @@ package com.software.system.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.annotation.OperationLog;
-import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
 import com.software.system.entity.Job;
 import com.software.system.service.JobService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,12 +47,12 @@ public class JobController {
     @ApiOperation("删除")
     @DeleteMapping
     @OperationLog("删除岗位")
-    public ResponseEntity<String> delete(@RequestBody String ids) {
-        if (StringUtils.isBlank(ids)) {
+    public ResponseEntity<String> delete(@RequestBody List<Long> ids) {
+        if (ids.size() == 0) {
             throw new IllegalArgumentException("id不能为空");
         }
-        jobService.delete((Long[]) ConvertUtils.convert(ids.split(StringConstant.COMMA), Long.class));
-        return new ResponseEntity<>(ids, HttpStatus.OK);
+        jobService.delete(ids);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ApiOperation("根据id查询岗位信息")
