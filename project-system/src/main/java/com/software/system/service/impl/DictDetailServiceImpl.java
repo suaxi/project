@@ -58,7 +58,11 @@ public class DictDetailServiceImpl extends ServiceImpl<DictDetailMapper, DictDet
 
     @Override
     public Page<DictDetail> queryPage(DictDetail dictDetail, QueryRequest queryRequest) {
+        QueryWrapper<DictDetail> queryWrapper = new QueryWrapper<>();
+        if (dictDetail.getDictId() != null) {
+            queryWrapper.lambda().eq(DictDetail::getDictId, dictDetail.getDictId());
+        }
         Page<DictDetail> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
-        return this.page(page, new QueryWrapper<>());
+        return this.page(page, queryWrapper);
     }
 }
