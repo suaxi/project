@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.dto.QueryRequest;
 import com.software.enums.ContentType;
 import com.software.exception.BadRequestException;
+import com.software.oss.dto.OssAttachmentDto;
 import com.software.oss.entity.OssAttachment;
+import com.software.oss.service.BucketService;
 import com.software.oss.service.DocumentService;
 import com.software.oss.service.OssAttachmentService;
 import io.minio.errors.MinioException;
@@ -17,31 +19,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * @author Wang Hao
- * @date 2023/1/1 21:11
+ * @date 2023/1/2 22:09
  */
 @Slf4j
 @RestController
-@RequestMapping("/oss/public")
-@Api(tags = "oss附件上传-通用管理接口")
-public class PublicController {
+@RequestMapping("/oss/document")
+@Api(tags = "oss附件上传-文档管理接口")
+public class DocumentController {
 
     @Autowired
-    private OssAttachmentService ossAttachmentService;
+    private BucketService bucketService;
 
     @Autowired
     private DocumentService documentService;
+
+    @Autowired
+    private OssAttachmentService ossAttachmentService;
 
     @ApiOperation("根据ID查询OSS附件信息")
     @ApiImplicitParams({
@@ -62,6 +65,20 @@ public class PublicController {
     @GetMapping("/queryPage")
     public ResponseEntity<Page<OssAttachment>> queryPage(OssAttachment ossAttachment, QueryRequest queryRequest) {
         return new ResponseEntity<>(ossAttachmentService.queryPage(ossAttachment, queryRequest), HttpStatus.OK);
+    }
+
+    /**
+     * 上传文件
+     * 不填写@ApiImplicitParams注释（方便swagger测试）
+     *
+     * @param multipartFiles 文件
+     * @param attachmentDto  文件信息
+     * @return
+     */
+    @ApiOperation("上传文件")
+    @PostMapping("/upload")
+    public ResponseEntity<?> upload(@RequestParam("files") MultipartFile[] multipartFiles, OssAttachmentDto attachmentDto) {
+        return new ResponseEntity<>(documentService.upload(multipartFiles, attachmentDto), HttpStatus.OK);
     }
 
     @ApiOperation("根据ID下载文件")
@@ -92,33 +109,47 @@ public class PublicController {
         }
     }
 
-    @ApiOperation("根据ID获取图片base64")
+    @ApiOperation("根据ID删除附件")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "ID", required = true, paramType = "path", dataType = "String")
     })
-    @GetMapping("/getImage/{id}")
-    public ResponseEntity<?> imageToBase64(@PathVariable("id") String id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable("id") String id) {
         OssAttachment ossAttachment = ossAttachmentService.getById(id);
         if (ossAttachment == null) {
             throw new BadRequestException("文件不存在");
         }
         try {
-            byte[] byteArray = documentService.getObject(ossAttachment.getBucketName(), ossAttachment.getStorePath());
-            return new ResponseEntity<>(DatatypeConverter.printBase64Binary(byteArray), HttpStatus.OK);
+            documentService.removeObject(bucketService.getConfigBucket(), ossAttachment.getStorePath());
+            log.info("文件[{}]已从OSS对象存储中删除", id);
+            if (ossAttachmentService.removeById(id)) {
+                log.info("文件[{}]已从OSS附件信息记录中删除", id);
+            }
         } catch (MinioException e) {
-            log.error("获取[{}]图片base64异常:{}", id, e.getMessage());
-            throw new BadRequestException("获取图片base64异常：" + e.getMessage());
+            log.error("文件[{}]删除失败:{}", id, e.getMessage());
+            throw new BadRequestException("文件删除失败：" + e.getMessage());
         }
+        return new ResponseEntity<>("文件已删除", HttpStatus.OK);
     }
 
     /**
-     * 设置 ContentType
+     * 设置 ContentType（单文件）
      *
-     * @param ossAttachment 附件信息
+     * @param ossAttachment
      */
     private void setContentType(OssAttachment ossAttachment) {
-        if (ossAttachment != null) {
-            ossAttachment.setContentType(ContentType.parseOf(ossAttachment.getFileType()).getMimeType());
+        ossAttachment.setContentType(ContentType.parseOf(ossAttachment.getFileType()).getMimeType());
+    }
+
+    /**
+     * 设置 ContentType（多文件）
+     *
+     * @param ossAttachmentList
+     */
+    private void setContentType(List<OssAttachment> ossAttachmentList) {
+        for (OssAttachment ossAttachment : ossAttachmentList) {
+            setContentType(ossAttachment);
         }
     }
+
 }

@@ -60,6 +60,10 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 200MB
 
 # MyBatis-Plus
 mybatis-plus:
@@ -125,3 +129,11 @@ jwt:
   detect: 1800000
   # 续期时间（毫秒）默认半小时
   renew: 3600000
+
+# OSS
+oss:
+  minio:
+    endpoint: http://192.168.123.88:9000
+    bucket: project
+    access-key: admin
+    secret-key: 12345678
