@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,7 @@ public class UserController {
     @ApiOperation("新增")
     @PostMapping
     @OperationLog("新增用户")
+    @PreAuthorize("@pre.check('user:add')")
     public ResponseEntity<User> add(@Validated @RequestBody User user) {
         userService.add(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -40,6 +42,7 @@ public class UserController {
     @ApiOperation("修改")
     @PutMapping
     @OperationLog("修改用户")
+    @PreAuthorize("@pre.check('user:edit')")
     public ResponseEntity<User> update(@Validated @RequestBody User user) {
         userService.update(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -48,6 +51,7 @@ public class UserController {
     @ApiOperation("删除")
     @DeleteMapping
     @OperationLog("删除用户")
+    @PreAuthorize("@pre.check('user:del')")
     public ResponseEntity<Long[]> delete(@RequestBody Long[] ids) {
         if (ids.length == 0) {
             throw new IllegalArgumentException("id不能为空");
@@ -58,24 +62,28 @@ public class UserController {
 
     @ApiOperation("根据id查询用户信息")
     @GetMapping("/id/{id}")
+    @PreAuthorize("@pre.check('user:list')")
     public ResponseEntity<User> queryById(@NotNull @PathVariable("id") Long id) {
         return new ResponseEntity<>(userService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据用户名查询用户信息")
     @GetMapping("/name/{name}")
+    @PreAuthorize("@pre.check('user:list')")
     public ResponseEntity<User> queryByName(@NotNull @PathVariable("name") String name) {
         return new ResponseEntity<>(userService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询用户信息")
     @GetMapping("/queryPage")
+    @PreAuthorize("@pre.check('user:list')")
     public ResponseEntity<Page<User>> queryPage(User user, QueryRequest queryRequest) {
         return new ResponseEntity<>(userService.queryPage(user, queryRequest), HttpStatus.OK);
     }
 
     @ApiOperation("获取用户信息")
     @GetMapping("/getUserInfo")
+    @PreAuthorize("@pre.check('user:list')")
     public ResponseEntity<UserDetails> getUserInfo() {
         return new ResponseEntity<>(SecurityUtils.getCurrentUser(), HttpStatus.OK);
     }

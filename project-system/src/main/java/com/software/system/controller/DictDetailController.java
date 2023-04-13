@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class DictDetailController {
     @ApiOperation("新增")
     @PostMapping
     @OperationLog("新增数据字典详情")
+    @PreAuthorize("@pre.check('dict:add')")
     public ResponseEntity<DictDetail> add(@Validated @RequestBody DictDetail dictDetail) {
         dictDetailService.add(dictDetail);
         return new ResponseEntity<>(dictDetail, HttpStatus.OK);
@@ -39,6 +41,7 @@ public class DictDetailController {
     @ApiOperation("修改")
     @PutMapping
     @OperationLog("修改数据字典详情")
+    @PreAuthorize("@pre.check('dict:del')")
     public ResponseEntity<DictDetail> update(@Validated @RequestBody DictDetail dictDetail) {
         dictDetailService.update(dictDetail);
         return new ResponseEntity<>(dictDetail, HttpStatus.OK);
@@ -47,6 +50,7 @@ public class DictDetailController {
     @ApiOperation("删除")
     @DeleteMapping
     @OperationLog("删除数据字典详情")
+    @PreAuthorize("@pre.check('dict:del')")
     public ResponseEntity<String> delete(@RequestBody List<Long> ids) {
         if (ids.size() == 0) {
             throw new IllegalArgumentException("id不能为空");
@@ -67,7 +71,7 @@ public class DictDetailController {
         return new ResponseEntity<>(dictDetailService.queryByDictId(dictId), HttpStatus.OK);
     }
 
-    @ApiOperation("查询角色列表")
+    @ApiOperation("查询数据字典详情列表")
     @GetMapping("queryList")
     public ResponseEntity<List<DictDetail>> queryList() {
         return new ResponseEntity<>(dictDetailService.queryList(), HttpStatus.OK);

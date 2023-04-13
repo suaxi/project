@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class DictController {
     @ApiOperation("新增")
     @PostMapping
     @OperationLog("新增数据字典")
+    @PreAuthorize("@pre.check('dict:add')")
     public ResponseEntity<Dict> add(@Validated @RequestBody Dict dict) {
         dictService.add(dict);
         return new ResponseEntity<>(dict, HttpStatus.OK);
@@ -39,6 +41,7 @@ public class DictController {
     @ApiOperation("修改")
     @PutMapping
     @OperationLog("修改数据字典")
+    @PreAuthorize("@pre.check('dict:edit')")
     public ResponseEntity<Dict> update(@Validated @RequestBody Dict dict) {
         dictService.update(dict);
         return new ResponseEntity<>(dict, HttpStatus.OK);
@@ -47,6 +50,7 @@ public class DictController {
     @ApiOperation("删除")
     @DeleteMapping
     @OperationLog("删除数据字典")
+    @PreAuthorize("@pre.check('dict:del')")
     public ResponseEntity<String> delete(@RequestBody List<Long> ids) {
         if (ids.size() == 0) {
             throw new IllegalArgumentException("id不能为空");
@@ -57,24 +61,28 @@ public class DictController {
 
     @ApiOperation("根据id查询数据字典信息")
     @GetMapping("/id/{id}")
+    @PreAuthorize("@pre.check('dict:list')")
     public ResponseEntity<Dict> queryById(@NotNull @PathVariable("id") Long id) {
         return new ResponseEntity<>(dictService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据名称查询数据字典信息")
     @GetMapping("/name/{name}")
+    @PreAuthorize("@pre.check('dict:list')")
     public ResponseEntity<Dict> queryByName(@NotNull @PathVariable("name") String name) {
         return new ResponseEntity<>(dictService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("查询数据字典列表")
     @GetMapping("queryList")
+    @PreAuthorize("@pre.check('dict:list')")
     public ResponseEntity<List<Dict>> queryList() {
         return new ResponseEntity<>(dictService.queryList(), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询数据字典信息")
     @GetMapping("/queryPage")
+    @PreAuthorize("@pre.check('dict:list')")
     public ResponseEntity<Page<Dict>> queryPage(Dict dict, QueryRequest queryRequest) {
         return new ResponseEntity<>(dictService.queryPage(dict, queryRequest), HttpStatus.OK);
     }

@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +39,7 @@ public class DeptController {
     @ApiOperation("新增")
     @PostMapping
     @OperationLog("新增部门")
+    @PreAuthorize("@pre.check('dept:add')")
     public ResponseEntity<Dept> add(@Validated @RequestBody Dept dept) {
         deptService.add(dept);
         return new ResponseEntity<>(dept, HttpStatus.OK);
@@ -46,6 +48,7 @@ public class DeptController {
     @ApiOperation("修改")
     @PutMapping
     @OperationLog("修改部门")
+    @PreAuthorize("@pre.check('dept:edit')")
     public ResponseEntity<Dept> update(@Validated @RequestBody Dept dept) {
         deptService.update(dept);
         return new ResponseEntity<>(dept, HttpStatus.OK);
@@ -54,6 +57,7 @@ public class DeptController {
     @ApiOperation("删除")
     @DeleteMapping
     @OperationLog("删除部门")
+    @PreAuthorize("@pre.check('dept:del')")
     public ResponseEntity<String> delete(@RequestBody List<Long> ids) {
         if (ids.size() == 0) {
             throw new IllegalArgumentException("id不能为空");
@@ -64,24 +68,28 @@ public class DeptController {
 
     @ApiOperation("根据id查询部门信息")
     @GetMapping("/id/{id}")
+    @PreAuthorize("@pre.check('user:list', 'dept:list')")
     public ResponseEntity<Dept> queryById(@NotNull @PathVariable("id") Long id) {
         return new ResponseEntity<>(deptService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据名称查询部门信息")
     @GetMapping("/name/{name}")
+    @PreAuthorize("@pre.check('user:list', 'dept:list')")
     public ResponseEntity<Dept> queryByName(@NotNull @PathVariable("name") String name) {
         return new ResponseEntity<>(deptService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询部门信息")
     @GetMapping("/queryPage")
+    @PreAuthorize("@pre.check('user:list', 'dept:list')")
     public ResponseEntity<Page<DeptDto>> queryPage(Dept dept, QueryRequest queryRequest) {
         return new ResponseEntity<>(deptService.queryPage(dept, queryRequest), HttpStatus.OK);
     }
 
     @ApiOperation("根据父id查询子级部门")
     @GetMapping("/queryChildListByPid")
+    @PreAuthorize("@pre.check('user:list', 'dept:list')")
     public ResponseEntity<Map<String, Object>> queryChildListByPid(Long pid) {
         List<DeptDto> deptDtoList = deptService.queryChildListByPid(pid);
         return new ResponseEntity<>(ProjectUtils.toPageData(deptDtoList, deptDtoList.size()), HttpStatus.OK);
@@ -89,12 +97,14 @@ public class DeptController {
 
     @ApiOperation("查询部门树")
     @GetMapping("/queryDeptTree")
+    @PreAuthorize("@pre.check('user:list', 'dept:list')")
     public ResponseEntity<List<? extends Tree<?>>> queryDeptTree() {
         return new ResponseEntity<>(deptService.queryDeptTree(), HttpStatus.OK);
     }
 
     @ApiOperation("根据id查找同级与上级部门树")
     @PostMapping("/querySuperiorListByIds")
+    @PreAuthorize("@pre.check('user:list', 'dept:list')")
     public ResponseEntity<Map<String, Object>> querySuperiorListByIds(@RequestBody List<Long> ids) {
         List<Dept> deptList = new ArrayList<>();
         if (ids != null && ids.size() > 0) {

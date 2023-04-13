@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class JobController {
     @ApiOperation("新增")
     @PostMapping
     @OperationLog("新增岗位")
+    @PreAuthorize("@pre.check('job:add')")
     public ResponseEntity<Job> add(@Validated @RequestBody Job job) {
         jobService.add(job);
         return new ResponseEntity<>(job, HttpStatus.OK);
@@ -39,6 +41,7 @@ public class JobController {
     @ApiOperation("修改")
     @PutMapping
     @OperationLog("修改岗位")
+    @PreAuthorize("@pre.check('job:edit')")
     public ResponseEntity<Job> update(@Validated @RequestBody Job job) {
         jobService.update(job);
         return new ResponseEntity<>(job, HttpStatus.OK);
@@ -47,6 +50,7 @@ public class JobController {
     @ApiOperation("删除")
     @DeleteMapping
     @OperationLog("删除岗位")
+    @PreAuthorize("@pre.check('job:del')")
     public ResponseEntity<String> delete(@RequestBody List<Long> ids) {
         if (ids.size() == 0) {
             throw new IllegalArgumentException("id不能为空");
@@ -57,24 +61,28 @@ public class JobController {
 
     @ApiOperation("根据id查询岗位信息")
     @GetMapping("/id/{id}")
+    @PreAuthorize("@pre.check('user:list', 'job:list')")
     public ResponseEntity<Job> queryById(@NotNull @PathVariable("id") Long id) {
         return new ResponseEntity<>(jobService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据名称查询岗位信息")
     @GetMapping("/name/{name}")
+    @PreAuthorize("@pre.check('user:list', 'job:list')")
     public ResponseEntity<Job> queryByName(@NotNull @PathVariable("name") String name) {
         return new ResponseEntity<>(jobService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("查询角色列表")
     @GetMapping("queryList")
+    @PreAuthorize("@pre.check('user:list', 'job:list')")
     public ResponseEntity<List<Job>> queryList() {
         return new ResponseEntity<>(jobService.queryList(), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询岗位信息")
     @GetMapping("/queryPage")
+    @PreAuthorize("@pre.check('user:list', 'job:list')")
     public ResponseEntity<Page<Job>> queryPage(Job job, QueryRequest queryRequest) {
         return new ResponseEntity<>(jobService.queryPage(job, queryRequest), HttpStatus.OK);
     }
