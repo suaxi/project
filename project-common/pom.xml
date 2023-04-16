@@ -103,6 +103,12 @@
             <groupId>nl.basjes.parse.useragent</groupId>
             <artifactId>yauaa</artifactId>
         </dependency>
+
+        <!-- aspectj-weaver -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

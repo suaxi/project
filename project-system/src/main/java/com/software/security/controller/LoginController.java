@@ -1,6 +1,7 @@
 package com.software.security.controller;
 
 import cn.hutool.core.util.IdUtil;
+import com.software.annotation.Limit;
 import com.software.annotation.OperationLog;
 import com.software.constant.KeyPair;
 import com.software.constant.StringConstant;
@@ -105,6 +106,7 @@ public class LoginController {
 
     @ApiOperation("获取验证码")
     @GetMapping("/getCaptcha")
+    @Limit(name = "获取验证码", period = 3, count = 1)
     public ResponseEntity<Map<String, Object>> getCaptcha() {
         Captcha captcha = loginProperties.getCaptcha();
         String uuid = securityProperties.getCodeKey() + IdUtil.simpleUUID();
