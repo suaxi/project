@@ -47,6 +47,7 @@ public class ProjectWebMvcConfig implements WebMvcConfigurer {
          * 这个路径映射到对应的目录META-INF/resources/下面
          * 采用WebMvcConfigurerAdapter将swagger的静态文件进行发布;
          */
+        registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
         registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
