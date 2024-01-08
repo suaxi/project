@@ -7,6 +7,7 @@ import com.software.entity.Log;
 import com.software.service.LogService;
 import com.software.utils.ProjectUtils;
 import com.software.utils.SecurityUtils;
+import com.software.utils.ThrowableUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -24,8 +25,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -82,7 +81,7 @@ public class LogAspect {
         Log sysLog = new Log();
         sysLog.setLogType("ERROR");
         sysLog.setTime(costTime);
-        sysLog.setExceptionDetail(this.getStackTrace(e));
+        sysLog.setExceptionDetail(ThrowableUtil.getStackTrace(e));
         this.saveOperationLog((ProceedingJoinPoint) joinPoint, request, sysLog);
     }
 
@@ -156,20 +155,6 @@ public class LogAspect {
             return "";
         }
         return argList.size() == 1 ? JSONUtil.toJsonStr(argList.get(0)) : JSONUtil.toJsonStr(argList);
-    }
-
-    /**
-     * 获取异常信息字符串
-     *
-     * @param e Throwable
-     * @return
-     */
-    private String getStackTrace(Throwable e) {
-        StringWriter stringWriter = new StringWriter();
-        try (PrintWriter printWriter = new PrintWriter(stringWriter)) {
-            e.printStackTrace(printWriter);
-            return stringWriter.toString();
-        }
     }
 
     /**

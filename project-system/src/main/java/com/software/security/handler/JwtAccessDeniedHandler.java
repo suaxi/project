@@ -1,6 +1,5 @@
 package com.software.security.handler;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
@@ -14,14 +13,11 @@ import java.io.IOException;
  * @date 2022/10/16 21:14
  * @description 未授权异常handler
  */
-@Slf4j
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException {
-        log.error("未授权");
-        e.printStackTrace();
         httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "未授权");
     }
 }

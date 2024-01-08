@@ -5,6 +5,7 @@ import com.software.security.dto.OnlineUserDto;
 import com.software.security.properties.SecurityProperties;
 import com.software.security.service.OnlineUserService;
 import com.software.security.service.UserCacheManager;
+import com.software.utils.ThrowableUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +57,7 @@ public class JwtAuthenticationTokenFilter extends GenericFilterBean {
             try {
                 onlineUserDto = onlineUserService.get(properties.getOnlineKey() + token);
             } catch (Exception e) {
-                log.error("tokenFilter获取在线用户异常");
-                e.printStackTrace();
+                log.error("tokenFilter获取在线用户异常：{}", ThrowableUtil.getStackTrace(e));
                 clearUserCache = true;
             } finally {
                 if (clearUserCache || Objects.isNull(onlineUserDto)) {

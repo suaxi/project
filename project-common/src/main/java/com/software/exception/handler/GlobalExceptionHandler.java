@@ -2,6 +2,7 @@ package com.software.exception.handler;
 
 import com.software.constant.StringConstant;
 import com.software.exception.BadRequestException;
+import com.software.utils.ThrowableUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,25 +26,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<?> handlerException(Throwable e) {
-        e.printStackTrace();
+        log.error(ThrowableUtil.getStackTrace(e));
         return this.dealExceptionInfo(ResponseErrorResult.error(e.getMessage()));
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> badRequestException(BadRequestException e) {
-        e.printStackTrace();
+        log.error(ThrowableUtil.getStackTrace(e));
         return this.dealExceptionInfo(ResponseErrorResult.error(e.getMessage()));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> accessDeniedException(AccessDeniedException e) {
-        e.printStackTrace();
+        log.error(ThrowableUtil.getStackTrace(e));
         return this.dealExceptionInfo(ResponseErrorResult.error(HttpStatus.FORBIDDEN.value(), e.getMessage()));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<?> httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        e.printStackTrace();
+        log.error(ThrowableUtil.getStackTrace(e));
         return this.dealExceptionInfo(ResponseErrorResult.error(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage()));
     }
 
