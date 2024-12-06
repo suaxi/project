@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.software.system.mapper.UserMapper">
     <select id="queryPage" resultType="com.software.system.entity.User">
-        SELECT
+        select
             u.id,
             u.dept_id,
             u.username,
@@ -17,37 +17,37 @@
             u.`password`,
             u.is_admin,
             u.enabled,
-            u.create_by,
-            u.update_by,
+            u.create_user,
+            u.update_user,
             u.pwd_reset_time,
             u.create_time,
             u.update_time,
-            d.`name` AS deptName,
-            GROUP_CONCAT( DISTINCT ur.role_id ) AS roleIds,
-            GROUP_CONCAT( DISTINCT uj.job_id ) AS jobIds
-        FROM
+            d.`name` as deptName,
+            group_concat( distinct ur.role_id ) as roleIds,
+            group_concat( distinct uj.job_id ) as jobIds
+        from
             sys_user u
-                LEFT JOIN sys_dept d ON u.dept_id = d.id
-                LEFT JOIN sys_user_role ur ON u.id = ur.user_id
-                LEFT JOIN sys_user_job uj ON u.id = uj.user_id
-        WHERE
+            left join sys_dept d on u.dept_id = d.id
+            left join sys_user_role ur on u.id = ur.user_id
+            left join sys_user_job uj on u.id = uj.user_id
+        where
             u.is_delete = 0
         <if test="user.username != null and user.username != ''">
-            AND u.username LIKE CONCAT('%',#{user.username},'%')
+            and u.username like CONCAT('%',#{user.username},'%')
         </if>
         <if test="user.email != null and user.email != ''">
-            AND u.email = #{user.email}
+            and u.email = #{user.email}
         </if>
         <if test="user.enabled != null and user.enabled != '' or user.enabled == false">
-            AND u.enabled = #{user.enabled}
+            and u.enabled = #{user.enabled}
         </if>
         <if test="dataScope != null and dataScope.size() > 0">
-            AND d.id IN
+            and d.id in
             <foreach collection="dataScope" index="index" item="item" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
-        GROUP BY
+        group by
             u.id,
             u.dept_id,
             u.username,
@@ -60,8 +60,8 @@
             u.`password`,
             u.is_admin,
             u.enabled,
-            u.create_by,
-            u.update_by,
+            u.create_user,
+            u.update_user,
             u.pwd_reset_time,
             u.create_time,
             u.update_time,

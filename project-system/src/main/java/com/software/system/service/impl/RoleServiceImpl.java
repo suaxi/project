@@ -43,7 +43,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(Role role) {
-        role.setCreateBy(SecurityUtils.getCurrentUserId());
+        role.setCreateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.save(role);
         if (flag) {
             //当角色数据范围是“自定义”时，同步保存 角色-部门 关联数据
@@ -71,7 +71,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         if (roleByName != null && !roleByName.getId().equals(roleById.getId())) {
             throw new BadRequestException("该角色名称已存在，请重新输入");
         }
-        role.setUpdateBy(SecurityUtils.getCurrentUserId());
+        role.setUpdateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.updateById(role);
         if (flag) {
             //当角色数据范围是“自定义”时，同步保存 角色-部门 关联数据
@@ -93,7 +93,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean delete(List<Long> ids) {
+    public boolean delete(List<Integer> ids) {
         boolean flag = this.removeByIds(ids);
         if (flag) {
             //删除角色-菜单，角色-部门关联数据
@@ -104,7 +104,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
-    public Role queryById(Long id) {
+    public Role queryById(Integer id) {
         if (id == null) {
             throw new IllegalArgumentException("角色id不能为空");
         }
@@ -132,7 +132,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
-    public List<String> queryDataScopeByUserId(Long userId) {
+    public List<String> queryDataScopeByUserId(Integer userId) {
         if (userId != null) {
             return roleMapper.queryDataScopeByUserId(userId);
         }
@@ -140,7 +140,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
-    public List<Role> queryRoleListByUserId(Long userId) {
+    public List<Role> queryRoleListByUserId(Integer userId) {
         if (userId == null) {
             throw new BadRequestException("用户id不能为空");
         }
@@ -149,12 +149,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateRoleMenu(Long roleId, List<Long> menuIds) {
+    public void updateRoleMenu(Integer roleId, List<Integer> menuIds) {
         //删除关联数据
         roleMenuService.deleteRoleMenuByRoleId(Collections.singletonList(roleId));
 
         List<RoleMenu> roleMenuList = new ArrayList<>();
-        for (Long menuId : menuIds) {
+        for (Integer menuId : menuIds) {
             RoleMenu roleMenu = new RoleMenu();
             roleMenu.setRoleId(roleId);
             roleMenu.setMenuId(menuId);

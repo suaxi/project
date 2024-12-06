@@ -16,5 +16,5 @@ public interface DataScopeService {
      * @param user 当前用户信息
      * @return 当前用户数据权限范围（deptIds）集合
      */
-    List<Long> getDeptIds(User user);
+    List<Integer> getDeptIds(User user);
 }

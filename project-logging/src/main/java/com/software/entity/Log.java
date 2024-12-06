@@ -19,7 +19,7 @@ public class Log implements Serializable {
 
     @ApiModelProperty("id")
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     @ApiModelProperty("日志类型")
     @TableField("log_type")

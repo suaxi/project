@@ -47,7 +47,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional(rollbackFor = Exception.class)
     public boolean add(User user) {
         user.setPassword(passwordEncoder.encode(PASSWORD));
-        user.setCreateBy(SecurityUtils.getCurrentUserId());
+        user.setCreateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.save(user);
         //用户关联属性
         if (flag) {
@@ -60,11 +60,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional(rollbackFor = Exception.class)
     public boolean update(User user) {
         //删除关联数据
-        Long[] userIds = Collections.singletonList(user.getId()).toArray(new Long[0]);
+        Integer[] userIds = Collections.singletonList(user.getId()).toArray(new Integer[0]);
         userRoleService.deleteUserRoleByUserId(userIds);
         userJobService.deleteUserJobByUserId(userIds);
 
-        user.setUpdateBy(SecurityUtils.getCurrentUserId());
+        user.setUpdateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.updateById(user);
         //用户关联属性
         if (flag) {
@@ -75,7 +75,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean delete(Long[] ids) {
+    public boolean delete(Integer[] ids) {
         if (ids.length > 0) {
             boolean flag = this.removeByIds(Arrays.asList(ids));
             if (flag) {
@@ -88,7 +88,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User queryById(Long id) {
+    public User queryById(Integer id) {
         if (id == null) {
             throw new IllegalArgumentException("用户id不能为空");
         }
@@ -125,7 +125,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     private boolean setUserAssociatedProperties(User user) {
         List<UserRole> userRoles = new ArrayList<>();
-        Arrays.stream(user.getRoleIds().split(StringConstant.COMMA)).map(Long::new).forEach(roleId -> {
+        Arrays.stream(user.getRoleIds().split(StringConstant.COMMA)).map(Integer::new).forEach(roleId -> {
             UserRole userRole = new UserRole();
             userRole.setUserId(user.getId());
             userRole.setRoleId(roleId);
@@ -133,7 +133,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         });
         if (userRoleService.saveBatch(userRoles)) {
             List<UserJob> userJobs = new ArrayList<>();
-            Arrays.stream(user.getJobIds().split(StringConstant.COMMA)).map(Long::new).forEach(jobId -> {
+            Arrays.stream(user.getJobIds().split(StringConstant.COMMA)).map(Integer::new).forEach(jobId -> {
                 UserJob userJob = new UserJob();
                 userJob.setUserId(user.getId());
                 userJob.setJobId(jobId);

@@ -51,9 +51,9 @@ public class SecurityUtils {
      *
      * @return 当前登录用户id
      */
-    public static Long getCurrentUserId() {
+    public static Integer getCurrentUserId() {
         UserDetails userDetails = getCurrentUser();
-        return new JSONObject(new JSONObject(userDetails).get("user")).get("id", Long.class);
+        return new JSONObject(new JSONObject(userDetails).get("user")).get("id", Integer.class);
     }
 
     /**

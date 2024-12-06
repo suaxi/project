@@ -37,10 +37,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Transactional(rollbackFor = Exception.class)
     public boolean add(Menu menu) {
         //根节点
-        if (menu.getPid().equals(0L)) {
+        if (menu.getPid().equals(0)) {
             menu.setPid(null);
         }
-        menu.setCreateBy(SecurityUtils.getCurrentUserId());
+        menu.setCreateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.save(menu);
         if (menu.getPid() != null && flag) {
             //父节点子菜单数量处理
@@ -54,13 +54,13 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     public boolean update(Menu menu) {
         //原pid
         Menu oldMenuData = this.getById(menu.getId());
-        Long pid = oldMenuData.getPid() == null ? null : oldMenuData.getPid();
+        Integer pid = oldMenuData.getPid() == null ? null : oldMenuData.getPid();
 
         //根节点
-        if (menu.getPid().equals(0L)) {
+        if (menu.getPid().equals(0)) {
             menu.setPid(null);
         }
-        menu.setUpdateBy(SecurityUtils.getCurrentUserId());
+        menu.setUpdateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.updateById(menu);
         //原父节点子菜单数量处理
         if (pid != null && flag) {
@@ -75,17 +75,17 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean delete(List<Long> ids) {
+    public boolean delete(List<Integer> ids) {
         if (ids.size() > 0) {
             List<Menu> menuList = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().in(Menu::getId, ids));
             //删除叶子节点时同步更新父节点的子菜单数量
-            Set<Long> pidSet = menuList.stream().map(Menu::getPid).filter(Objects::nonNull).collect(Collectors.toSet());
+            Set<Integer> pidSet = menuList.stream().map(Menu::getPid).filter(Objects::nonNull).collect(Collectors.toSet());
             //删除父节点时同步删除子节点
-            List<Long> childrenIds = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().in(Menu::getPid, ids)).stream().map(Menu::getId).collect(Collectors.toList());
+            List<Integer> childrenIds = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().in(Menu::getPid, ids)).stream().map(Menu::getId).collect(Collectors.toList());
             boolean flag = this.removeByIds(ids);
             if (flag) {
                 if (pidSet.size() > 0) {
-                    for (Long pid : pidSet) {
+                    for (Integer pid : pidSet) {
                         if (!ids.contains(pid)) {
                             Menu parentMenu = this.getById(pid);
                             int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, pid)).size();
@@ -104,7 +104,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public Menu queryById(Long id) {
+    public Menu queryById(Integer id) {
         if (id == null) {
             throw new IllegalArgumentException("菜单id不能为空");
         }
@@ -144,7 +144,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public List<String> queryUserPermissionByUserId(Long userId) {
+    public List<String> queryUserPermissionByUserId(Integer userId) {
         if (userId != null) {
             return menuMapper.queryUserPermissionByUserId(userId);
         }
@@ -152,7 +152,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public List<VueRouter<Menu>> getUserRouters(Long userId) {
+    public List<VueRouter<Menu>> getUserRouters(Integer userId) {
         List<VueRouter<Menu>> routers = new ArrayList<>();
         List<Menu> menuList = menuMapper.getUserRouters(userId, 2);
         if (menuList != null && menuList.size() > 0) {
@@ -185,7 +185,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public List<MenuDto> queryChildListByPid(Long pid) {
+    public List<MenuDto> queryChildListByPid(Integer pid) {
         LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
         if (pid == null || pid == 0) {
             queryWrapper.isNull(Menu::getPid);
@@ -204,7 +204,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public Set<Menu> queryMenuListById(Long id) {
+    public Set<Menu> queryMenuListById(Integer id) {
         Set<Menu> menuSet = new HashSet<>();
         Menu menu = this.getById(id);
         menuSet.add(menu);
@@ -221,7 +221,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public List<MenuDto> querySameLevelAndSuperiorMenuListById(Long id) {
+    public List<MenuDto> querySameLevelAndSuperiorMenuListById(Integer id) {
         List<Menu> menuList = new ArrayList<>();
         Menu currentMenu = this.getById(id);
         menuList.add(currentMenu);
@@ -272,7 +272,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
      *
      * @param pid 父ID
      */
-    private void dealParentMenuSubCount(Long pid) {
+    private void dealParentMenuSubCount(Integer pid) {
         Menu parentMenu = this.queryById(pid);
         int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, parentMenu.getId())).size();
         if (parentMenu.getSubCount() != subCount) {

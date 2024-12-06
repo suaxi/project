@@ -336,8 +336,8 @@ public class DocumentServiceImpl extends BaseOssService implements DocumentServi
             ossAttachment.setStoreServer(ossProperties.getEndpoint());
             ossAttachment.setStorePath(pathBuffer.toString());
             ossAttachment.setGroupId(attachmentDto.getGroupId());
-            ossAttachment.setUserId(Long.valueOf(attachmentDto.getUserId()));
-            ossAttachment.setMark(attachmentDto.getMark());
+            ossAttachment.setUserId(Integer.valueOf(attachmentDto.getUserId()));
+            ossAttachment.setRemark(attachmentDto.getMark());
             ossAttachment.setCreateTime(new Date());
             if (ossAttachmentService.add(ossAttachment)) {
                 log.info("文件[{}]信息保存成功", ossProperties.getBucket() + CATALOG_DELIMITER + pathBuffer);

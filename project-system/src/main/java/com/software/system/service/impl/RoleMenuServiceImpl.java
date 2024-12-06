@@ -19,7 +19,7 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> i
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteRoleMenuByRoleId(List<Long> roleIds) {
+    public void deleteRoleMenuByRoleId(List<Integer> roleIds) {
         if (roleIds.size() > 0) {
             this.baseMapper.delete(new LambdaQueryWrapper<RoleMenu>().in(RoleMenu::getRoleId, roleIds));
         }

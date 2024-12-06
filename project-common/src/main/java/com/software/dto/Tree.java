@@ -15,13 +15,13 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Tree<T> implements Serializable {
 
-    private Long id;
+    private Integer id;
 
     private String label;
 
     private List<Tree<T>> children;
 
-    private Long parentId;
+    private Integer parentId;
 
     private boolean hasParent = false;
 

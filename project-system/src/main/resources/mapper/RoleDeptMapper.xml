@@ -4,14 +4,23 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.software.system.mapper.RoleDeptMapper">
     <select id="queryByRoleId" resultType="com.software.system.entity.Dept">
-        SELECT
-            d.*
-        FROM
+        select
+            d.id,
+            d.pid,
+            d.sub_count,
+            d.name,
+            d.enabled,
+            d.sort,
+            d.create_time,
+            d.create_user,
+            d.update_time,
+            d.update_user
+        from
             sys_role_dept r,
             sys_dept d
-        WHERE
+        where
             r.dept_id = d.id
-          AND d.is_delete = 0
-          AND r.role_id = #{roleId}
+            and d.is_delete = 0
+            and r.role_id = #{roleId}
     </select>
 </mapper>

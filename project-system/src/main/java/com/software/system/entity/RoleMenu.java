@@ -21,13 +21,13 @@ public class RoleMenu implements Serializable {
 
     @ApiModelProperty("id")
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     @ApiModelProperty("角色id")
     @TableField("role_id")
-    private Long roleId;
+    private Integer roleId;
 
     @ApiModelProperty("菜单id")
     @TableField("menu_id")
-    private Long menuId;
+    private Integer menuId;
 }

@@ -58,7 +58,7 @@ public class DeptController {
     @DeleteMapping
     @OperationLog("删除部门")
     @PreAuthorize("@pre.check('dept:del')")
-    public ResponseEntity<String> delete(@RequestBody List<Long> ids) {
+    public ResponseEntity<String> delete(@RequestBody List<Integer> ids) {
         if (ids.size() == 0) {
             throw new IllegalArgumentException("id不能为空");
         }
@@ -69,7 +69,7 @@ public class DeptController {
     @ApiOperation("根据id查询部门信息")
     @GetMapping("/id/{id}")
     @PreAuthorize("@pre.check('user:list', 'dept:list')")
-    public ResponseEntity<Dept> queryById(@NotNull @PathVariable("id") Long id) {
+    public ResponseEntity<Dept> queryById(@NotNull @PathVariable("id") Integer id) {
         return new ResponseEntity<>(deptService.queryById(id), HttpStatus.OK);
     }
 
@@ -90,7 +90,7 @@ public class DeptController {
     @ApiOperation("根据父id查询子级部门")
     @GetMapping("/queryChildListByPid")
     @PreAuthorize("@pre.check('user:list', 'dept:list')")
-    public ResponseEntity<Map<String, Object>> queryChildListByPid(Long pid) {
+    public ResponseEntity<Map<String, Object>> queryChildListByPid(Integer pid) {
         List<DeptDto> deptDtoList = deptService.queryChildListByPid(pid);
         return new ResponseEntity<>(ProjectUtils.toPageData(deptDtoList, deptDtoList.size()), HttpStatus.OK);
     }
@@ -105,13 +105,13 @@ public class DeptController {
     @ApiOperation("根据id查找同级与上级部门树")
     @PostMapping("/querySuperiorListByIds")
     @PreAuthorize("@pre.check('user:list', 'dept:list')")
-    public ResponseEntity<Map<String, Object>> querySuperiorListByIds(@RequestBody List<Long> ids) {
+    public ResponseEntity<Map<String, Object>> querySuperiorListByIds(@RequestBody List<Integer> ids) {
         List<Dept> deptList = new ArrayList<>();
         if (ids != null && ids.size() > 0) {
-            if (ids.contains(0L)) {
+            if (ids.contains(0)) {
                 throw new IllegalArgumentException("查询参数不合法，部门id不能为0");
             }
-            for (Long id : ids) {
+            for (Integer id : ids) {
                 Dept dept = deptService.queryById(id);
                 deptService.querySuperiorList(dept, deptList);
             }

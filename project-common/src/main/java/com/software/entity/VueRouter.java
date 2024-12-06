@@ -18,9 +18,9 @@ import java.util.List;
 public class VueRouter<T> implements Serializable {
 
     @JsonIgnore
-    private Long id;
+    private Integer id;
     @JsonIgnore
-    private Long parentId;
+    private Integer parentId;
 
     private String path;
     private String name;

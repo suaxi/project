@@ -45,7 +45,7 @@ public class OnlineUserService {
      * @param request      HttpServletRequest
      */
     public void save(LoginUserDto loginUserDto, String token, HttpServletRequest request) {
-        Long deptId = loginUserDto.getUser().getDeptId();
+        Integer deptId = loginUserDto.getUser().getDeptId();
         String ip = ProjectUtils.getIp(request);
         String browser = ProjectUtils.getBrowser(request);
         String cityInfo = ProjectUtils.getCityInfo(ip);

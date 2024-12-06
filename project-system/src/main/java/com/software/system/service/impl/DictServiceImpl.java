@@ -23,13 +23,13 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
 
     @Override
     public boolean add(Dict dict) {
-        dict.setCreateBy(SecurityUtils.getCurrentUserId());
+        dict.setCreateUser(SecurityUtils.getCurrentUsername());
         return this.save(dict);
     }
 
     @Override
     public boolean update(Dict dict) {
-        dict.setUpdateBy(SecurityUtils.getCurrentUserId());
+        dict.setUpdateUser(SecurityUtils.getCurrentUsername());
         return this.updateById(dict);
     }
 

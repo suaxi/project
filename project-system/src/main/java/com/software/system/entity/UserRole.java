@@ -21,13 +21,13 @@ public class UserRole implements Serializable {
 
     @ApiModelProperty("id")
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     @ApiModelProperty("用户id")
     @TableField("user_id")
-    private Long userId;
+    private Integer userId;
 
     @ApiModelProperty("角色id")
     @TableField("role_id")
-    private Long roleId;
+    private Integer roleId;
 }

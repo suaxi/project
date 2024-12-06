@@ -21,14 +21,14 @@ public class RoleDeptServiceImpl extends ServiceImpl<RoleDeptMapper, RoleDept> i
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteRoleDeptByRoleId(List<Long> roleIds) {
+    public void deleteRoleDeptByRoleId(List<Integer> roleIds) {
         if (roleIds.size() > 0) {
             this.baseMapper.delete(new LambdaQueryWrapper<RoleDept>().in(RoleDept::getRoleId, roleIds));
         }
     }
 
     @Override
-    public Set<Dept> queryByRoleId(Long roleId) {
+    public Set<Dept> queryByRoleId(Integer roleId) {
         if (roleId != null) {
             return this.baseMapper.queryByRoleId(roleId);
         }

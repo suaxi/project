@@ -34,7 +34,7 @@ public interface UserService {
      * @param ids ids
      * @return
      */
-    boolean delete(Long[] ids);
+    boolean delete(Integer[] ids);
 
     /**
      * 根据id查询用户信息
@@ -42,7 +42,7 @@ public interface UserService {
      * @param id id
      * @return
      */
-    User queryById(Long id);
+    User queryById(Integer id);
 
     /**
      * 根据用户名查询用户信息

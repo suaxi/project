@@ -20,5 +20,5 @@ public interface RoleDeptMapper extends BaseMapper<RoleDept> {
      * @param roleId 角色id
      * @return 角色对应的部门信息集合
      */
-    Set<Dept> queryByRoleId(Long roleId);
+    Set<Dept> queryByRoleId(Integer roleId);
 }

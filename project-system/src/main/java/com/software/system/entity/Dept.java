@@ -21,11 +21,11 @@ public class Dept implements Serializable {
     
     @ApiModelProperty("id")
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     @ApiModelProperty("父级部门id")
     @TableField(value = "pid", updateStrategy = FieldStrategy.IGNORED)
-    private Long pid;
+    private Integer pid;
 
     @ApiModelProperty("子部门数量")
     @TableField("sub_count")
@@ -46,12 +46,12 @@ public class Dept implements Serializable {
     private Integer sort;
 
     @ApiModelProperty("创建人")
-    @TableField("create_by")
-    private Long createBy;
+    @TableField("create_user")
+    private String createUser;
 
     @ApiModelProperty("更新人")
-    @TableField("update_by")
-    private Long updateBy;
+    @TableField("update_user")
+    private String updateUser;
 
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)

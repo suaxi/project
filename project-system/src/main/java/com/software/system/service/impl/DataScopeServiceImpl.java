@@ -33,8 +33,8 @@ public class DataScopeServiceImpl implements DataScopeService {
     private RoleDeptService roleDeptService;
 
     @Override
-    public List<Long> getDeptIds(User user) {
-        Set<Long> deptIds = new HashSet<>();
+    public List<Integer> getDeptIds(User user) {
+        Set<Integer> deptIds = new HashSet<>();
         //当前用户角色
         List<Role> roleList = roleService.queryRoleListByUserId(user.getId());
         //角色对应的部门id
@@ -63,7 +63,7 @@ public class DataScopeServiceImpl implements DataScopeService {
      * @param role    角色信息
      * @return 自定义权限范围集合
      */
-    private Set<Long> getCustomize(Set<Long> deptIds, Role role) {
+    private Set<Integer> getCustomize(Set<Integer> deptIds, Role role) {
         //当前角色对应的部门信息
         Set<Dept> deptSet = roleDeptService.queryByRoleId(role.getId());
         if (deptSet != null && deptSet.size() > 0) {

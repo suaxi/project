@@ -26,13 +26,13 @@ public class TreeUtil {
         List<Tree<T>> topNodes = new ArrayList<>();
 
         ou: for (Tree<T> node : nodes) {
-            Long pid = node.getParentId();
+            Integer pid = node.getParentId();
             if (pid == null) {
                 topNodes.add(node);
                 continue ou;
             }
             in: for (Tree<T> n : nodes) {
-                Long id = n.getId();
+                Integer id = n.getId();
                 if (id != null && id.equals(pid)) {
                     if (n.getChildren() == null) {
                         n.initChildren();
@@ -66,13 +66,13 @@ public class TreeUtil {
         List<VueRouter<T>> topRoutes = new ArrayList<>();
         VueRouter<T> router = new VueRouter<>();
         routes.forEach(route -> {
-            Long parentId = route.getParentId();
+            Integer parentId = route.getParentId();
             if (parentId == null) {
                 topRoutes.add(route);
                 return;
             }
             for (VueRouter<T> parent : routes) {
-                Long id = parent.getId();
+                Integer id = parent.getId();
                 if (id != null && id.equals(parentId)) {
                     if (parent.getChildren() == null) {
                         parent.initChildren();

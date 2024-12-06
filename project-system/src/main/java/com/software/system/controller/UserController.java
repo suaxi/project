@@ -52,7 +52,7 @@ public class UserController {
     @DeleteMapping
     @OperationLog("删除用户")
     @PreAuthorize("@pre.check('user:del')")
-    public ResponseEntity<Long[]> delete(@RequestBody Long[] ids) {
+    public ResponseEntity<Integer[]> delete(@RequestBody Integer[] ids) {
         if (ids.length == 0) {
             throw new IllegalArgumentException("id不能为空");
         }
@@ -63,7 +63,7 @@ public class UserController {
     @ApiOperation("根据id查询用户信息")
     @GetMapping("/id/{id}")
     @PreAuthorize("@pre.check('user:list')")
-    public ResponseEntity<User> queryById(@NotNull @PathVariable("id") Long id) {
+    public ResponseEntity<User> queryById(@NotNull @PathVariable("id") Integer id) {
         return new ResponseEntity<>(userService.queryById(id), HttpStatus.OK);
     }
 

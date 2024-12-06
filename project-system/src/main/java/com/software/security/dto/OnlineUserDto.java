@@ -24,7 +24,7 @@ public class OnlineUserDto implements Serializable {
     private String nickName;
 
     @ApiModelProperty("部门id")
-    private Long deptId;
+    private Integer deptId;
 
     @ApiModelProperty("浏览器")
     private String browser;

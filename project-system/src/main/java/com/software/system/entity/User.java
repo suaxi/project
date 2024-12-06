@@ -22,11 +22,11 @@ public class User implements Serializable {
 
     @ApiModelProperty("id")
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     @ApiModelProperty("部门id")
     @TableField("dept_id")
-    private Long deptId;
+    private Integer deptId;
 
     @NotBlank
     @ApiModelProperty("用户名")
@@ -70,17 +70,17 @@ public class User implements Serializable {
     private String isAdmin;
 
     @NotNull
-    @ApiModelProperty(value = "状态", notes = "1启用 0禁用")
+    @ApiModelProperty(value = "状态", notes = "1：启用，0：禁用")
     @TableField("enabled")
     private Boolean enabled;
 
     @ApiModelProperty("创建人")
-    @TableField("create_by")
-    private Long createBy;
+    @TableField("create_user")
+    private String createUser;
 
     @ApiModelProperty("更新人")
-    @TableField("update_by")
-    private Long updateBy;
+    @TableField("update_user")
+    private String updateUser;
 
     @ApiModelProperty("密码修改时间")
     @TableField("pwd_reset_time")

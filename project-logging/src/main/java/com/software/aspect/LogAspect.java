@@ -166,7 +166,7 @@ public class LogAspect {
         try {
             return SecurityUtils.getCurrentUsername();
         } catch (Exception e) {
-            return "";
+            return null;
         }
     }
 }

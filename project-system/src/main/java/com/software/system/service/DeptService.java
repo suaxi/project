@@ -36,7 +36,7 @@ public interface DeptService {
      * @param ids ids
      * @return
      */
-    boolean delete(List<Long> ids);
+    boolean delete(List<Integer> ids);
 
     /**
      * 根据id查询部门信息
@@ -44,7 +44,7 @@ public interface DeptService {
      * @param id id
      * @return
      */
-    Dept queryById(Long id);
+    Dept queryById(Integer id);
 
     /**
      * 根据名称查询部门信息
@@ -76,7 +76,7 @@ public interface DeptService {
      * @param pid 父级id
      * @return 子级部门列表
      */
-    List<DeptDto> queryChildListByPid(Long pid);
+    List<DeptDto> queryChildListByPid(Integer pid);
 
     /**
      * 查询部门树

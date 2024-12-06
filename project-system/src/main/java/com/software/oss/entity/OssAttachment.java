@@ -19,7 +19,7 @@ public class OssAttachment implements Serializable {
 
     @ApiModelProperty(value = "主键ID")
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     @ApiModelProperty(value = "存储桶名称")
     @TableField("bucket_name")
@@ -75,15 +75,15 @@ public class OssAttachment implements Serializable {
 
     @ApiModelProperty(value = "属主ID")
     @TableField("user_id")
-    private Long userId;
+    private Integer userId;
 
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
     @ApiModelProperty(value = "备注")
-    @TableField("mark")
-    private String mark;
+    @TableField("remark")
+    private String remark;
 
     @ApiModelProperty(value = "Content-Type")
     private transient String contentType;

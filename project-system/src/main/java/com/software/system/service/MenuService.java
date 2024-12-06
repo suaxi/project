@@ -37,7 +37,7 @@ public interface MenuService {
      * @param ids ids
      * @return
      */
-    boolean delete(List<Long> ids);
+    boolean delete(List<Integer> ids);
 
     /**
      * 根据id查询菜单信息
@@ -45,7 +45,7 @@ public interface MenuService {
      * @param id id
      * @return
      */
-    Menu queryById(Long id);
+    Menu queryById(Integer id);
 
     /**
      * 根据名称查询菜单信息
@@ -77,7 +77,7 @@ public interface MenuService {
      * @param userId 用户id
      * @return
      */
-    List<String> queryUserPermissionByUserId(Long userId);
+    List<String> queryUserPermissionByUserId(Integer userId);
 
     /**
      * 获取用户路由
@@ -85,7 +85,7 @@ public interface MenuService {
      * @param userId 用户名
      * @return 用户路由
      */
-    List<VueRouter<Menu>> getUserRouters(Long userId);
+    List<VueRouter<Menu>> getUserRouters(Integer userId);
 
     /**
      * 根据父id查询子级菜单
@@ -93,7 +93,7 @@ public interface MenuService {
      * @param pid 父级id
      * @return 子级菜单列表
      */
-    List<MenuDto> queryChildListByPid(Long pid);
+    List<MenuDto> queryChildListByPid(Integer pid);
 
     /**
      * 根据id查询子级菜单（包括自身）
@@ -101,7 +101,7 @@ public interface MenuService {
      * @param id id
      * @return 指定id对应的子级菜单列表
      */
-    Set<Menu> queryMenuListById(Long id);
+    Set<Menu> queryMenuListById(Integer id);
 
     /**
      * 根据id查询同级与上级菜单列表
@@ -109,5 +109,5 @@ public interface MenuService {
      * @param id id
      * @return 同级与上级菜单列表
      */
-    List<MenuDto> querySameLevelAndSuperiorMenuListById(Long id);
+    List<MenuDto> querySameLevelAndSuperiorMenuListById(Integer id);
 }

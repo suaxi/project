@@ -21,7 +21,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param userId 用户id
      * @return
      */
-    List<String> queryDataScopeByUserId(Long userId);
+    List<String> queryDataScopeByUserId(Integer userId);
 
     /**
      * 根据用户id查询角色列表
@@ -29,7 +29,7 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @param userId 用户id
      * @return 角色列表
      */
-    List<Role> queryRoleListByUserId(Long userId);
+    List<Role> queryRoleListByUserId(Integer userId);
 
     /**
      * 分页模糊查询

@@ -18,11 +18,11 @@ public class DictDetail {
 
     @ApiModelProperty("id")
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     @ApiModelProperty("字典id")
     @TableField("dict_id")
-    private Long dictId;
+    private Integer dictId;
 
     @ApiModelProperty("字典标签")
     @TableField("label")
@@ -37,12 +37,12 @@ public class DictDetail {
     private Long sort;
 
     @ApiModelProperty("创建人")
-    @TableField("create_by")
-    private Long createBy;
+    @TableField("create_user")
+    private String createUser;
 
     @ApiModelProperty("更新人")
-    @TableField("update_by")
-    private Long updateBy;
+    @TableField("update_user")
+    private String updateUser;
 
     @ApiModelProperty("创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)

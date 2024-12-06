@@ -48,7 +48,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
             }
 
             //数据权限信息
-            List<Long> daScopeList = dataScopeService.getDeptIds(user);
+            List<Integer> daScopeList = dataScopeService.getDeptIds(user);
             //菜单权限
             List<String> permissionList = menuService.queryUserPermissionByUserId(user.getId()).stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
             loginUser = new LoginUserDto(user, daScopeList, permissionList);

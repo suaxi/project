@@ -54,7 +54,7 @@ public class RoleController {
     @DeleteMapping
     @OperationLog("删除角色")
     @PreAuthorize("@pre.check('roles:del')")
-    public ResponseEntity<String> delete(@RequestBody List<Long> ids) {
+    public ResponseEntity<String> delete(@RequestBody List<Integer> ids) {
         if (ids.size() == 0) {
             throw new IllegalArgumentException("id不能为空");
         }
@@ -65,7 +65,7 @@ public class RoleController {
     @ApiOperation("根据id查询角色信息")
     @GetMapping("/id/{id}")
     @PreAuthorize("@pre.check('roles:list')")
-    public ResponseEntity<Role> queryById(@NotNull @PathVariable("id") Long id) {
+    public ResponseEntity<Role> queryById(@NotNull @PathVariable("id") Integer id) {
         return new ResponseEntity<>(roleService.queryById(id), HttpStatus.OK);
     }
 

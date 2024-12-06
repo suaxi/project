@@ -23,13 +23,13 @@ public class DictDetailServiceImpl extends ServiceImpl<DictDetailMapper, DictDet
 
     @Override
     public boolean add(DictDetail dictDetail) {
-        dictDetail.setCreateBy(SecurityUtils.getCurrentUserId());
+        dictDetail.setCreateUser(SecurityUtils.getCurrentUsername());
         return this.save(dictDetail);
     }
 
     @Override
     public boolean update(DictDetail dictDetail) {
-        dictDetail.setUpdateBy(SecurityUtils.getCurrentUserId());
+        dictDetail.setUpdateUser(SecurityUtils.getCurrentUsername());
         return this.updateById(dictDetail);
     }
 

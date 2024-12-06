@@ -34,7 +34,7 @@ public interface RoleService {
      * @param ids ids
      * @return
      */
-    boolean delete(List<Long> ids);
+    boolean delete(List<Integer> ids);
 
     /**
      * 根据id查询角色信息
@@ -42,7 +42,7 @@ public interface RoleService {
      * @param id id
      * @return
      */
-    Role queryById(Long id);
+    Role queryById(Integer id);
 
     /**
      * 根据名称查询角色信息
@@ -74,7 +74,7 @@ public interface RoleService {
      * @param userId
      * @return
      */
-    List<String> queryDataScopeByUserId(Long userId);
+    List<String> queryDataScopeByUserId(Integer userId);
 
     /**
      * 根据用户id查询角色列表
@@ -82,7 +82,7 @@ public interface RoleService {
      * @param userId 用户id
      * @return 角色列表
      */
-    List<Role> queryRoleListByUserId(Long userId);
+    List<Role> queryRoleListByUserId(Integer userId);
 
     /**
      * 根据角色id修改角色关联菜单
@@ -90,6 +90,6 @@ public interface RoleService {
      * @param roleId  角色id
      * @param menuIds 菜单ids
      */
-    void updateRoleMenu(Long roleId, List<Long> menuIds);
+    void updateRoleMenu(Integer roleId, List<Integer> menuIds);
 }
 

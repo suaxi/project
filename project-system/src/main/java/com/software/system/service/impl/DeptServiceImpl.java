@@ -31,7 +31,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(Dept dept) {
-        dept.setCreateBy(SecurityUtils.getCurrentUserId());
+        dept.setCreateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.save(dept);
         if (dept.getPid() != null) {
             Dept parentDept = this.getById(dept.getPid());
@@ -46,8 +46,8 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     public boolean update(Dept dept) {
         //原pid
         Dept oldDeptData = this.getById(dept.getId());
-        Long pid = oldDeptData.getPid() == null ? null : oldDeptData.getPid();
-        dept.setUpdateBy(SecurityUtils.getCurrentUserId());
+        Integer pid = oldDeptData.getPid() == null ? null : oldDeptData.getPid();
+        dept.setUpdateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.updateById(dept);
         //原父节点子部门数量处理
         if (pid != null && flag) {
@@ -62,17 +62,17 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean delete(List<Long> ids) {
+    public boolean delete(List<Integer> ids) {
         if (ids.size() > 0) {
             List<Dept> deptList = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().in(Dept::getId, ids));
             //删除叶子节点时同步更新父节点的子部门数量
-            Set<Long> pidSet = deptList.stream().map(Dept::getPid).filter(Objects::nonNull).collect(Collectors.toSet());
+            Set<Integer> pidSet = deptList.stream().map(Dept::getPid).filter(Objects::nonNull).collect(Collectors.toSet());
             //删除父节点时同步删除子节点
-            List<Long> childrenIds = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().in(Dept::getPid, ids)).stream().map(Dept::getId).collect(Collectors.toList());
+            List<Integer> childrenIds = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().in(Dept::getPid, ids)).stream().map(Dept::getId).collect(Collectors.toList());
             boolean flag = this.removeByIds(ids);
             if (flag) {
                 if (pidSet.size() > 0) {
-                    for (Long pid : pidSet) {
+                    for (Integer pid : pidSet) {
                         if (!ids.contains(pid)) {
                             Dept parentDept = this.getById(pid);
                             int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, pid)).size();
@@ -91,7 +91,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     }
 
     @Override
-    public Dept queryById(Long id) {
+    public Dept queryById(Integer id) {
         if (id == null) {
             throw new IllegalArgumentException("部门id不能为空");
         }
@@ -135,7 +135,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     }
 
     @Override
-    public List<DeptDto> queryChildListByPid(Long pid) {
+    public List<DeptDto> queryChildListByPid(Integer pid) {
         LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Dept::getEnabled, true);
         if (pid == null) {
@@ -204,7 +204,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
      *
      * @param pid 父ID
      */
-    private void dealParentDeptSubCount(Long pid) {
+    private void dealParentDeptSubCount(Integer pid) {
         Dept parentDept = this.queryById(pid);
         int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, pid)).size();
         if (parentDept.getSubCount() != subCount) {

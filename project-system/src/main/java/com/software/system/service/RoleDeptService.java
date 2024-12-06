@@ -18,7 +18,7 @@ public interface RoleDeptService extends IService<RoleDept> {
      *
      * @param roleIds 角色ids
      */
-    void deleteRoleDeptByRoleId(List<Long> roleIds);
+    void deleteRoleDeptByRoleId(List<Integer> roleIds);
 
     /**
      * 根据角色id查询角色对应的部门信息
@@ -26,5 +26,5 @@ public interface RoleDeptService extends IService<RoleDept> {
      * @param roleId 角色id
      * @return 角色对应的部门信息集合
      */
-    Set<Dept> queryByRoleId(Long roleId);
+    Set<Dept> queryByRoleId(Integer roleId);
 }

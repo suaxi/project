@@ -25,14 +25,14 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements JobSe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(Job job) {
-        job.setCreateBy(SecurityUtils.getCurrentUserId());
+        job.setCreateUser(SecurityUtils.getCurrentUsername());
         return this.save(job);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(Job job) {
-        job.setUpdateBy(SecurityUtils.getCurrentUserId());
+        job.setUpdateUser(SecurityUtils.getCurrentUsername());
         return this.updateById(job);
     }
 

@@ -57,7 +57,7 @@ public class MenuController {
     @DeleteMapping
     @OperationLog("删除菜单")
     @PreAuthorize("@pre.check('menu:del')")
-    public ResponseEntity<String> delete(@RequestBody List<Long> ids) {
+    public ResponseEntity<String> delete(@RequestBody List<Integer> ids) {
         if (ids.size() == 0) {
             throw new IllegalArgumentException("id不能为空");
         }
@@ -68,7 +68,7 @@ public class MenuController {
     @ApiOperation("根据id查询菜单信息")
     @GetMapping("/id/{id}")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<Menu> queryById(@NotNull @PathVariable("id") Long id) {
+    public ResponseEntity<Menu> queryById(@NotNull @PathVariable("id") Integer id) {
         return new ResponseEntity<>(menuService.queryById(id), HttpStatus.OK);
     }
 
@@ -96,7 +96,7 @@ public class MenuController {
     @ApiOperation("根据父id查询全部菜单（懒加载）")
     @GetMapping("/queryChildListByPid")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<Map<String, Object>> queryChildListByPid(@RequestParam("pid") Long pid) {
+    public ResponseEntity<Map<String, Object>> queryChildListByPid(@RequestParam("pid") Integer pid) {
         List<MenuDto> menuDtoList = menuService.queryChildListByPid(pid);
         return new ResponseEntity<>(ProjectUtils.toPageData(menuDtoList, menuDtoList.size()), HttpStatus.OK);
     }
@@ -104,7 +104,7 @@ public class MenuController {
     @ApiOperation("根据id查询子级菜单（包括自身）")
     @GetMapping("/queryMenuListById")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<Map<String, Object>> queryMenuListById(@RequestParam("id") Long id) {
+    public ResponseEntity<Map<String, Object>> queryMenuListById(@RequestParam("id") Integer id) {
         Set<Menu> menuSet = menuService.queryMenuListById(id);
         return new ResponseEntity<>(ProjectUtils.toPageData(menuSet, menuSet.size()), HttpStatus.OK);
     }
@@ -112,7 +112,7 @@ public class MenuController {
     @ApiOperation("根据id查询同级与上级菜单列表")
     @GetMapping("/querySameLevelAndSuperiorMenuListById")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<Map<String, Object>> querySameLevelAndSuperiorMenuListById(@RequestParam("id") Long id) {
+    public ResponseEntity<Map<String, Object>> querySameLevelAndSuperiorMenuListById(@RequestParam("id") Integer id) {
         List<MenuDto> menuDtoList = menuService.querySameLevelAndSuperiorMenuListById(id);
         return new ResponseEntity<>(ProjectUtils.toPageData(menuDtoList, menuDtoList.size()), HttpStatus.OK);
     }

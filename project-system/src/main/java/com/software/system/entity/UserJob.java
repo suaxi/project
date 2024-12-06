@@ -21,13 +21,13 @@ public class UserJob implements Serializable {
 
     @ApiModelProperty("id")
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     @ApiModelProperty("用户id")
     @TableField("user_id")
-    private Long userId;
+    private Integer userId;
 
     @ApiModelProperty("岗位id")
     @TableField("job_id")
-    private Long jobId;
+    private Integer jobId;
 }

@@ -20,7 +20,7 @@ public interface MenuMapper extends BaseMapper<Menu> {
      * @param userId 用户id
      * @return
      */
-    List<String> queryUserPermissionByUserId(Long userId);
+    List<String> queryUserPermissionByUserId(Integer userId);
 
     /**
      * 获取用户路由
@@ -29,5 +29,5 @@ public interface MenuMapper extends BaseMapper<Menu> {
      * @param type 菜单类型
      * @return 用户路由
      */
-    List<Menu> getUserRouters(@Param("userId") Long userId, @Param("type") int type);
+    List<Menu> getUserRouters(@Param("userId") Integer userId, @Param("type") int type);
 }

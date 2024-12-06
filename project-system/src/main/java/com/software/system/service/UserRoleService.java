@@ -13,5 +13,5 @@ public interface UserRoleService extends IService<UserRole> {
      * 根据用户id删除用户角色关联数据
      * @param userIds 用户ids
      */
-    void deleteUserRoleByUserId(Long[] userIds);
+    void deleteUserRoleByUserId(Integer[] userIds);
 }

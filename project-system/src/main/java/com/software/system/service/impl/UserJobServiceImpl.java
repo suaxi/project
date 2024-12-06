@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class UserJobServiceImpl extends ServiceImpl<UserJobMapper, UserJob> implements UserJobService {
 
     @Override
-    public void deleteUserJobByUserId(Long[] userIds) {
+    public void deleteUserJobByUserId(Integer[] userIds) {
         if (userIds.length > 0) {
             this.baseMapper.delete(new LambdaQueryWrapper<UserJob>().in(UserJob::getUserId, Arrays.asList(userIds)));
         }

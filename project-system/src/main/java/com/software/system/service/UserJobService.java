@@ -13,5 +13,5 @@ public interface UserJobService extends IService<UserJob> {
      * 根据用户id删除用户岗位关联数据
      * @param userIds 用户ids
      */
-    void deleteUserJobByUserId(Long[] userIds);
+    void deleteUserJobByUserId(Integer[] userIds);
 }
