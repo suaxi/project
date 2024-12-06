@@ -21,10 +21,10 @@
             r.level,
             r.description,
             r.data_scope,
-            r.create_user,
-            r.update_user,
             r.create_time,
-            r.update_time
+            r.create_user,
+            r.update_time,
+            r.update_user
         from
             sys_user u
             left join sys_user_role ur on u.id = ur.user_id
@@ -42,10 +42,10 @@
             `level`,
             description,
             data_scope,
-            create_by,
-            update_by,
             create_time,
-            update_time
+            create_user,
+            update_time,
+            update_user
         from
             sys_role
         where
@@ -91,10 +91,10 @@
             m.hidden,
             m.permission,
             m.sort,
-            m.create_user,
-            m.update_user,
             m.create_time,
-            m.update_time
+            m.create_user,
+            m.update_time,
+            m.update_user
         from
             sys_role r,
             sys_role_menu rm,
@@ -114,10 +114,10 @@
             d.`name`,
             d.enabled,
             d.sort,
-            d.create_user,
-            d.update_user,
             d.create_time,
-            d.update_time
+            d.create_user,
+            d.update_time,
+            d.update_user
         from
             sys_role r,
             sys_role_dept rd,

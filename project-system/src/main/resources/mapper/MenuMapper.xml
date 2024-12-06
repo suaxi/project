@@ -33,10 +33,10 @@
             m.hidden,
             m.permission,
             m.sort,
-            m.create_user,
-            m.update_user,
             m.create_time,
-            m.update_time
+            m.create_user,
+            m.update_time,
+            m.update_user
         from
             sys_user u
             left join sys_user_role ur on u.id = ur.user_id

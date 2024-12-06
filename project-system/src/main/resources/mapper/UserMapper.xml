@@ -17,11 +17,11 @@
             u.`password`,
             u.is_admin,
             u.enabled,
-            u.create_user,
-            u.update_user,
             u.pwd_reset_time,
             u.create_time,
+            u.create_user,
             u.update_time,
+            u.update_user,
             d.`name` as deptName,
             group_concat( distinct ur.role_id ) as roleIds,
             group_concat( distinct uj.job_id ) as jobIds
@@ -60,11 +60,11 @@
             u.`password`,
             u.is_admin,
             u.enabled,
-            u.create_user,
-            u.update_user,
             u.pwd_reset_time,
             u.create_time,
+            u.create_user,
             u.update_time,
+            u.update_user,
             d.`name`
     </select>
 </mapper>
