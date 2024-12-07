@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -56,6 +57,24 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+        StringBuilder msg = new StringBuilder();
+        for (FieldError fieldError : fieldErrors) {
+            msg.append(fieldError.getField()).append(fieldError.getDefaultMessage()).append(StringConstant.COMMA);
+        }
+        msg = new StringBuilder(msg.substring(0, msg.length() - 1));
+        log.error(msg.toString());
+        return this.dealExceptionInfo(ResponseErrorResult.error(msg.toString()));
+    }
+
+    /**
+     * 参数校验异常处理
+     *
+     * @param e BindException
+     * @return
+     */
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<?> handleBindException(BindException e) {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         StringBuilder msg = new StringBuilder();
         for (FieldError fieldError : fieldErrors) {
