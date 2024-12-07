@@ -27,6 +27,9 @@ public enum ContentType {
     JPG("JPG", "image/jpeg"),
     PNG("PNG", "image/png"),
     DWG("DWG", "image/vnd.dwg"),
+    WEBP("WEBP", "image/webp"),
+    TIF("TIF", "image/tiff"),
+    TIFF("TIFF", "image/tiff"),
     // MS-OFFICE
     DOC("DOC", "application/msword"),
     DOT("DOT", "application/msword"),

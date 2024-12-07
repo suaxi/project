@@ -37,7 +37,7 @@ public class ImageUtil {
     /**
      * 压缩率
      */
-    private static final float IMAGE_RATIO = 0.1f;
+    private static final float IMAGE_RATIO = 0.9f;
 
     /**
      * 压缩最大宽度
@@ -107,24 +107,24 @@ public class ImageUtil {
      * @return
      */
     public static BufferedImage setWatermark(BufferedImage image) throws IOException {
-        BufferedImage mask = createMask(image.getWidth(), image.getHeight());
+        //BufferedImage mask = createMask(image.getWidth(), image.getHeight());
         BufferedImage watermark = createWatermark(new DateUtils().formatToDateTime(), image.getWidth(), image.getHeight());
         return Thumbnails.of(image)
                 .outputQuality(IMAGE_RATIO)
                 .scale(1)
-                .watermark(Positions.BOTTOM_CENTER, mask, .5f)
+                //.watermark(Positions.BOTTOM_CENTER, mask, .5f)
                 .watermark(Positions.BOTTOM_RIGHT, watermark, 0.8f)
                 .asBufferedImage();
     }
 
 
     public static BufferedImage setWatermark(BufferedImage image, Map<String, String> metadata) throws IOException {
-        BufferedImage mask = createMask(metadata, image.getWidth(), image.getHeight());
+        //BufferedImage mask = createMask(metadata);
         BufferedImage watermark = createWatermark(metadata, image.getWidth(), image.getHeight());
         return Thumbnails.of(image)
                 .outputQuality(IMAGE_RATIO)
                 .scale(1)
-                .watermark(Positions.BOTTOM_RIGHT, mask, .5f)
+                //.watermark(Positions.BOTTOM_RIGHT, mask, .5f)
                 .watermark(Positions.BOTTOM_RIGHT, watermark, 0.8f)
                 .asBufferedImage();
     }
@@ -135,7 +135,7 @@ public class ImageUtil {
      * @return
      */
     public static boolean isImage(String fileName) {
-        for (String e : new String[]{"jpeg", "jpg", "gif", "bmp", "png"}) {
+        for (String e : new String[]{"jpeg", "jpg", "gif", "bmp", "png", "webp", "tif", "tiff"}) {
             if (getFileExtention(fileName).toLowerCase().equals(e)) {
                 return true;
             }
@@ -161,10 +161,10 @@ public class ImageUtil {
      * @return
      * @throws IOException
      */
-    public static InputStream getInputStream(BufferedImage image, String readImageFormat) throws IOException {
+    public static ByteArrayInputStream getInputStream(BufferedImage image, String readImageFormat) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ImageIO.write(image, readImageFormat, os);
-        InputStream is = new ByteArrayInputStream(os.toByteArray());
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
         os.close();
         return is;
     }
@@ -187,7 +187,7 @@ public class ImageUtil {
         return maskImage;
     }
 
-    public static BufferedImage createMask(Map<String, String> metadata, int width, int height) {
+    public static BufferedImage createMask(Map<String, String> metadata) {
         int markWidth = 190;
         int markHeight = 0;
         if (metadata == null || metadata.size() == 0) {
@@ -195,7 +195,6 @@ public class ImageUtil {
         } else {
             markHeight = metadata.size() * 10;
         }
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         // 创建黑色遮罩层
         BufferedImage maskImage = new BufferedImage(markWidth, markHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D maskGraphics2D = (Graphics2D) maskImage.getGraphics();

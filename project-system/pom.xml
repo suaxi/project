@@ -94,13 +94,6 @@
             <version>0.4.12</version>
         </dependency>
 
-        <!-- PDF 压缩类库 -->
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>5.5.13.1</version>
-        </dependency>
-
         <!-- commons-io -->
         <dependency>
             <groupId>commons-io</groupId>

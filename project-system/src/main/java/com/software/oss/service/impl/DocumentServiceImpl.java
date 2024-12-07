@@ -1,9 +1,6 @@
 package com.software.oss.service.impl;
 
 import cn.hutool.core.util.IdUtil;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.*;
-import com.itextpdf.text.pdf.parser.PdfImageObject;
 import com.software.constant.StringConstant;
 import com.software.enums.ContentType;
 import com.software.exception.BadRequestException;
@@ -26,9 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -50,14 +44,9 @@ public class DocumentServiceImpl extends BaseOssService implements DocumentServi
     private static final String CATALOG_DELIMITER = "/";
 
     /**
-     * 图像的乘法因子
-     */
-    public static final float FACTOR = 0.5f;
-
-    /**
      * 图片文件后缀
      */
-    private static final String[] IMAGE_SUFFIX_LIST = new String[]{"JPEG", "JPG", "GIF", "BMP", "PNG"};
+    private static final String[] IMAGE_SUFFIX_LIST = new String[]{"JPEG", "JPG", "GIF", "BMP", "PNG", "WEBP", "TIF", "TIFF"};
 
     /**
      * PDF文件后缀
@@ -225,7 +214,7 @@ public class DocumentServiceImpl extends BaseOssService implements DocumentServi
     @Override
     public List<OssAttachment> upload(MultipartFile[] multipartFiles, OssAttachmentDto attachmentDto) {
         String fileName = "";
-        String fileSuffix = "";
+        String fileSuffix;
         List<OssAttachment> ossAttachmentList = new ArrayList<>();
         try {
             if (multipartFiles != null && multipartFiles.length > 0) {
@@ -249,7 +238,7 @@ public class DocumentServiceImpl extends BaseOssService implements DocumentServi
     @Override
     public List<OssAttachment> upload(byte[][] byteArray, String[] fileNames, OssAttachmentDto attachmentDto) {
         String fileName = "";
-        String fileSuffix = "";
+        String fileSuffix;
         List<OssAttachment> ossAttachmentList = new ArrayList<>();
         try {
             if (byteArray != null && byteArray.length > 0) {
@@ -271,12 +260,15 @@ public class DocumentServiceImpl extends BaseOssService implements DocumentServi
 
     @Override
     public OssAttachment upload(String fileName, String fileSuffix, InputStream inputStream, OssAttachmentDto attachmentDto) {
-        long fileSize = 0L;
-        StringBuffer pathBuffer = null;
-        PutObjectOptions putObjectOptions = null;
-        OssAttachment ossAttachment = null;
+        long fileSize;
+        StringBuffer pathBuffer;
+        PutObjectOptions putObjectOptions;
+        OssAttachment ossAttachment;
+        ByteArrayInputStream bis = null;
         File tempFile = null;
         try {
+            byte[] data = IOUtils.toByteArray(inputStream);
+            bis = new ByteArrayInputStream(data);
             pathBuffer = new StringBuffer();
             // 添加业务目录
             if (StringUtils.isNotBlank(attachmentDto.getPath())) {
@@ -291,34 +283,26 @@ public class DocumentServiceImpl extends BaseOssService implements DocumentServi
 
             // 图片文件： 压缩 + 水印
             if (ArrayUtils.contains(IMAGE_SUFFIX_LIST, fileSuffix)) {
-                tempFile = this.createTempFile(inputStream);
-                inputStream.close();
+                tempFile = this.createTempFile(bis);
+                bis.close();
 
-                inputStream = Files.newInputStream(tempFile.toPath());
-                // 重新打开流
-                if (attachmentDto.isWaterMark()) {
-                    Map<String, String> metadata = ImageUtil.readPicInfo(tempFile);
-                    inputStream = ImageUtil.getInputStream(ImageUtil.setWatermark(ImageUtil.compress(ImageIO.read(inputStream)), metadata), fileSuffix);
+                bis = new ByteArrayInputStream(Files.readAllBytes(tempFile.toPath()));
+                if (attachmentDto.getWaterMark()) {
+                    log.info("图片[{}]已压缩[{}%]", fileName, bis.available() / bis.available() * 100);
+                    bis = ImageUtil.getInputStream(ImageUtil.setWatermark(ImageUtil.compress(ImageIO.read(bis))), fileSuffix);
                 }
-                putObjectOptions = new PutObjectOptions(inputStream.available(), -1);
-                log.info("图片[{}]已压缩[{}%]", fileName, inputStream.available() / inputStream.available() * 100);
-            }
-            // PDF文件： 压缩
-            else if (ArrayUtils.contains(PDF_SUFFIX_LIST, fileSuffix)) {
-                tempFile = this.compressPdf(fileName, inputStream);
-                inputStream = Files.newInputStream(tempFile.toPath());
-                putObjectOptions = new PutObjectOptions(inputStream.available(), -1);
-                log.info("PDF[{}]已压缩[{}%]", fileName, inputStream.available() / inputStream.available() * 100);
-            }
-            // 其他文件
-            else {
-                putObjectOptions = new PutObjectOptions(inputStream.available(), -1);
+                putObjectOptions = new PutObjectOptions(bis.available(), -1);
+            } else if (ArrayUtils.contains(PDF_SUFFIX_LIST, fileSuffix)) {
+                putObjectOptions = new PutObjectOptions(bis.available(), -1);
+            } else {
+                // 其他文件
+                putObjectOptions = new PutObjectOptions(bis.available(), -1);
             }
             putObjectOptions.setContentType(ContentType.parseOf(fileSuffix).getMimeType());
 
             // 上传文件
-            fileSize = inputStream.available();
-            this.putObject(ossProperties.getBucket(), pathBuffer.toString(), inputStream, putObjectOptions);
+            fileSize = bis.available();
+            this.putObject(ossProperties.getBucket(), pathBuffer.toString(), bis, putObjectOptions);
             log.info("文件[{}]上传成功", ossProperties.getBucket() + CATALOG_DELIMITER + pathBuffer);
 
             // 存储OSS附件信息
@@ -332,7 +316,7 @@ public class DocumentServiceImpl extends BaseOssService implements DocumentServi
             ossAttachment.setFileName(fileName);
             ossAttachment.setFileType(fileSuffix);
             ossAttachment.setFileSize(fileSize);
-            ossAttachment.setFileMd5(DigestUtils.md5Hex(inputStream));
+            ossAttachment.setFileMd5(DigestUtils.md5Hex(data));
             ossAttachment.setStoreServer(ossProperties.getEndpoint());
             ossAttachment.setStorePath(pathBuffer.toString());
             ossAttachment.setGroupId(attachmentDto.getGroupId());
@@ -342,9 +326,6 @@ public class DocumentServiceImpl extends BaseOssService implements DocumentServi
             if (ossAttachmentService.add(ossAttachment)) {
                 log.info("文件[{}]信息保存成功", ossProperties.getBucket() + CATALOG_DELIMITER + pathBuffer);
             }
-        } catch (DocumentException e) {
-            log.error("PDF文件[{}]压缩异常：{}", fileName, e.getMessage());
-            throw new BadRequestException("PDF文件[" + fileName + "]压缩异常：" + e.getMessage());
         } catch (IllegalArgumentException e) {
             log.error("不支持上传[{}]文件格式", fileSuffix);
             throw new BadRequestException("不支持上传[" + fileSuffix + "]文件格式");
@@ -360,6 +341,15 @@ public class DocumentServiceImpl extends BaseOssService implements DocumentServi
                     e.printStackTrace();
                 }
             }
+
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
             // 删除临时文件
             if (tempFile != null) {
                 tempFile.deleteOnExit();
@@ -394,72 +384,4 @@ public class DocumentServiceImpl extends BaseOssService implements DocumentServi
         return tempFile;
     }
 
-    /**
-     * 压缩 PDF 文件
-     *
-     * @param fileName    文件名称
-     * @param inputStream 输入流
-     * @throws IOException
-     * @throws DocumentException
-     */
-    public File compressPdf(String fileName, InputStream inputStream) throws IOException, DocumentException {
-        File tempFile = File.createTempFile(fileName, ".tmp");
-        // 读取pdf文件
-        PdfReader pdfReader = new PdfReader(inputStream);
-        int xrefSize = pdfReader.getXrefSize();
-        PdfObject pdfObject = null;
-        PRStream prStream = null;
-        // 查找图像并处理图像流
-        for (int i = 0; i < xrefSize; i++) {
-            pdfObject = pdfReader.getPdfObject(i);
-            if (pdfObject == null || !pdfObject.isStream()) {
-                continue;
-            }
-            prStream = (PRStream) pdfObject;
-            PdfObject pdfsubtype = prStream.get(PdfName.SUBTYPE);
-            if (pdfsubtype != null && pdfsubtype.toString().equals(PdfName.IMAGE.toString())) {
-                PdfImageObject image = new PdfImageObject(prStream);
-                BufferedImage bi = image.getBufferedImage();
-                if (bi == null) {
-                    continue;
-                }
-                int width = (int) (bi.getWidth() * FACTOR);
-                int height = (int) (bi.getHeight() * FACTOR);
-                BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-                AffineTransform affineTransform = AffineTransform.getScaleInstance(FACTOR, FACTOR);
-                Graphics2D graphics2D = bufferedImage.createGraphics();
-                graphics2D.drawRenderedImage(bi, affineTransform);
-                ByteArrayOutputStream imgBytes = new ByteArrayOutputStream();
-                // 判断文件流的大小，超过500k的才进行压缩，否则不进行压缩
-                if (bufferedImage.getData().getDataBuffer().getSize() > 500 * 1024) {
-                    ImageIO.write(bufferedImage, "JPG", imgBytes);
-                    prStream.clear();
-                    prStream.setData(imgBytes.toByteArray(), false, PRStream.BEST_COMPRESSION);
-                    prStream.put(PdfName.TYPE, PdfName.XOBJECT);
-                    prStream.put(PdfName.SUBTYPE, PdfName.IMAGE);
-                    prStream.put(PdfName.FILTER, PdfName.DCTDECODE);
-                    prStream.put(PdfName.WIDTH, new PdfNumber(width));
-                    prStream.put(PdfName.HEIGHT, new PdfNumber(height));
-                    prStream.put(PdfName.BITSPERCOMPONENT, new PdfNumber(8));
-                    prStream.put(PdfName.COLORSPACE, PdfName.DEVICERGB);
-                } else {
-                    ImageIO.write(bufferedImage, "JPG", imgBytes);
-                }
-                prStream.clear();
-                prStream.setData(imgBytes.toByteArray(), false, PRStream.BEST_COMPRESSION);
-                prStream.put(PdfName.TYPE, PdfName.XOBJECT);
-                prStream.put(PdfName.SUBTYPE, PdfName.IMAGE);
-                prStream.put(PdfName.FILTER, PdfName.DCTDECODE);
-                prStream.put(PdfName.WIDTH, new PdfNumber(width));
-                prStream.put(PdfName.HEIGHT, new PdfNumber(height));
-                prStream.put(PdfName.BITSPERCOMPONENT, new PdfNumber(8));
-                prStream.put(PdfName.COLORSPACE, PdfName.DEVICERGB);
-            }
-        }
-        // Save altered PDF
-        PdfStamper pdfStamper = new PdfStamper(pdfReader, Files.newOutputStream(tempFile.toPath()));
-        pdfStamper.close();
-        pdfReader.close();
-        return tempFile;
-    }
 }
