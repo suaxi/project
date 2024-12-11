@@ -28,7 +28,7 @@
         <maven.test.skip>true</maven.test.skip>
         <springframework.version>2.2.5.RELEASE</springframework.version>
         <jwt.version>0.11.2</jwt.version>
-        <mysql.version>8.0.26</mysql.version>
+        <mysql.version>8.0.18</mysql.version>
         <druid.version>1.2.8</druid.version>
         <aspectjweaver.version>1.9.8</aspectjweaver.version>
         <swagger2.version>2.9.2</swagger2.version>
@@ -41,6 +41,7 @@
         <ip2region.version>2.6.3</ip2region.version>
         <yauaa.version>6.11</yauaa.version>
         <captcha.version>1.6.2</captcha.version>
+        <flowable.version>6.8.0</flowable.version>
         <nexus.base.server>http://maven.aliyun.com/nexus/content/groups/public/</nexus.base.server>
     </properties>
 
@@ -202,6 +203,13 @@
                 <groupId>com.github.whvcse</groupId>
                 <artifactId>easy-captcha</artifactId>
                 <version>${captcha.version}</version>
+            </dependency>
+
+            <!-- flowable -->
+            <dependency>
+                <groupId>org.flowable</groupId>
+                <artifactId>flowable-spring-boot-starter</artifactId>
+                <version>${flowable.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

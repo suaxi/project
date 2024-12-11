@@ -100,6 +100,25 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
+
+        <!-- flowable -->
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.flowable</groupId>
+                    <artifactId>flowable-spring-security</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- aviator -->
+        <dependency>
+            <groupId>com.googlecode.aviator</groupId>
+            <artifactId>aviator</artifactId>
+            <version>5.3.3</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

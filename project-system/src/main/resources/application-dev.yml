@@ -6,7 +6,7 @@ spring:
     druid:
       db-type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://192.168.123.88:3306/project?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://192.168.123.88:3306/project?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true
       username: root
       password: 123456
       # 初始连接数
@@ -73,7 +73,7 @@ mybatis-plus:
       logic-delete-field: is_delete
       logic-delete-value: 1
       logic-not-delete-value: 0
-  mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath:mapper/**/*.xml
 
 logging:
   config: classpath:logback-dev.xml
@@ -135,3 +135,8 @@ oss:
     bucket: project
     access-key: admin
     secret-key: 12345678
+
+# Flowable
+flowable:
+  database-schema-update: false
+  async-executor-activate: false
