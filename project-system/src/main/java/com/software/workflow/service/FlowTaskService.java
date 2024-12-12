@@ -75,9 +75,9 @@ public interface FlowTaskService {
     void delegateTask(FlowTaskQueryDto flowTaskQueryDto);
 
     /**
-     * 任务归还
+     * 归还任务
      *
-     * @param flowTaskQueryDto 任务信息
+     * @param flowTaskQueryDto 归还任务
      */
     void resolveTask(FlowTaskQueryDto flowTaskQueryDto);
 
