@@ -8,9 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.IdentityService;
 import org.flowable.engine.RuntimeService;
-import org.flowable.engine.TaskService;
 import org.flowable.engine.history.HistoricProcessInstance;
-import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,9 +23,6 @@ import java.util.Map;
 public class FlowInstanceServiceImpl implements FlowInstanceService {
 
     @Autowired
-    private TaskService taskService;
-
-    @Autowired
     private RuntimeService runtimeService;
 
     @Autowired
@@ -38,72 +33,51 @@ public class FlowInstanceServiceImpl implements FlowInstanceService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void stopProcessInstance(String taskId) {
-        if (StringUtils.isEmpty(taskId)) {
-            throw new BadRequestException("任务ID不能为空！");
-        }
-
-        Task task = taskService.createTaskQuery()
-                .taskId(taskId)
-                .singleResult();
-        if (task != null) {
-            runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "停止流程实例");
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateState(Integer state, String instanceId) {
+    public void updateState(Integer state, String procInsId) {
         if (state == null) {
             throw new BadRequestException("状态不能为空！");
         }
 
-        if (StringUtils.isEmpty(instanceId)) {
+        if (StringUtils.isEmpty(procInsId)) {
             throw new BadRequestException("流程实例ID不能为空！");
         }
 
         //激活
         if (state == 1) {
-            runtimeService.activateProcessInstanceById(instanceId);
+            runtimeService.activateProcessInstanceById(procInsId);
         }
 
         //挂起
         if (state == 2) {
-            runtimeService.suspendProcessInstanceById(instanceId);
+            runtimeService.suspendProcessInstanceById(procInsId);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(String instanceId, String deleteReason) {
-        if (StringUtils.isEmpty(instanceId)) {
+    public void delete(String procInsId, String deleteReason) {
+        if (StringUtils.isEmpty(procInsId)) {
             throw new BadRequestException("流程实例ID不能为空！");
         }
 
-        HistoricProcessInstance historicProcessInstance = getHistoricProcessInstanceById(instanceId);
-        if (historicProcessInstance.getEndTime() != null) {
+        HistoricProcessInstance historicProcessInstance = getHistoricProcessInstanceById(procInsId);
+        if (historicProcessInstance != null && historicProcessInstance.getEndTime() != null) {
             historyService.deleteHistoricProcessInstance(historicProcessInstance.getId());
             return;
         }
 
-        runtimeService.deleteProcessInstance(instanceId, deleteReason);
-        historyService.deleteHistoricProcessInstance(instanceId);
+        runtimeService.deleteProcessInstance(procInsId, deleteReason);
+        historyService.deleteHistoricProcessInstance(procInsId);
     }
 
     @Override
-    public HistoricProcessInstance getHistoricProcessInstanceById(String processInstanceId) {
-        if (StringUtils.isEmpty(processInstanceId)) {
+    public HistoricProcessInstance getHistoricProcessInstanceById(String procInsId) {
+        if (StringUtils.isEmpty(procInsId)) {
             throw new BadRequestException("流程实例ID不能为空！");
         }
-
-        HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceId(processInstanceId)
+        return historyService.createHistoricProcessInstanceQuery()
+                .processInstanceId(procInsId)
                 .singleResult();
-
-        if (historicProcessInstance == null) {
-            throw new BadRequestException("未查询到对应的流程实例信息: " + processInstanceId);
-        }
-        return historicProcessInstance;
     }
 
     @Override

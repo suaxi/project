@@ -83,11 +83,14 @@ public class FlowDefinitionServiceImpl implements FlowDefinitionService {
 
     @Override
     public String readXml(String deployId) throws IOException {
-        ProcessDefinition definition = repositoryService.createProcessDefinitionQuery()
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .deploymentId(deployId)
                 .singleResult();
+        if (processDefinition == null) {
+            throw new BadRequestException("未查询到对应的流程定义信息！");
+        }
 
-        InputStream inputStream = repositoryService.getResourceAsStream(definition.getDeploymentId(), definition.getResourceName());
+        InputStream inputStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
         return IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
     }
 
@@ -96,6 +99,9 @@ public class FlowDefinitionServiceImpl implements FlowDefinitionService {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .deploymentId(deployId)
                 .singleResult();
+        if (processDefinition == null) {
+            throw new BadRequestException("未查询到对应的流程定义信息！");
+        }
 
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
         if (bpmnModel != null) {
@@ -161,16 +167,18 @@ public class FlowDefinitionServiceImpl implements FlowDefinitionService {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .deploymentId(deployId)
                 .singleResult();
-        if (processDefinition != null) {
-            //激活
-            if (state == 1) {
-                repositoryService.activateProcessDefinitionById(processDefinition.getId(), true, null);
-            }
+        if (processDefinition == null) {
+            throw new BadRequestException("未查询到对应的流程定义信息！");
+        }
 
-            //挂起
-            if (state == 2) {
-                repositoryService.suspendProcessDefinitionById(processDefinition.getId(), true, null);
-            }
+        //激活
+        if (state == 1) {
+            repositoryService.activateProcessDefinitionById(processDefinition.getId(), true, null);
+        }
+
+        //挂起
+        if (state == 2) {
+            repositoryService.suspendProcessDefinitionById(processDefinition.getId(), true, null);
         }
     }
 

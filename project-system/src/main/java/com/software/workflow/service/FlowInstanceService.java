@@ -11,35 +11,28 @@ import java.util.Map;
 public interface FlowInstanceService {
 
     /**
-     * 结束流程实例
-     *
-     * @param taskId 任务ID
-     */
-    void stopProcessInstance(String taskId);
-
-    /**
      * 激活或挂起流程实例
      *
-     * @param state      状态
-     * @param instanceId 流程实例ID
+     * @param state     状态
+     * @param procInsId 流程实例ID
      */
-    void updateState(Integer state, String instanceId);
+    void updateState(Integer state, String procInsId);
 
     /**
-     * 删除流程实例ID
+     * 删除流程
      *
-     * @param instanceId   流程实例ID
+     * @param procInsId    流程实例ID
      * @param deleteReason 删除原因
      */
-    void delete(String instanceId, String deleteReason);
+    void delete(String procInsId, String deleteReason);
 
     /**
      * 根据流程实例ID查询历史实例数据
      *
-     * @param processInstanceId 流程实例ID
+     * @param procInsId 流程实例ID
      * @return
      */
-    HistoricProcessInstance getHistoricProcessInstanceById(String processInstanceId);
+    HistoricProcessInstance getHistoricProcessInstanceById(String procInsId);
 
     /**
      * 根据流程定义ID启动流程实例
