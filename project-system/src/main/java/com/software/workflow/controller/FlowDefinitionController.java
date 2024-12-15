@@ -175,9 +175,9 @@ public class FlowDefinitionController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "deployId", value = "流程部署ID", required = true, paramType = "path", dataType = "String")
     })
-    @DeleteMapping("/startProcess/{deployId}")
+    @DeleteMapping("/{deployId}")
     @OperationLog("删除流程定义")
-    public ResponseEntity<?> startProcess(@PathVariable(value = "deployId") String deployId) {
+    public ResponseEntity<?> delete(@PathVariable(value = "deployId") String deployId) {
         flowDefinitionService.delete(deployId);
         return new ResponseEntity<>("删除成功！", HttpStatus.OK);
     }

@@ -1,5 +1,7 @@
 package com.software.workflow.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.software.dto.QueryRequest;
 import com.software.workflow.entity.FlowDeployInsForm;
 import com.software.workflow.entity.FlowForm;
 
@@ -58,6 +60,15 @@ public interface FlowFormService {
      * @return
      */
     List<FlowForm> queryList(FlowForm flowForm);
+
+    /**
+     * 分页查询
+     *
+     * @param flowForm     表单信息
+     * @param queryRequest 查询参数
+     * @return
+     */
+    Page<FlowForm> queryPage(FlowForm flowForm, QueryRequest queryRequest);
 
     /**
      * 挂载流程表单

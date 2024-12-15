@@ -1,7 +1,9 @@
 package com.software.workflow.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.software.dto.QueryRequest;
 import com.software.exception.BadRequestException;
 import com.software.utils.SecurityUtils;
 import com.software.workflow.entity.FlowDeployInsForm;
@@ -64,6 +66,15 @@ public class FlowFormServiceImpl extends ServiceImpl<FlowFormMapper, FlowForm> i
         queryWrapper.eq(flowForm.getFormId() != null, FlowForm::getFormId, flowForm.getFormId());
         queryWrapper.like(StringUtils.isNotEmpty(flowForm.getFormName()), FlowForm::getFormName, flowForm.getFormName());
         return this.list(queryWrapper);
+    }
+
+    @Override
+    public Page<FlowForm> queryPage(FlowForm flowForm, QueryRequest queryRequest) {
+        Page<FlowForm> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
+        LambdaQueryWrapper<FlowForm> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(flowForm.getFormId() != null, FlowForm::getFormId, flowForm.getFormId());
+        queryWrapper.like(StringUtils.isNotEmpty(flowForm.getFormName()), FlowForm::getFormName, flowForm.getFormName());
+        return this.page(page, queryWrapper);
     }
 
     @Override

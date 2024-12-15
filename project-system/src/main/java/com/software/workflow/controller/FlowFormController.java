@@ -1,6 +1,8 @@
 package com.software.workflow.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.annotation.OperationLog;
+import com.software.dto.QueryRequest;
 import com.software.workflow.entity.FlowDeployInsForm;
 import com.software.workflow.entity.FlowForm;
 import com.software.workflow.service.FlowFormService;
@@ -61,9 +63,15 @@ public class FlowFormController {
     }
 
     @ApiOperation("查询流程表单列表")
-    @GetMapping("/list")
+    @PostMapping("/list")
     public ResponseEntity<List<FlowForm>> queryList(@RequestBody FlowForm flowForm) {
         return new ResponseEntity<>(flowFormService.queryList(flowForm), HttpStatus.OK);
+    }
+
+    @ApiOperation("分页查询")
+    @GetMapping("/queryPage")
+    public ResponseEntity<Page<FlowForm>> queryPage(FlowForm flowForm, QueryRequest queryRequest) {
+        return new ResponseEntity<>(flowFormService.queryPage(flowForm, queryRequest), HttpStatus.OK);
     }
 
     @ApiOperation("挂载流程表单")

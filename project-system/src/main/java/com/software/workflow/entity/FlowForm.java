@@ -29,6 +29,10 @@ public class FlowForm implements Serializable {
     @TableField("form_content")
     private String formContent;
 
+    @ApiModelProperty("备注")
+    @TableField("remark")
+    private String remark;
+
     @ApiModelProperty("创建人")
     @TableField("create_user")
     private String createUser;
