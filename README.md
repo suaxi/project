@@ -1,5 +1,5 @@
 ### Project Demo
-*参考eladmin项目*
+参考[eladmin](https://github.com/elunez/eladmin)、[RuoYi-flowable](https://github.com/tony2y/RuoYi-flowable)项目
 
 ### 技术栈
 #### 后台：

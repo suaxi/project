@@ -489,7 +489,7 @@ public class FlowTaskServiceImpl implements FlowTaskService {
                 flowTaskDto.setTaskName(historicTaskInstanceList.get(0).getName());
                 if (StringUtils.isNotEmpty(historicTaskInstanceList.get(0).getAssignee())) {
                     //当前任务节点经办人信息
-                    User user = userService.queryByName(currentTaskList.get(0).getAssignee());
+                    User user = userService.queryByName(historicTaskInstanceList.get(0).getAssignee());
                     if (user != null) {
                         flowTaskDto.setAssigneeId(user.getId());
                         flowTaskDto.setAssigneeName(user.getNickName());
