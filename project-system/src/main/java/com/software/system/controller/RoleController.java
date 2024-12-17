@@ -77,10 +77,10 @@ public class RoleController {
     }
 
     @ApiOperation("查询角色列表")
-    @GetMapping("queryList")
+    @PostMapping("/list")
     @PreAuthorize("@pre.check('roles:list')")
-    public ResponseEntity<List<Role>> queryList() {
-        return new ResponseEntity<>(roleService.queryList(), HttpStatus.OK);
+    public ResponseEntity<List<Role>> queryList(@RequestBody Role role) {
+        return new ResponseEntity<>(roleService.queryList(role), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询角色信息")

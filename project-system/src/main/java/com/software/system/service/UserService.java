@@ -57,7 +57,7 @@ public interface UserService {
      *
      * @return
      */
-    List<User> queryList();
+    List<User> queryList(User user);
 
     /**
      * 分页查询

@@ -105,8 +105,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public List<User> queryList() {
-        return this.list();
+    public List<User> queryList(User user) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(StringUtils.isNotBlank(user.getUsername()), User::getUsername, user.getUsername());
+        queryWrapper.lambda().eq(StringUtils.isNotBlank(user.getNickName()), User::getNickName, user.getNickName());
+        queryWrapper.lambda().eq(StringUtils.isNotBlank(user.getPhone()), User::getPhone, user.getPhone());
+        queryWrapper.lambda().eq(StringUtils.isNotBlank(user.getEmail()), User::getEmail, user.getEmail());
+        List<User> userList = this.list(queryWrapper);
+        if (userList != null && userList.size() > 0) {
+            for (User currentUser : userList) {
+                currentUser.setPassword(null);
+            }
+        }
+        return userList;
     }
 
     @Override
@@ -114,7 +125,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         List<Long> dataScope = SecurityUtils.getCurrentUserDataScope();
         Page<User> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
         SortUtil.handlePageSort(queryRequest, page, "updateTime", StringConstant.DESC, true);
-        return this.baseMapper.queryPage(page, user, dataScope);
+        Page<User> result = this.baseMapper.queryPage(page, user, dataScope);
+        List<User> userList = result.getRecords();
+        if (userList != null && userList.size() > 0) {
+            for (User currentUser : userList) {
+                currentUser.setPassword(null);
+            }
+        }
+        return result;
     }
 
     /**

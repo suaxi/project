@@ -57,7 +57,7 @@ public interface RoleService {
      *
      * @return
      */
-    List<Role> queryList();
+    List<Role> queryList(Role role);
 
     /**
      * 分页查询

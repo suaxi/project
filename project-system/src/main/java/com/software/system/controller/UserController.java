@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @author Wang Hao
@@ -79,6 +80,12 @@ public class UserController {
     @PreAuthorize("@pre.check('user:list')")
     public ResponseEntity<Page<User>> queryPage(User user, QueryRequest queryRequest) {
         return new ResponseEntity<>(userService.queryPage(user, queryRequest), HttpStatus.OK);
+    }
+
+    @ApiOperation("查询用户列表")
+    @PostMapping("/list")
+    public ResponseEntity<List<User>> queryList(@RequestBody User user) {
+        return new ResponseEntity<>(userService.queryList(user), HttpStatus.OK);
     }
 
     @ApiOperation("获取用户信息")

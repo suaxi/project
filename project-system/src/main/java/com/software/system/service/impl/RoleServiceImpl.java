@@ -121,8 +121,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
-    public List<Role> queryList() {
-        return this.list();
+    public List<Role> queryList(Role role) {
+        QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().like(StringUtils.isNotEmpty(role.getName()), Role::getName, role.getName());
+        queryWrapper.lambda().eq(role.getLevel() != null, Role::getLevel, role.getLevel());
+        queryWrapper.lambda().eq(StringUtils.isNotEmpty(role.getDataScope()), Role::getDataScope, role.getDataScope());
+        return this.list(queryWrapper);
     }
 
     @Override
