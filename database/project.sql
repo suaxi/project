@@ -2,6 +2,73 @@ SET NAMES utf8;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Table structure for flow_deploy_ins_form
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_deploy_ins_form`;
+CREATE TABLE `flow_deploy_ins_form`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `form_id` int(11) NOT NULL COMMENT '表单ID',
+  `deploy_id` int(11) NOT NULL COMMENT '流程部署ID',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '流程部署实例表单关联表' ROW_FORMAT = COMPACT;
+
+-- ----------------------------
+-- Table structure for flow_expression
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_expression`;
+CREATE TABLE `flow_expression`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '表达式名称',
+  `type` int(1) NULL DEFAULT NULL COMMENT '类型',
+  `expression` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '表达式内容',
+  `status` int(1) NULL DEFAULT NULL COMMENT '状态（0：禁用，1：启用）',
+  `remark` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `create_user` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `update_user` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新人',
+  `is_delete` int(1) NULL DEFAULT 0 COMMENT '逻辑删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '流程表达式表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for flow_form
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_form`;
+CREATE TABLE `flow_form`  (
+  `form_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `form_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '表单名称',
+  `form_content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '表单内容',
+  `remark` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `create_user` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `update_user` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新人',
+  PRIMARY KEY (`form_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '流程表单表' ROW_FORMAT = COMPACT;
+
+-- ----------------------------
+-- Table structure for flow_listener
+-- ----------------------------
+DROP TABLE IF EXISTS `flow_listener`;
+CREATE TABLE `flow_listener`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '监听名称',
+  `type` int(1) NULL DEFAULT NULL COMMENT '类型（1：任务监听，2：执行监听）',
+  `event_type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '事件类型',
+  `value_type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '值类型',
+  `execute_content` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '执行内容',
+  `status` int(1) NULL DEFAULT NULL COMMENT '状态（0：禁用，1：启用）',
+  `remark` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `create_user` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `update_user` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新人',
+  `is_delete` int(1) NULL DEFAULT 0 COMMENT '逻辑删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '流程监听表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for sys_dept
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dept`;
@@ -126,7 +193,7 @@ CREATE TABLE `sys_log`  (
   `exception_detail` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '异常信息',
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 78 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统日志' ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统日志' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -150,12 +217,12 @@ CREATE TABLE `sys_menu`  (
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   `create_user` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建人',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-  `update_user` varchar(50) NULL DEFAULT NULL COMMENT '更新人',
+  `update_user` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新人',
   `is_delete` int(1) NULL DEFAULT 0 COMMENT '逻辑删除',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_title`(`title`) USING BTREE,
   UNIQUE INDEX `uniq_name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 117 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统菜单' ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 126 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统菜单' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -236,6 +303,15 @@ INSERT INTO `sys_menu` VALUES (112, 98, 0, 2, '数据库新增', NULL, '', '', '
 INSERT INTO `sys_menu` VALUES (113, 98, 0, 2, '数据库编辑', NULL, '', '', '', 0, 0, 0, 'database:edit', 999, '2019-11-17 11:12:58', NULL, NULL, NULL, 0);
 INSERT INTO `sys_menu` VALUES (114, 98, 0, 2, '数据库删除', NULL, '', '', '', 0, 0, 0, 'database:del', 999, '2019-11-17 11:13:14', NULL, NULL, NULL, 0);
 INSERT INTO `sys_menu` VALUES (116, 36, 0, 1, '生成预览', 'Preview', 'generator/preview', 'java', 'generator/preview/:tableName', 0, 1, 1, NULL, 999, '2019-11-26 14:54:36', NULL, NULL, NULL, 0);
+INSERT INTO `sys_menu` VALUES (117, NULL, 4, 0, '流程管理', NULL, NULL, 'tree-table', 'workflow', 0, 0, 0, NULL, 60, '2024-12-12 22:54:59', 'admin', '2024-12-21 17:32:13', 'admin', 0);
+INSERT INTO `sys_menu` VALUES (118, 117, 0, 1, '流程定义', 'Definition', 'workflow/definition/index', 'tab', 'definition', 0, 0, 0, NULL, 10, '2024-12-12 22:56:09', 'admin', '2024-12-12 23:12:21', 'admin', 0);
+INSERT INTO `sys_menu` VALUES (119, 117, 0, 1, '表单配置', 'Form', 'workflow/task/form/index', 'system', 'task/form', 0, 0, 0, NULL, 20, '2024-12-12 23:04:07', 'admin', '2024-12-12 23:11:06', 'admin', 0);
+INSERT INTO `sys_menu` VALUES (120, NULL, 3, 0, '任务管理', NULL, NULL, 'list', 'workflow/task', 0, 0, 0, NULL, 70, '2024-12-12 23:13:52', 'admin', '2024-12-12 23:35:17', 'admin', 0);
+INSERT INTO `sys_menu` VALUES (121, 120, 0, 1, '已发任务', 'TaskList', 'workflow/task/myProcess/index', 'develop', 'list', 0, 0, 0, NULL, 10, '2024-12-12 23:17:46', 'admin', '2024-12-12 23:34:53', 'admin', 0);
+INSERT INTO `sys_menu` VALUES (122, 120, 0, 1, '待办任务', 'ToDoTaskList', 'workflow/task/todo/index', 'tools', 'todo', 0, 0, 0, NULL, 20, '2024-12-12 23:20:19', 'admin', '2024-12-12 23:34:43', 'admin', 0);
+INSERT INTO `sys_menu` VALUES (123, 120, 0, 1, '已办任务', 'FinishedTaskList', 'workflow/task/finished/index', 'menu', 'finished', 0, 0, 0, NULL, 30, '2024-12-12 23:23:02', 'admin', '2024-12-12 23:34:57', 'admin', 0);
+INSERT INTO `sys_menu` VALUES (124, 117, 0, 1, '流程表达式', 'Expression', 'workflow/expression/index', 'nested', 'expression', 0, 0, 0, NULL, 30, '2024-12-19 14:23:32', 'admin', '2024-12-19 14:24:51', 'admin', 0);
+INSERT INTO `sys_menu` VALUES (125, 117, 0, 1, '流程监听', 'Listener', 'workflow/listener/index', 'monitor', 'Listener', 0, 0, 0, NULL, 40, '2024-12-21 17:32:13', 'admin', '2024-12-21 17:32:13', NULL, 0);
 
 -- ----------------------------
 -- Table structure for sys_oss_attachment
@@ -261,10 +337,6 @@ CREATE TABLE `sys_oss_attachment`  (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'OSS附件列表' ROW_FORMAT = COMPACT;
-
--- ----------------------------
--- Records of sys_oss_attachment
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -322,7 +394,7 @@ CREATE TABLE `sys_role_menu`  (
   `menu_id` int(11) NOT NULL COMMENT '菜单ID',
   `role_id` int(11) NOT NULL COMMENT '角色ID',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 727 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色菜单关联表' ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 1012 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色菜单关联表' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of sys_role_menu
@@ -362,106 +434,54 @@ INSERT INTO `sys_role_menu` VALUES (172, 46, 9);
 INSERT INTO `sys_role_menu` VALUES (173, 44, 9);
 INSERT INTO `sys_role_menu` VALUES (174, 45, 9);
 INSERT INTO `sys_role_menu` VALUES (175, 7, 24);
-INSERT INTO `sys_role_menu` VALUES (176, 1, 2);
-INSERT INTO `sys_role_menu` VALUES (177, 2, 2);
-INSERT INTO `sys_role_menu` VALUES (178, 6, 2);
-INSERT INTO `sys_role_menu` VALUES (179, 7, 2);
-INSERT INTO `sys_role_menu` VALUES (180, 9, 2);
-INSERT INTO `sys_role_menu` VALUES (181, 10, 2);
-INSERT INTO `sys_role_menu` VALUES (182, 11, 2);
-INSERT INTO `sys_role_menu` VALUES (183, 14, 2);
-INSERT INTO `sys_role_menu` VALUES (184, 15, 2);
-INSERT INTO `sys_role_menu` VALUES (185, 19, 2);
-INSERT INTO `sys_role_menu` VALUES (186, 21, 2);
-INSERT INTO `sys_role_menu` VALUES (187, 22, 2);
-INSERT INTO `sys_role_menu` VALUES (188, 23, 2);
-INSERT INTO `sys_role_menu` VALUES (189, 24, 2);
-INSERT INTO `sys_role_menu` VALUES (190, 27, 2);
-INSERT INTO `sys_role_menu` VALUES (191, 30, 2);
-INSERT INTO `sys_role_menu` VALUES (192, 32, 2);
-INSERT INTO `sys_role_menu` VALUES (193, 33, 2);
-INSERT INTO `sys_role_menu` VALUES (194, 34, 2);
-INSERT INTO `sys_role_menu` VALUES (195, 36, 2);
-INSERT INTO `sys_role_menu` VALUES (196, 80, 2);
-INSERT INTO `sys_role_menu` VALUES (197, 82, 2);
-INSERT INTO `sys_role_menu` VALUES (198, 83, 2);
-INSERT INTO `sys_role_menu` VALUES (199, 116, 2);
-INSERT INTO `sys_role_menu` VALUES (651, 1, 1);
-INSERT INTO `sys_role_menu` VALUES (652, 2, 1);
-INSERT INTO `sys_role_menu` VALUES (653, 3, 1);
-INSERT INTO `sys_role_menu` VALUES (654, 5, 1);
-INSERT INTO `sys_role_menu` VALUES (655, 6, 1);
-INSERT INTO `sys_role_menu` VALUES (656, 7, 1);
-INSERT INTO `sys_role_menu` VALUES (657, 9, 1);
-INSERT INTO `sys_role_menu` VALUES (658, 10, 1);
-INSERT INTO `sys_role_menu` VALUES (659, 11, 1);
-INSERT INTO `sys_role_menu` VALUES (660, 14, 1);
-INSERT INTO `sys_role_menu` VALUES (661, 15, 1);
-INSERT INTO `sys_role_menu` VALUES (662, 18, 1);
-INSERT INTO `sys_role_menu` VALUES (663, 19, 1);
-INSERT INTO `sys_role_menu` VALUES (664, 21, 1);
-INSERT INTO `sys_role_menu` VALUES (665, 22, 1);
-INSERT INTO `sys_role_menu` VALUES (666, 23, 1);
-INSERT INTO `sys_role_menu` VALUES (667, 24, 1);
-INSERT INTO `sys_role_menu` VALUES (668, 27, 1);
-INSERT INTO `sys_role_menu` VALUES (669, 28, 1);
-INSERT INTO `sys_role_menu` VALUES (670, 30, 1);
-INSERT INTO `sys_role_menu` VALUES (671, 32, 1);
-INSERT INTO `sys_role_menu` VALUES (672, 33, 1);
-INSERT INTO `sys_role_menu` VALUES (673, 34, 1);
-INSERT INTO `sys_role_menu` VALUES (674, 36, 1);
-INSERT INTO `sys_role_menu` VALUES (675, 37, 1);
-INSERT INTO `sys_role_menu` VALUES (676, 38, 1);
-INSERT INTO `sys_role_menu` VALUES (677, 39, 1);
-INSERT INTO `sys_role_menu` VALUES (678, 41, 1);
-INSERT INTO `sys_role_menu` VALUES (679, 44, 1);
-INSERT INTO `sys_role_menu` VALUES (680, 45, 1);
-INSERT INTO `sys_role_menu` VALUES (681, 46, 1);
-INSERT INTO `sys_role_menu` VALUES (682, 48, 1);
-INSERT INTO `sys_role_menu` VALUES (683, 49, 1);
-INSERT INTO `sys_role_menu` VALUES (684, 50, 1);
-INSERT INTO `sys_role_menu` VALUES (685, 52, 1);
-INSERT INTO `sys_role_menu` VALUES (686, 53, 1);
-INSERT INTO `sys_role_menu` VALUES (687, 54, 1);
-INSERT INTO `sys_role_menu` VALUES (688, 60, 1);
-INSERT INTO `sys_role_menu` VALUES (689, 61, 1);
-INSERT INTO `sys_role_menu` VALUES (690, 62, 1);
-INSERT INTO `sys_role_menu` VALUES (691, 64, 1);
-INSERT INTO `sys_role_menu` VALUES (692, 65, 1);
-INSERT INTO `sys_role_menu` VALUES (693, 66, 1);
-INSERT INTO `sys_role_menu` VALUES (694, 73, 1);
-INSERT INTO `sys_role_menu` VALUES (695, 74, 1);
-INSERT INTO `sys_role_menu` VALUES (696, 75, 1);
-INSERT INTO `sys_role_menu` VALUES (697, 77, 1);
-INSERT INTO `sys_role_menu` VALUES (698, 78, 1);
-INSERT INTO `sys_role_menu` VALUES (699, 79, 1);
-INSERT INTO `sys_role_menu` VALUES (700, 80, 1);
-INSERT INTO `sys_role_menu` VALUES (701, 82, 1);
-INSERT INTO `sys_role_menu` VALUES (702, 83, 1);
-INSERT INTO `sys_role_menu` VALUES (703, 90, 1);
-INSERT INTO `sys_role_menu` VALUES (704, 92, 1);
-INSERT INTO `sys_role_menu` VALUES (705, 93, 1);
-INSERT INTO `sys_role_menu` VALUES (706, 94, 1);
-INSERT INTO `sys_role_menu` VALUES (707, 97, 1);
-INSERT INTO `sys_role_menu` VALUES (708, 98, 1);
-INSERT INTO `sys_role_menu` VALUES (709, 102, 1);
-INSERT INTO `sys_role_menu` VALUES (710, 103, 1);
-INSERT INTO `sys_role_menu` VALUES (711, 104, 1);
-INSERT INTO `sys_role_menu` VALUES (712, 105, 1);
-INSERT INTO `sys_role_menu` VALUES (713, 106, 1);
-INSERT INTO `sys_role_menu` VALUES (714, 107, 1);
-INSERT INTO `sys_role_menu` VALUES (715, 108, 1);
-INSERT INTO `sys_role_menu` VALUES (716, 109, 1);
-INSERT INTO `sys_role_menu` VALUES (717, 110, 1);
-INSERT INTO `sys_role_menu` VALUES (718, 111, 1);
-INSERT INTO `sys_role_menu` VALUES (719, 112, 1);
-INSERT INTO `sys_role_menu` VALUES (720, 113, 1);
-INSERT INTO `sys_role_menu` VALUES (721, 114, 1);
-INSERT INTO `sys_role_menu` VALUES (722, 116, 1);
-INSERT INTO `sys_role_menu` VALUES (723, 56, 1);
-INSERT INTO `sys_role_menu` VALUES (724, 35, 1);
-INSERT INTO `sys_role_menu` VALUES (725, 57, 1);
-INSERT INTO `sys_role_menu` VALUES (726, 58, 1);
+INSERT INTO `sys_role_menu` VALUES (889, 1, 2);
+INSERT INTO `sys_role_menu` VALUES (890, 2, 2);
+INSERT INTO `sys_role_menu` VALUES (891, 118, 2);
+INSERT INTO `sys_role_menu` VALUES (892, 117, 2);
+INSERT INTO `sys_role_menu` VALUES (893, 119, 2);
+INSERT INTO `sys_role_menu` VALUES (894, 121, 2);
+INSERT INTO `sys_role_menu` VALUES (895, 123, 2);
+INSERT INTO `sys_role_menu` VALUES (896, 122, 2);
+INSERT INTO `sys_role_menu` VALUES (897, 120, 2);
+INSERT INTO `sys_role_menu` VALUES (973, 1, 1);
+INSERT INTO `sys_role_menu` VALUES (974, 2, 1);
+INSERT INTO `sys_role_menu` VALUES (975, 3, 1);
+INSERT INTO `sys_role_menu` VALUES (976, 5, 1);
+INSERT INTO `sys_role_menu` VALUES (977, 21, 1);
+INSERT INTO `sys_role_menu` VALUES (978, 22, 1);
+INSERT INTO `sys_role_menu` VALUES (979, 23, 1);
+INSERT INTO `sys_role_menu` VALUES (980, 24, 1);
+INSERT INTO `sys_role_menu` VALUES (981, 27, 1);
+INSERT INTO `sys_role_menu` VALUES (982, 37, 1);
+INSERT INTO `sys_role_menu` VALUES (983, 39, 1);
+INSERT INTO `sys_role_menu` VALUES (984, 44, 1);
+INSERT INTO `sys_role_menu` VALUES (985, 45, 1);
+INSERT INTO `sys_role_menu` VALUES (986, 46, 1);
+INSERT INTO `sys_role_menu` VALUES (987, 48, 1);
+INSERT INTO `sys_role_menu` VALUES (988, 49, 1);
+INSERT INTO `sys_role_menu` VALUES (989, 50, 1);
+INSERT INTO `sys_role_menu` VALUES (990, 52, 1);
+INSERT INTO `sys_role_menu` VALUES (991, 53, 1);
+INSERT INTO `sys_role_menu` VALUES (992, 54, 1);
+INSERT INTO `sys_role_menu` VALUES (993, 60, 1);
+INSERT INTO `sys_role_menu` VALUES (994, 61, 1);
+INSERT INTO `sys_role_menu` VALUES (995, 62, 1);
+INSERT INTO `sys_role_menu` VALUES (996, 64, 1);
+INSERT INTO `sys_role_menu` VALUES (997, 65, 1);
+INSERT INTO `sys_role_menu` VALUES (998, 66, 1);
+INSERT INTO `sys_role_menu` VALUES (999, 56, 1);
+INSERT INTO `sys_role_menu` VALUES (1000, 35, 1);
+INSERT INTO `sys_role_menu` VALUES (1001, 57, 1);
+INSERT INTO `sys_role_menu` VALUES (1002, 58, 1);
+INSERT INTO `sys_role_menu` VALUES (1003, 117, 1);
+INSERT INTO `sys_role_menu` VALUES (1004, 118, 1);
+INSERT INTO `sys_role_menu` VALUES (1005, 119, 1);
+INSERT INTO `sys_role_menu` VALUES (1006, 122, 1);
+INSERT INTO `sys_role_menu` VALUES (1007, 120, 1);
+INSERT INTO `sys_role_menu` VALUES (1008, 123, 1);
+INSERT INTO `sys_role_menu` VALUES (1009, 121, 1);
+INSERT INTO `sys_role_menu` VALUES (1010, 124, 1);
+INSERT INTO `sys_role_menu` VALUES (1011, 125, 1);
 
 -- ----------------------------
 -- Table structure for sys_user
