@@ -26,15 +26,15 @@ public class LogController {
     @Autowired
     private LogService logService;
 
-    @PostMapping
-    @ApiOperation("新增")
+    //@PostMapping
+    //@ApiOperation("新增")
     public ResponseResult<Log> add(Log log) {
         logService.add(log);
         return new ResponseResult<>(HttpStatus.OK.value(), log);
     }
 
-    @DeleteMapping
-    @ApiOperation("删除")
+    //@DeleteMapping
+    //@ApiOperation("删除")
     public ResponseResult<String> delete(String ids) {
         if (StringUtils.isBlank(ids)) {
             throw new IllegalArgumentException("id不能为空");

@@ -19,6 +19,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -150,9 +151,21 @@ public class LogAspect {
                 map.put(key, args[i]);
                 argList.add(map);
             }
+
+            //PathVariable请求参数
+            PathVariable pathVariable = parameters[i].getAnnotation(PathVariable.class);
+            if (pathVariable != null) {
+                Map<Object, Object> map = new HashMap<>(2);
+                String key = parameters[i].getName();
+                if (StringUtils.isNotEmpty(pathVariable.value())) {
+                    key = pathVariable.value();
+                }
+                map.put(key, args[i]);
+                argList.add(map);
+            }
         }
         if (argList.isEmpty()) {
-            return "";
+            return null;
         }
         return argList.size() == 1 ? JSONUtil.toJsonStr(argList.get(0)) : JSONUtil.toJsonStr(argList);
     }
