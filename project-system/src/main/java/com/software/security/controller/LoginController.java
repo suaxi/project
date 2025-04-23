@@ -105,9 +105,9 @@ public class LoginController {
     }
 
     @ApiOperation("获取验证码")
-    @GetMapping("/getCaptcha")
+    @GetMapping("/captcha")
     @Limit(name = "获取验证码", period = 3, count = 1)
-    public ResponseEntity<Map<String, Object>> getCaptcha() {
+    public ResponseEntity<Map<String, Object>> captcha() {
         Captcha captcha = loginProperties.getCaptcha();
         String uuid = securityProperties.getCodeKey() + IdUtil.simpleUUID();
         //当验证码类型为 arithmetic时且长度 >= 2 时，captcha.text()的结果有几率为浮点型

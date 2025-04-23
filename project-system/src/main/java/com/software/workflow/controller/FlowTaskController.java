@@ -46,20 +46,20 @@ public class FlowTaskController {
     }
 
     @ApiOperation("取消申请")
-    @PutMapping("/stopProcess")
+    @PutMapping("/stop-process")
     @OperationLog("取消申请")
     public ResponseEntity<Boolean> stopProcess(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         return new ResponseEntity<>(flowTaskService.stopProcess(flowTaskQueryDto), HttpStatus.OK);
     }
 
     @ApiOperation("待办任务（分页）")
-    @GetMapping("/todoList")
+    @GetMapping("/todo-list")
     public ResponseEntity<Page<FlowTaskDto>> todoList(FlowQueryDto flowQueryDto) {
         return new ResponseEntity<>(flowTaskService.todoList(flowQueryDto), HttpStatus.OK);
     }
 
     @ApiOperation("已办任务（分页）")
-    @GetMapping("/finishedList")
+    @GetMapping("/finished-list")
     public ResponseEntity<Page<FlowTaskDto>> finishedList(FlowQueryDto flowQueryDto) {
         return new ResponseEntity<>(flowTaskService.finishedList(flowQueryDto), HttpStatus.OK);
     }
@@ -69,7 +69,7 @@ public class FlowTaskController {
             @ApiImplicitParam(name = "procInsId", value = "流程实例ID", required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "deployId", value = "流程部署ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping("/flowRecord")
+    @GetMapping("/flow-record")
     public ResponseEntity<Map<String, Object>> flowRecord(@RequestParam("procInsId") String procInsId, @RequestParam("deployId") String deployId) {
         return new ResponseEntity<>(flowTaskService.flowRecord(procInsId, deployId), HttpStatus.OK);
     }
@@ -78,8 +78,8 @@ public class FlowTaskController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "taskId", value = "任务ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping("/getTaskForm")
-    public ResponseEntity<String> getTaskForm(@RequestParam("taskId") String taskId) {
+    @GetMapping("/task-form")
+    public ResponseEntity<String> taskForm(@RequestParam("taskId") String taskId) {
         return new ResponseEntity<>(flowTaskService.getTaskForm(taskId), HttpStatus.OK);
     }
 
@@ -87,7 +87,7 @@ public class FlowTaskController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "deployId", value = "流程部署ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping("/flowFormData")
+    @GetMapping("/flow-form-data")
     public ResponseEntity<JSONObject> flowFormData(@RequestParam("deployId") String deployId) {
         return new ResponseEntity<>(flowTaskService.flowFormData(deployId), HttpStatus.OK);
     }
@@ -96,7 +96,7 @@ public class FlowTaskController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "taskId", value = "任务ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping("/processVariables")
+    @GetMapping("/process-variables")
     public ResponseEntity<Map<String, Object>> processVariables(@RequestParam("taskId") String taskId) {
         return new ResponseEntity<>(flowTaskService.processVariables(taskId), HttpStatus.OK);
     }
@@ -125,13 +125,13 @@ public class FlowTaskController {
     }
 
     @ApiOperation("获取所有可回退的节点")
-    @PostMapping("/findReturnTaskList")
+    @PostMapping("/return-task-list")
     public ResponseEntity<List<UserTask>> processVariables(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         return new ResponseEntity<>(flowTaskService.findReturnTaskList(flowTaskQueryDto), HttpStatus.OK);
     }
 
     @ApiOperation("删除任务")
-    @DeleteMapping("/deleteTask")
+    @DeleteMapping("/delete-task")
     @OperationLog("删除任务")
     public ResponseEntity<?> deleteTask(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         flowTaskService.deleteTask(flowTaskQueryDto);
@@ -147,7 +147,7 @@ public class FlowTaskController {
     }
 
     @ApiOperation("取消拾取任务")
-    @PostMapping("/unClaim")
+    @PostMapping("/un-claim")
     @OperationLog("取消拾取任务")
     public ResponseEntity<?> unClaim(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         flowTaskService.unClaim(flowTaskQueryDto);
@@ -155,7 +155,7 @@ public class FlowTaskController {
     }
 
     @ApiOperation("委派任务")
-    @PostMapping("/delegateTask")
+    @PostMapping("/delegate-task")
     @OperationLog("委派任务")
     public ResponseEntity<?> delegateTask(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         flowTaskService.delegateTask(flowTaskQueryDto);
@@ -163,7 +163,7 @@ public class FlowTaskController {
     }
 
     @ApiOperation("归还任务")
-    @PostMapping("/resolveTask")
+    @PostMapping("/resolve-task")
     @OperationLog("归还任务")
     public ResponseEntity<?> resolveTask(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         flowTaskService.resolveTask(flowTaskQueryDto);
@@ -171,7 +171,7 @@ public class FlowTaskController {
     }
 
     @ApiOperation("指派（转办）任务")
-    @PostMapping("/assignTask")
+    @PostMapping("/assign-task")
     @OperationLog("指派（转办）任务")
     public ResponseEntity<?> assignTask(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         flowTaskService.assignTask(flowTaskQueryDto);
@@ -179,15 +179,15 @@ public class FlowTaskController {
     }
 
     @ApiOperation("多实例加签")
-    @PostMapping("/addMultiInstanceExecution")
+    @PostMapping("/add-multi-instance-execution")
     @OperationLog("多实例加签")
-    public ResponseEntity<?> addMultiInstanceExecution(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
+    public ResponseEntity<?> multiInstanceExecution(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         flowTaskService.addMultiInstanceExecution(flowTaskQueryDto);
         return new ResponseEntity<>("多实例加签成功", HttpStatus.OK);
     }
 
     @ApiOperation("多实例减签")
-    @DeleteMapping("/deleteMultiInstanceExecution")
+    @DeleteMapping("/delete-multi-instance-execution")
     @OperationLog("多实例减签")
     public ResponseEntity<?> deleteMultiInstanceExecution(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         flowTaskService.deleteMultiInstanceExecution(flowTaskQueryDto);
@@ -195,14 +195,14 @@ public class FlowTaskController {
     }
 
     @ApiOperation("获取下一节点")
-    @PostMapping("/nextFlowNode")
-    public ResponseEntity<FlowNextNodeDto> getNextFlowNode(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
+    @PostMapping("/next-flow-node")
+    public ResponseEntity<FlowNextNodeDto> nextFlowNode(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         return new ResponseEntity<>(flowTaskService.getNextFlowNode(flowTaskQueryDto), HttpStatus.OK);
     }
 
     @ApiOperation("发起流程时获取下一节点")
-    @PostMapping("/nextFlowNodeByStart")
-    public ResponseEntity<FlowNextNodeDto> getNextFlowNodeByStart(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
+    @PostMapping("/next-flow-node-by-start")
+    public ResponseEntity<FlowNextNodeDto> nextFlowNodeByStart(@RequestBody FlowTaskQueryDto flowTaskQueryDto) {
         return new ResponseEntity<>(flowTaskService.getNextFlowNodeByStart(flowTaskQueryDto), HttpStatus.OK);
     }
 
@@ -210,8 +210,8 @@ public class FlowTaskController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "procInsId", value = "流程实例ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping("/nextFlowNodeByStart")
-    public void getNextFlowNodeByStart(@RequestParam("procInsId") String procInsId, HttpServerResponse resp) {
+    @GetMapping("/next-flow-node-by-start")
+    public void nextFlowNodeByStart(@RequestParam("procInsId") String procInsId, HttpServerResponse resp) {
         InputStream is = flowTaskService.diagram(procInsId);
         if (is != null) {
             OutputStream os = null;
@@ -242,8 +242,8 @@ public class FlowTaskController {
             @ApiImplicitParam(name = "procInsId", value = "流程实例ID", required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "deployId", value = "流程部署ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping("/flowViewer")
-    public ResponseEntity<List<FlowViewerDto>> getFlowViewer(@RequestParam("procInsId") String procInsId, @RequestParam("deployId") String deployId) {
+    @GetMapping("/flow-viewer")
+    public ResponseEntity<List<FlowViewerDto>> flowViewer(@RequestParam("procInsId") String procInsId, @RequestParam("deployId") String deployId) {
         return new ResponseEntity<>(flowTaskService.getFlowViewer(procInsId, deployId), HttpStatus.OK);
     }
 
@@ -252,8 +252,8 @@ public class FlowTaskController {
             @ApiImplicitParam(name = "procInsId", value = "流程实例ID", required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "deployId", value = "流程部署ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping("/flowXmlAndNode")
-    public ResponseEntity<Map<String, Object>> flowXmlAndNode(@RequestParam("procInsId") String procInsId, @RequestParam("deployId") String deployId) throws IOException {
+    @GetMapping("/flow-xml-node")
+    public ResponseEntity<Map<String, Object>> flowXmlNode(@RequestParam("procInsId") String procInsId, @RequestParam("deployId") String deployId) throws IOException {
         return new ResponseEntity<>(flowTaskService.flowXmlAndNode(procInsId, deployId), HttpStatus.OK);
     }
 
@@ -261,7 +261,7 @@ public class FlowTaskController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "taskId", value = "任务ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping("/flowTaskForm")
+    @GetMapping("/flow-task-form")
     public ResponseEntity<Map<String, Object>> flowTaskForm(@RequestParam("taskId") String taskId) {
         return new ResponseEntity<>(flowTaskService.flowTaskForm(taskId), HttpStatus.OK);
     }
@@ -271,7 +271,7 @@ public class FlowTaskController {
             @ApiImplicitParam(name = "procInsId", value = "流程实例ID", required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "elementId", value = "元素ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping("/flowTaskInfo")
+    @GetMapping("/flow-task-info")
     public ResponseEntity<FlowTaskDto> flowTaskInfo(@RequestParam("procInsId") String procInsId, @RequestParam("elementId") String elementId) {
         return new ResponseEntity<>(flowTaskService.flowTaskInfo(procInsId, elementId), HttpStatus.OK);
     }

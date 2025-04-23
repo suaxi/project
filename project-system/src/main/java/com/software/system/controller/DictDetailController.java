@@ -61,25 +61,25 @@ public class DictDetailController {
 
     @ApiOperation("根据id查询数据字典详情信息")
     @GetMapping("/id/{id}")
-    public ResponseEntity<DictDetail> queryById(@NotNull @PathVariable("id") Long id) {
+    public ResponseEntity<DictDetail> id(@NotNull @PathVariable("id") Long id) {
         return new ResponseEntity<>(dictDetailService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据字典id查询对应数据字典详情信息")
-    @GetMapping("/dictId/{dictId}")
-    public ResponseEntity<List<DictDetail>> queryByName(@NotNull @PathVariable("dictId") Long dictId) {
+    @GetMapping("/dict-id/{dictId}")
+    public ResponseEntity<List<DictDetail>> name(@NotNull @PathVariable("dictId") Long dictId) {
         return new ResponseEntity<>(dictDetailService.queryByDictId(dictId), HttpStatus.OK);
     }
 
     @ApiOperation("查询数据字典详情列表")
-    @GetMapping("queryList")
-    public ResponseEntity<List<DictDetail>> queryList() {
+    @GetMapping("list")
+    public ResponseEntity<List<DictDetail>> list() {
         return new ResponseEntity<>(dictDetailService.queryList(), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询数据字典详情信息")
-    @GetMapping("/queryPage")
-    public ResponseEntity<Page<DictDetail>> queryPage(DictDetail dictDetail, QueryRequest queryRequest) {
+    @GetMapping("/page")
+    public ResponseEntity<Page<DictDetail>> page(DictDetail dictDetail, QueryRequest queryRequest) {
         return new ResponseEntity<>(dictDetailService.queryPage(dictDetail, queryRequest), HttpStatus.OK);
     }
 }

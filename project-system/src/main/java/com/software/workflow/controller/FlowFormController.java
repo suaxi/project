@@ -57,25 +57,25 @@ public class FlowFormController {
     }
 
     @ApiOperation("根据id查询流程表单信息")
-    @GetMapping("/formId/{formId}")
-    public ResponseEntity<FlowForm> queryById(@NotNull @PathVariable("formId") Integer formId) {
+    @GetMapping("/form-id/{formId}")
+    public ResponseEntity<FlowForm> formId(@NotNull @PathVariable("formId") Integer formId) {
         return new ResponseEntity<>(flowFormService.queryByFormId(formId), HttpStatus.OK);
     }
 
     @ApiOperation("查询流程表单列表")
     @PostMapping("/list")
-    public ResponseEntity<List<FlowForm>> queryList(@RequestBody FlowForm flowForm) {
+    public ResponseEntity<List<FlowForm>> list(@RequestBody FlowForm flowForm) {
         return new ResponseEntity<>(flowFormService.queryList(flowForm), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询")
-    @GetMapping("/queryPage")
-    public ResponseEntity<Page<FlowForm>> queryPage(FlowForm flowForm, QueryRequest queryRequest) {
+    @GetMapping("/page")
+    public ResponseEntity<Page<FlowForm>> page(FlowForm flowForm, QueryRequest queryRequest) {
         return new ResponseEntity<>(flowFormService.queryPage(flowForm, queryRequest), HttpStatus.OK);
     }
 
     @ApiOperation("挂载流程表单")
-    @PostMapping("/mountFlowForm")
+    @PostMapping("/mount-flow-form")
     public ResponseEntity<Boolean> mountFlowForm(@Validated @RequestBody FlowDeployInsForm flowDeployInsForm) {
         return new ResponseEntity<>(flowFormService.mountFlowForm(flowDeployInsForm), HttpStatus.OK);
     }

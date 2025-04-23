@@ -28,16 +28,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private SecurityProperties properties;
-
-    @Autowired
-    private TokenProvider tokenProvider;
-
-    @Autowired
-    private OnlineUserService onlineUserService;
-
-    @Autowired
-    private UserCacheManager userCacheManager;
+    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     @Autowired
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
@@ -76,7 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
         //jwt认证过滤器
-        JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter(properties, tokenProvider, onlineUserService, userCacheManager);
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         //认证授权处理器

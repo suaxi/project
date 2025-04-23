@@ -56,19 +56,19 @@ public class FlowExpressionController {
 
     @ApiOperation("根据ID查询流程表达式")
     @GetMapping("/id/{id}")
-    public ResponseEntity<FlowExpression> findById(@PathVariable("id") Integer id) {
+    public ResponseEntity<FlowExpression> id(@PathVariable("id") Integer id) {
         return new ResponseEntity<>(flowExpressionService.findById(id), HttpStatus.OK);
     }
 
     @ApiOperation("查询流程表达式列表")
     @PostMapping("/list")
-    public ResponseEntity<List<FlowExpression>> queryList(@RequestBody FlowExpression FlowExpression) {
+    public ResponseEntity<List<FlowExpression>> list(@RequestBody FlowExpression FlowExpression) {
         return new ResponseEntity<>(flowExpressionService.queryList(FlowExpression), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询")
-    @GetMapping("/queryPage")
-    public ResponseEntity<Page<FlowExpression>> queryPage(FlowExpression FlowExpression, QueryRequest queryRequest) {
+    @GetMapping("/page")
+    public ResponseEntity<Page<FlowExpression>> page(FlowExpression FlowExpression, QueryRequest queryRequest) {
         return new ResponseEntity<>(flowExpressionService.queryPage(FlowExpression, queryRequest), HttpStatus.OK);
     }
 

@@ -68,51 +68,51 @@ public class MenuController {
     @ApiOperation("根据id查询菜单信息")
     @GetMapping("/id/{id}")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<Menu> queryById(@NotNull @PathVariable("id") Integer id) {
+    public ResponseEntity<Menu> id(@NotNull @PathVariable("id") Integer id) {
         return new ResponseEntity<>(menuService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据名称查询菜单信息")
     @GetMapping("/name/{name}")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<Menu> queryByName(@NotNull @PathVariable("name") String name) {
+    public ResponseEntity<Menu> name(@NotNull @PathVariable("name") String name) {
         return new ResponseEntity<>(menuService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询菜单信息")
-    @GetMapping("/queryPage")
+    @GetMapping("/page")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<Page<MenuDto>> queryPage(Menu menu, QueryRequest queryRequest) {
+    public ResponseEntity<Page<MenuDto>> page(Menu menu, QueryRequest queryRequest) {
         return new ResponseEntity<>(menuService.queryPage(menu, queryRequest), HttpStatus.OK);
     }
 
     @ApiOperation("获取用户路由")
-    @GetMapping("/getUserRouters")
+    @GetMapping("/user-routers")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<List<VueRouter<Menu>>> getUserRouters() {
+    public ResponseEntity<List<VueRouter<Menu>>> userRouters() {
         return new ResponseEntity<>(menuService.getUserRouters(SecurityUtils.getCurrentUserId()), HttpStatus.OK);
     }
 
     @ApiOperation("根据父id查询全部菜单（懒加载）")
-    @GetMapping("/queryChildListByPid")
+    @GetMapping("/child-list")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<Map<String, Object>> queryChildListByPid(@RequestParam("pid") Integer pid) {
+    public ResponseEntity<Map<String, Object>> childList(@RequestParam("pid") Integer pid) {
         List<MenuDto> menuDtoList = menuService.queryChildListByPid(pid);
         return new ResponseEntity<>(ProjectUtils.toPageData(menuDtoList, menuDtoList.size()), HttpStatus.OK);
     }
 
     @ApiOperation("根据id查询子级菜单（包括自身）")
-    @GetMapping("/queryMenuListById")
+    @GetMapping("/menu-list")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<Map<String, Object>> queryMenuListById(@RequestParam("id") Integer id) {
+    public ResponseEntity<Map<String, Object>> menuList(@RequestParam("id") Integer id) {
         Set<Menu> menuSet = menuService.queryMenuListById(id);
         return new ResponseEntity<>(ProjectUtils.toPageData(menuSet, menuSet.size()), HttpStatus.OK);
     }
 
     @ApiOperation("根据id查询同级与上级菜单列表")
-    @GetMapping("/querySameLevelAndSuperiorMenuListById")
+    @GetMapping("/superior-menu-list")
     @PreAuthorize("@pre.check('menu:list')")
-    public ResponseEntity<Map<String, Object>> querySameLevelAndSuperiorMenuListById(@RequestParam("id") Integer id) {
+    public ResponseEntity<Map<String, Object>> superiorMenuList(@RequestParam("id") Integer id) {
         List<MenuDto> menuDtoList = menuService.querySameLevelAndSuperiorMenuListById(id);
         return new ResponseEntity<>(ProjectUtils.toPageData(menuDtoList, menuDtoList.size()), HttpStatus.OK);
     }

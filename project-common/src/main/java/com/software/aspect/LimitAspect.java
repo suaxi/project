@@ -62,7 +62,6 @@ public class LimitAspect {
         RedisScript<Number> redisScript = new DefaultRedisScript<>(luaScript, Number.class);
         Number count = redisTemplate.execute(redisScript, keys, limit.count(), limit.period());
         if (null != count && count.intValue() <= limit.count()) {
-            log.info("第{}次访问key为 {}，描述为 [{}]的接口", count, keys, limit.name());
             return joinPoint.proceed();
         } else {
             throw new BadRequestException("访问太频繁，请稍后再试！");

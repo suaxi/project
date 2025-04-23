@@ -64,34 +64,34 @@ public class UserController {
     @ApiOperation("根据id查询用户信息")
     @GetMapping("/id/{id}")
     @PreAuthorize("@pre.check('user:list')")
-    public ResponseEntity<User> queryById(@NotNull @PathVariable("id") Integer id) {
+    public ResponseEntity<User> id(@NotNull @PathVariable("id") Integer id) {
         return new ResponseEntity<>(userService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据用户名查询用户信息")
     @GetMapping("/name/{name}")
     @PreAuthorize("@pre.check('user:list')")
-    public ResponseEntity<User> queryByName(@NotNull @PathVariable("name") String name) {
+    public ResponseEntity<User> name(@NotNull @PathVariable("name") String name) {
         return new ResponseEntity<>(userService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询用户信息")
-    @GetMapping("/queryPage")
+    @GetMapping("/page")
     @PreAuthorize("@pre.check('user:list')")
-    public ResponseEntity<Page<User>> queryPage(User user, QueryRequest queryRequest) {
+    public ResponseEntity<Page<User>> page(User user, QueryRequest queryRequest) {
         return new ResponseEntity<>(userService.queryPage(user, queryRequest), HttpStatus.OK);
     }
 
     @ApiOperation("查询用户列表")
     @PostMapping("/list")
-    public ResponseEntity<List<User>> queryList(@RequestBody User user) {
+    public ResponseEntity<List<User>> list(@RequestBody User user) {
         return new ResponseEntity<>(userService.queryList(user), HttpStatus.OK);
     }
 
     @ApiOperation("获取用户信息")
-    @GetMapping("/getUserInfo")
+    @GetMapping("/user-info")
     @PreAuthorize("@pre.check('user:list')")
-    public ResponseEntity<UserDetails> getUserInfo() {
+    public ResponseEntity<UserDetails> userInfo() {
         return new ResponseEntity<>(SecurityUtils.getCurrentUser(), HttpStatus.OK);
     }
 

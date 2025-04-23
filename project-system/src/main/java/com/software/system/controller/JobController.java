@@ -62,28 +62,28 @@ public class JobController {
     @ApiOperation("根据id查询岗位信息")
     @GetMapping("/id/{id}")
     @PreAuthorize("@pre.check('user:list', 'job:list')")
-    public ResponseEntity<Job> queryById(@NotNull @PathVariable("id") Long id) {
+    public ResponseEntity<Job> id(@NotNull @PathVariable("id") Long id) {
         return new ResponseEntity<>(jobService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据名称查询岗位信息")
     @GetMapping("/name/{name}")
     @PreAuthorize("@pre.check('user:list', 'job:list')")
-    public ResponseEntity<Job> queryByName(@NotNull @PathVariable("name") String name) {
+    public ResponseEntity<Job> name(@NotNull @PathVariable("name") String name) {
         return new ResponseEntity<>(jobService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("查询角色列表")
-    @GetMapping("queryList")
+    @GetMapping("list")
     @PreAuthorize("@pre.check('user:list', 'job:list')")
-    public ResponseEntity<List<Job>> queryList() {
+    public ResponseEntity<List<Job>> list() {
         return new ResponseEntity<>(jobService.queryList(), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询岗位信息")
-    @GetMapping("/queryPage")
+    @GetMapping("/page")
     @PreAuthorize("@pre.check('user:list', 'job:list')")
-    public ResponseEntity<Page<Job>> queryPage(Job job, QueryRequest queryRequest) {
+    public ResponseEntity<Page<Job>> page(Job job, QueryRequest queryRequest) {
         return new ResponseEntity<>(jobService.queryPage(job, queryRequest), HttpStatus.OK);
     }
 }

@@ -56,19 +56,19 @@ public class FlowListenerController {
 
     @ApiOperation("根据ID查询流程监听")
     @GetMapping("/id/{id}")
-    public ResponseEntity<FlowListener> findById(@PathVariable("id") Integer id) {
+    public ResponseEntity<FlowListener> id(@PathVariable("id") Integer id) {
         return new ResponseEntity<>(flowListenerService.findById(id), HttpStatus.OK);
     }
 
     @ApiOperation("查询流程监听列表")
     @PostMapping("/list")
-    public ResponseEntity<List<FlowListener>> queryList(@RequestBody FlowListener FlowListener) {
+    public ResponseEntity<List<FlowListener>> list(@RequestBody FlowListener FlowListener) {
         return new ResponseEntity<>(flowListenerService.queryList(FlowListener), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询")
-    @GetMapping("/queryPage")
-    public ResponseEntity<Page<FlowListener>> queryPage(FlowListener FlowListener, QueryRequest queryRequest) {
+    @GetMapping("/page")
+    public ResponseEntity<Page<FlowListener>> page(FlowListener FlowListener, QueryRequest queryRequest) {
         return new ResponseEntity<>(flowListenerService.queryPage(FlowListener, queryRequest), HttpStatus.OK);
     }
 

@@ -62,28 +62,28 @@ public class DictController {
     @ApiOperation("根据id查询数据字典信息")
     @GetMapping("/id/{id}")
     @PreAuthorize("@pre.check('dict:list')")
-    public ResponseEntity<Dict> queryById(@NotNull @PathVariable("id") Long id) {
+    public ResponseEntity<Dict> id(@NotNull @PathVariable("id") Long id) {
         return new ResponseEntity<>(dictService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据名称查询数据字典信息")
     @GetMapping("/name/{name}")
     @PreAuthorize("@pre.check('dict:list')")
-    public ResponseEntity<Dict> queryByName(@NotNull @PathVariable("name") String name) {
+    public ResponseEntity<Dict> name(@NotNull @PathVariable("name") String name) {
         return new ResponseEntity<>(dictService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("查询数据字典列表")
-    @GetMapping("queryList")
+    @GetMapping("list")
     @PreAuthorize("@pre.check('dict:list')")
-    public ResponseEntity<List<Dict>> queryList() {
+    public ResponseEntity<List<Dict>> list() {
         return new ResponseEntity<>(dictService.queryList(), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询数据字典信息")
-    @GetMapping("/queryPage")
+    @GetMapping("/page")
     @PreAuthorize("@pre.check('dict:list')")
-    public ResponseEntity<Page<Dict>> queryPage(Dict dict, QueryRequest queryRequest) {
+    public ResponseEntity<Page<Dict>> page(Dict dict, QueryRequest queryRequest) {
         return new ResponseEntity<>(dictService.queryPage(dict, queryRequest), HttpStatus.OK);
     }
 }

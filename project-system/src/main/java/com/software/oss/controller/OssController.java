@@ -63,8 +63,8 @@ public class OssController {
             @ApiImplicitParam(name = "ossAttachment", value = "对象存储信息", required = true, paramType = "query", dataType = "object"),
             @ApiImplicitParam(name = "queryRequest", value = "查询参数", required = true, paramType = "query", dataType = "object")
     })
-    @GetMapping("/queryPage")
-    public ResponseEntity<Page<OssAttachment>> queryPage(OssAttachment ossAttachment, QueryRequest queryRequest) {
+    @GetMapping("/page")
+    public ResponseEntity<Page<OssAttachment>> page(OssAttachment ossAttachment, QueryRequest queryRequest) {
         return new ResponseEntity<>(ossAttachmentService.queryPage(ossAttachment, queryRequest), HttpStatus.OK);
     }
 
@@ -114,7 +114,7 @@ public class OssController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "ID", required = true, paramType = "path", dataType = "String")
     })
-    @GetMapping("/getImageBase64/{id}")
+    @GetMapping("/image-to-base64/{id}")
     public ResponseEntity<?> imageToBase64(@PathVariable("id") String id) {
         OssAttachment ossAttachment = ossAttachmentService.getById(id);
         if (ossAttachment == null) {
@@ -135,7 +135,7 @@ public class OssController {
             @ApiImplicitParam(name = "id", value = "ID", required = true, paramType = "path", dataType = "String")
     })
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable("id") String id) {
+    public ResponseEntity<?> delete(@PathVariable("id") String id) {
         OssAttachment ossAttachment = ossAttachmentService.getById(id);
         if (ossAttachment == null) {
             throw new BadRequestException("文件不存在");

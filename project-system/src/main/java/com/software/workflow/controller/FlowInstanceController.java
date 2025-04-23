@@ -32,7 +32,7 @@ public class FlowInstanceController {
             @ApiImplicitParam(name = "procDefId", value = "流程定义ID", required = true, paramType = "path", dataType = "String"),
             @ApiImplicitParam(name = "variables", value = "流程变量", required = true, paramType = "body", dataType = "object")
     })
-    @PostMapping("/startProcess/{procDefId}")
+    @PostMapping("/start-process/{procDefId}")
     @OperationLog("发起流程")
     public ResponseEntity<Boolean> startProcess(@PathVariable(value = "procDefId") String procDefId, @RequestBody Map<String, Object> variables) {
         return new ResponseEntity<>(flowInstanceService.startProcessInstanceById(procDefId, variables), HttpStatus.OK);
@@ -43,7 +43,7 @@ public class FlowInstanceController {
             @ApiImplicitParam(name = "state", value = "状态（1：激活，2：挂起）", required = true, paramType = "path", dataType = "Integer"),
             @ApiImplicitParam(name = "procInsId", value = "流程实例ID", required = true, paramType = "path", dataType = "String")
     })
-    @PutMapping("/updateState/{state}/{procInsId}")
+    @PutMapping("/update-state/{state}/{procInsId}")
     @OperationLog("激活或挂起流程实例")
     public ResponseEntity<?> updateState(@PathVariable(value = "state") Integer state, @PathVariable(value = "procInsId") String procInsId) {
         if (!Arrays.asList(1, 2).contains(state)) {

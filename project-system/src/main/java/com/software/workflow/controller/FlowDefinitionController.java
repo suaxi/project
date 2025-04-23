@@ -87,7 +87,7 @@ public class FlowDefinitionController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "deployId", value = "流程部署ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping(value = "/readXml")
+    @GetMapping(value = "/read-xml")
     public ResponseEntity<String> readXml(@RequestParam("deployId") String deployId) throws IOException {
         return new ResponseEntity<>(flowDefinitionService.readXml(deployId), HttpStatus.OK);
     }
@@ -96,7 +96,7 @@ public class FlowDefinitionController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "deployId", value = "流程部署ID", required = true, paramType = "query", dataType = "String")
     })
-    @GetMapping(value = "/readImage")
+    @GetMapping(value = "/read-image")
     public void readImage(@RequestParam("deployId") String deployId, HttpServerResponse resp) {
         OutputStream os = null;
         BufferedImage image;
@@ -150,7 +150,7 @@ public class FlowDefinitionController {
             @ApiImplicitParam(name = "procDefId", value = "流程定义ID", required = true, paramType = "path", dataType = "String"),
             @ApiImplicitParam(name = "variables", value = "流程变量", required = true, paramType = "body", dataType = "object")
     })
-    @PostMapping("/startProcess/{procDefId}")
+    @PostMapping("/start-process/{procDefId}")
     @OperationLog("发起流程")
     public ResponseEntity<Boolean> startProcess(@PathVariable(value = "procDefId") String procDefId, @RequestBody Map<String, Object> variables) {
         return new ResponseEntity<>(flowDefinitionService.startProcessInstanceById(procDefId, variables), HttpStatus.OK);
@@ -161,7 +161,7 @@ public class FlowDefinitionController {
             @ApiImplicitParam(name = "state", value = "状态（1：激活，2：挂起）", required = true, paramType = "path", dataType = "Integer"),
             @ApiImplicitParam(name = "deployId", value = "流程部署ID", required = true, paramType = "path", dataType = "String")
     })
-    @PutMapping("/updateState/{state}/{deployId}")
+    @PutMapping("/update-state/{state}/{deployId}")
     @OperationLog("激活或挂起流程定义")
     public ResponseEntity<?> startProcess(@PathVariable(value = "state") Integer state, @PathVariable(value = "deployId") String deployId) {
         if (!Arrays.asList(1, 2).contains(state)) {

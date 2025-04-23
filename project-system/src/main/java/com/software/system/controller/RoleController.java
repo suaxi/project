@@ -65,33 +65,33 @@ public class RoleController {
     @ApiOperation("根据id查询角色信息")
     @GetMapping("/id/{id}")
     @PreAuthorize("@pre.check('roles:list')")
-    public ResponseEntity<Role> queryById(@NotNull @PathVariable("id") Integer id) {
+    public ResponseEntity<Role> id(@NotNull @PathVariable("id") Integer id) {
         return new ResponseEntity<>(roleService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据名称查询角色信息")
     @GetMapping("/name/{name}")
     @PreAuthorize("@pre.check('roles:list')")
-    public ResponseEntity<Role> queryByName(@NotNull @PathVariable("name") String name) {
+    public ResponseEntity<Role> name(@NotNull @PathVariable("name") String name) {
         return new ResponseEntity<>(roleService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("查询角色列表")
     @PostMapping("/list")
     @PreAuthorize("@pre.check('roles:list')")
-    public ResponseEntity<List<Role>> queryList(@RequestBody Role role) {
+    public ResponseEntity<List<Role>> list(@RequestBody Role role) {
         return new ResponseEntity<>(roleService.queryList(role), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询角色信息")
-    @GetMapping("/queryPage")
+    @GetMapping("/page")
     @PreAuthorize("@pre.check('roles:list')")
-    public ResponseEntity<Page<Role>> queryPage(Role role, QueryRequest queryRequest) {
+    public ResponseEntity<Page<Role>> page(Role role, QueryRequest queryRequest) {
         return new ResponseEntity<>(roleService.queryPage(role, queryRequest), HttpStatus.OK);
     }
 
     @ApiOperation("修改角色菜单关联数据")
-    @PutMapping("/menu")
+    @PutMapping("/update-role-menu")
     @OperationLog("修改角色菜单关联数据")
     @PreAuthorize("@pre.check('roles:list')")
     public ResponseEntity<?> updateRoleMenu(@RequestBody Role role) {

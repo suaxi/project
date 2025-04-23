@@ -69,45 +69,45 @@ public class DeptController {
     @ApiOperation("根据id查询部门信息")
     @GetMapping("/id/{id}")
     @PreAuthorize("@pre.check('user:list', 'dept:list')")
-    public ResponseEntity<Dept> queryById(@NotNull @PathVariable("id") Integer id) {
+    public ResponseEntity<Dept> id(@NotNull @PathVariable("id") Integer id) {
         return new ResponseEntity<>(deptService.queryById(id), HttpStatus.OK);
     }
 
     @ApiOperation("根据名称查询部门信息")
     @GetMapping("/name/{name}")
     @PreAuthorize("@pre.check('user:list', 'dept:list')")
-    public ResponseEntity<Dept> queryByName(@NotNull @PathVariable("name") String name) {
+    public ResponseEntity<Dept> name(@NotNull @PathVariable("name") String name) {
         return new ResponseEntity<>(deptService.queryByName(name), HttpStatus.OK);
     }
 
     @ApiOperation("分页查询部门信息")
-    @GetMapping("/queryPage")
+    @GetMapping("/page")
     @PreAuthorize("@pre.check('user:list', 'dept:list')")
-    public ResponseEntity<Page<DeptDto>> queryPage(Dept dept, QueryRequest queryRequest) {
+    public ResponseEntity<Page<DeptDto>> page(Dept dept, QueryRequest queryRequest) {
         return new ResponseEntity<>(deptService.queryPage(dept, queryRequest), HttpStatus.OK);
     }
 
     @ApiOperation("根据父id查询子级部门")
-    @GetMapping("/queryChildListByPid")
+    @GetMapping("/child-list")
     @PreAuthorize("@pre.check('user:list', 'dept:list')")
-    public ResponseEntity<Map<String, Object>> queryChildListByPid(Integer pid) {
+    public ResponseEntity<Map<String, Object>> childList(Integer pid) {
         List<DeptDto> deptDtoList = deptService.queryChildListByPid(pid);
         return new ResponseEntity<>(ProjectUtils.toPageData(deptDtoList, deptDtoList.size()), HttpStatus.OK);
     }
 
     @ApiOperation("查询部门树")
-    @GetMapping("/queryDeptTree")
+    @GetMapping("/dept-tree")
     @PreAuthorize("@pre.check('user:list', 'dept:list')")
-    public ResponseEntity<List<? extends Tree<?>>> queryDeptTree() {
+    public ResponseEntity<List<? extends Tree<?>>> deptTree() {
         return new ResponseEntity<>(deptService.queryDeptTree(), HttpStatus.OK);
     }
 
     @ApiOperation("根据id查找同级与上级部门树")
-    @PostMapping("/querySuperiorListByIds")
+    @PostMapping("/superior-list")
     @PreAuthorize("@pre.check('user:list', 'dept:list')")
-    public ResponseEntity<Map<String, Object>> querySuperiorListByIds(@RequestBody List<Integer> ids) {
+    public ResponseEntity<Map<String, Object>> superiorList(@RequestBody List<Integer> ids) {
         List<Dept> deptList = new ArrayList<>();
-        if (ids != null && ids.size() > 0) {
+        if (ids != null && !ids.isEmpty()) {
             if (ids.contains(0)) {
                 throw new IllegalArgumentException("查询参数不合法，部门id不能为0");
             }
@@ -116,16 +116,16 @@ public class DeptController {
                 deptService.querySuperiorList(dept, deptList);
             }
             List<DeptDtoTree> trees = new ArrayList<>();
-            deptList.forEach(item -> {
+            for (Dept dept : deptList) {
                 DeptDtoTree tree = new DeptDtoTree();
-                tree.setId(item.getId());
-                tree.setParentId(item.getPid() == null ? null : item.getPid());
-                tree.setLabel(item.getName());
-                tree.setSubCount(item.getSubCount());
-                tree.setName(item.getName());
-                tree.setSort(item.getSort());
+                tree.setId(dept.getId());
+                tree.setParentId(dept.getPid() == null ? null : dept.getPid());
+                tree.setLabel(dept.getName());
+                tree.setSubCount(dept.getSubCount());
+                tree.setName(dept.getName());
+                tree.setSort(dept.getSort());
                 trees.add(tree);
-            });
+            }
             List<? extends Tree<?>> treeResult = TreeUtil.build(trees);
             return new ResponseEntity<>(ProjectUtils.toPageData(treeResult, treeResult.size()), HttpStatus.OK);
         }

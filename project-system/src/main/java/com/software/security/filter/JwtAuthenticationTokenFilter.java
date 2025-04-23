@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -26,6 +27,7 @@ import java.util.Objects;
  * @date 2022/10/15 22:46
  */
 @Slf4j
+@Component
 public class JwtAuthenticationTokenFilter extends GenericFilterBean {
 
     @Autowired
@@ -39,13 +41,6 @@ public class JwtAuthenticationTokenFilter extends GenericFilterBean {
 
     @Autowired
     private UserCacheManager userCacheManager;
-
-    public JwtAuthenticationTokenFilter(SecurityProperties properties, TokenProvider tokenProvider, OnlineUserService onlineUserService, UserCacheManager userCacheManager) {
-        this.properties = properties;
-        this.tokenProvider = tokenProvider;
-        this.onlineUserService = onlineUserService;
-        this.userCacheManager = userCacheManager;
-    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
