@@ -73,8 +73,8 @@ public class JobController {
         return new ResponseEntity<>(jobService.queryByName(name), HttpStatus.OK);
     }
 
-    @ApiOperation("查询角色列表")
-    @GetMapping("list")
+    @ApiOperation("查询岗位列表")
+    @GetMapping("/list")
     @PreAuthorize("@pre.check('user:list', 'job:list')")
     public ResponseEntity<List<Job>> list() {
         return new ResponseEntity<>(jobService.queryList(), HttpStatus.OK);

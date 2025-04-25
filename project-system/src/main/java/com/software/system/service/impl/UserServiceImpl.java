@@ -92,7 +92,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (id == null) {
             throw new IllegalArgumentException("用户id不能为空");
         }
-        return this.getById(id);
+        return this.baseMapper.queryById(id);
     }
 
     @Override

@@ -16,6 +16,14 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<User> {
 
     /**
+     * 根据id查询用户信息
+     *
+     * @param id id
+     * @return
+     */
+    User queryById(Integer id);
+
+    /**
      * 分页模糊查询
      *
      * @param page      分页参数

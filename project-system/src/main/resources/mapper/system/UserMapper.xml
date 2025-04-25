@@ -3,6 +3,54 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.software.system.mapper.UserMapper">
+    <select id="queryById" resultType="com.software.system.entity.User">
+        select
+            u.id,
+            u.dept_id,
+            u.username,
+            u.nick_name,
+            u.sex,
+            u.phone,
+            u.email,
+            u.avatar_name,
+            u.avatar_path,
+            u.is_admin,
+            u.enabled,
+            u.pwd_reset_time,
+            u.create_time,
+            u.create_user,
+            u.update_time,
+            u.update_user,
+            d.`name` as deptName,
+            group_concat( distinct ur.role_id ) as roleIds,
+            group_concat( distinct uj.job_id ) as jobIds
+        from
+            sys_user u
+            left join sys_dept d on u.dept_id = d.id
+            left join sys_user_role ur on u.id = ur.user_id
+            left join sys_user_job uj on u.id = uj.user_id
+        where
+            u.is_delete = 0 and u.id = #{id}
+        group by
+            u.id,
+            u.dept_id,
+            u.username,
+            u.nick_name,
+            u.sex,
+            u.phone,
+            u.email,
+            u.avatar_name,
+            u.avatar_path,
+            u.is_admin,
+            u.enabled,
+            u.pwd_reset_time,
+            u.create_time,
+            u.create_user,
+            u.update_time,
+            u.update_user,
+            d.`name`
+    </select>
+
     <select id="queryPage" resultType="com.software.system.entity.User">
         select
             u.id,
@@ -14,7 +62,6 @@
             u.email,
             u.avatar_name,
             u.avatar_path,
-            u.`password`,
             u.is_admin,
             u.enabled,
             u.pwd_reset_time,
@@ -57,7 +104,6 @@
             u.email,
             u.avatar_name,
             u.avatar_path,
-            u.`password`,
             u.is_admin,
             u.enabled,
             u.pwd_reset_time,
