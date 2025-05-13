@@ -2,6 +2,7 @@ package com.software.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.software.system.entity.Dept;
 import com.software.system.entity.Role;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -39,5 +40,13 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @return 角色列表（分页）
      */
     Page<Role> queryPage(Page<Role> page, @Param("role") Role role);
+
+    /**
+     * 根据角色id查询对应的数据权限信息
+     *
+     * @param roleId 角色id
+     * @return 角色id对应的数据权限信息
+     */
+    List<Dept> queryRoleDeptByRoleId(Integer roleId);
 
 }

@@ -108,7 +108,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         if (id == null) {
             throw new IllegalArgumentException("角色id不能为空");
         }
-        return this.getById(id);
+        Role role = this.getById(id);
+        if (role != null &&role.getDataScope().equals("自定义")) {
+            List<Dept> deptList = this.baseMapper.queryRoleDeptByRoleId(role.getId());
+            role.setDepts(deptList);
+        }
+        return role;
     }
 
     @Override

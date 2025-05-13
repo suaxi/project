@@ -156,7 +156,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         List<VueRouter<Menu>> routers = new ArrayList<>();
         List<Menu> menuList = menuMapper.getUserRouters(userId, 2);
         if (menuList != null && menuList.size() > 0) {
-            menuList.forEach(menu -> {
+            menuList.stream().sorted(Comparator.comparing(Menu::getSort)).forEach(menu -> {
                 VueRouter<Menu> router = new VueRouter<>();
                 router.setId(menu.getId());
                 router.setParentId(menu.getPid());
