@@ -162,6 +162,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                 router.setParentId(menu.getPid());
                 router.setPath(menu.getPid() == null ? "/" + menu.getPath() : menu.getPath());
                 router.setName(StringUtils.isNotEmpty(menu.getName()) ? menu.getName() : menu.getTitle());
+                router.setHidden(menu.getHidden());
                 //是否为外链
                 if (!menu.getIFrame().equals(StringConstant.TRUE)) {
                     if (menu.getPid() == null) {

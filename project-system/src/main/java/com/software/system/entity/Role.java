@@ -60,7 +60,7 @@ public class Role {
     @ApiModelProperty(value = "逻辑删除")
     private Integer isDelete;
 
-    @ApiModelProperty("菜单列表")
+    @ApiModelProperty("部门列表")
     @TableField(exist = false)
     private List<Dept> depts;
 
