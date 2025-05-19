@@ -20,7 +20,7 @@ import java.util.Map;
  * @date 2024/12/12 16:48
  */
 @RestController
-@RequestMapping("/workflow/form")
+@RequestMapping("/workflow/instance")
 @Api(tags = "流程实例接口")
 public class FlowInstanceController {
 
@@ -60,7 +60,7 @@ public class FlowInstanceController {
     })
     @DeleteMapping("/delete/{procInsId}")
     @OperationLog("删除流程")
-    public ResponseEntity<?> stopProcessInstance(@PathVariable(value = "procInsId") String procInsId, @RequestBody String deleteReason) {
+    public ResponseEntity<?> stopProcessInstance(@PathVariable(value = "procInsId") String procInsId, @RequestBody(required = false) String deleteReason) {
         flowInstanceService.delete(procInsId, deleteReason);
         return new ResponseEntity<>("删除成功！", HttpStatus.OK);
     }
