@@ -79,7 +79,7 @@ public class TreeUtil {
                     }
                     parent.getChildren().add(route);
                     parent.setAlwaysShow(true);
-                    parent.setRedirect("noredirect");
+                    parent.setRedirect("noRedirect");
                     parent.setHasChildren(true);
                     route.setHasParent(true);
                     parent.setHasParent(true);
