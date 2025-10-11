@@ -35,8 +35,10 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
         boolean flag = this.save(dept);
         if (dept.getPid() != null) {
             Dept parentDept = this.getById(dept.getPid());
-            parentDept.setSubCount(parentDept.getSubCount() + 1);
-            this.updateById(parentDept);
+            if (parentDept != null) {
+                parentDept.setSubCount(parentDept.getSubCount() + 1);
+                this.updateById(parentDept);
+            }
         }
         return flag;
     }
@@ -44,18 +46,14 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(Dept dept) {
-        //原pid
         Dept oldDeptData = this.getById(dept.getId());
-        Integer pid = oldDeptData.getPid() == null ? null : oldDeptData.getPid();
         dept.setUpdateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.updateById(dept);
-        //原父节点子部门数量处理
-        if (pid != null && flag) {
-            this.dealParentDeptSubCount(pid);
-        }
-        //新父节点子部门数量处理
-        if (dept.getPid() != null && flag) {
-            this.dealParentDeptSubCount(dept.getPid());
+        if (flag) {
+            //原父节点子部门数量处理
+            this.dealParentDeptSubCount(oldDeptData.getPid() == 0 ? oldDeptData.getId() : oldDeptData.getPid());
+            //新父节点子部门数量处理
+            this.dealParentDeptSubCount(dept.getPid() == 0 ? dept.getId() : dept.getPid());
         }
         return flag;
     }
@@ -75,9 +73,11 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
                     for (Integer pid : pidSet) {
                         if (!ids.contains(pid)) {
                             Dept parentDept = this.getById(pid);
-                            int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, pid)).size();
-                            parentDept.setSubCount(subCount);
-                            this.updateById(parentDept);
+                            if (parentDept != null) {
+                                int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, pid)).size();
+                                parentDept.setSubCount(subCount);
+                                this.updateById(parentDept);
+                            }
                         }
                     }
                 }
@@ -138,11 +138,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     public List<DeptDto> queryChildListByPid(Integer pid) {
         LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Dept::getEnabled, true);
-        if (pid == null) {
-            queryWrapper.isNull(Dept::getPid);
-        } else {
-            queryWrapper.eq(Dept::getPid, pid);
-        }
+        queryWrapper.eq(Dept::getPid, pid);
         List<Dept> deptList = this.baseMapper.selectList(queryWrapper);
         if (deptList != null && deptList.size() > 0) {
             return deptList.stream().map(dept -> {
@@ -162,7 +158,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
             deptList.forEach(dept -> {
                 DeptDtoTree tree = new DeptDtoTree();
                 tree.setId(dept.getId());
-                tree.setParentId(dept.getPid() == null ? null : dept.getPid());
+                tree.setParentId(dept.getPid());
                 tree.setLabel(dept.getName());
                 tree.setSubCount(dept.getSubCount());
                 tree.setName(dept.getName());
@@ -176,8 +172,8 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
 
     @Override
     public List<Dept> querySuperiorList(Dept dept, List<Dept> deptList) {
-        if (dept.getPid() == null) {
-            deptList.addAll(this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().isNull(Dept::getPid)));
+        if (dept.getPid() == 0) {
+            deptList.addAll(this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, 0)));
             return deptList;
         }
         deptList.addAll(this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, dept.getPid())));
@@ -206,7 +202,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
      */
     private void dealParentDeptSubCount(Integer pid) {
         Dept parentDept = this.queryById(pid);
-        int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, pid)).size();
+        int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getPid, parentDept.getId())).size();
         if (parentDept.getSubCount() != subCount) {
             parentDept.setSubCount(subCount);
             this.updateById(parentDept);

@@ -27,7 +27,7 @@ public class TreeUtil {
 
         ou: for (Tree<T> node : nodes) {
             Integer pid = node.getParentId();
-            if (pid == null) {
+            if (pid == null || pid == 0) {
                 topNodes.add(node);
                 continue ou;
             }
@@ -67,7 +67,7 @@ public class TreeUtil {
         VueRouter<T> router = new VueRouter<>();
         routes.forEach(route -> {
             Integer parentId = route.getParentId();
-            if (parentId == null) {
+            if (parentId == null || parentId == 0) {
                 topRoutes.add(route);
                 return;
             }

@@ -36,15 +36,18 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(Menu menu) {
-        //根节点
-        if (menu.getPid().equals(0)) {
-            menu.setPid(null);
-        }
         menu.setCreateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.save(menu);
-        if (menu.getPid() != null && flag) {
+        if (flag) {
             //父节点子菜单数量处理
-            this.dealParentMenuSubCount(menu.getPid());
+            if (menu.getPid() == 0) {
+                return true;
+            }
+            Menu parentMenu = this.getById(menu.getPid());
+            if (parentMenu != null) {
+                parentMenu.setSubCount(parentMenu.getSubCount() + 1);
+                this.updateById(parentMenu);
+            }
         }
         return flag;
     }
@@ -52,23 +55,14 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(Menu menu) {
-        //原pid
         Menu oldMenuData = this.getById(menu.getId());
-        Integer pid = oldMenuData.getPid() == null ? null : oldMenuData.getPid();
-
-        //根节点
-        if (menu.getPid().equals(0)) {
-            menu.setPid(null);
-        }
         menu.setUpdateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.updateById(menu);
-        //原父节点子菜单数量处理
-        if (pid != null && flag) {
-            this.dealParentMenuSubCount(pid);
-        }
-        //新父节点子菜单数量处理
-        if (menu.getPid() != null && flag) {
-            this.dealParentMenuSubCount(menu.getPid());
+        if (flag) {
+            //原父节点子菜单数量处理
+            this.dealParentMenuSubCount(oldMenuData.getPid() == 0 ? oldMenuData.getId() : oldMenuData.getPid());
+            //新父节点子菜单数量处理
+            this.dealParentMenuSubCount(menu.getPid() == 0 ? menu.getId() : menu.getPid());
         }
         return flag;
     }
@@ -88,9 +82,11 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                     for (Integer pid : pidSet) {
                         if (!ids.contains(pid)) {
                             Menu parentMenu = this.getById(pid);
-                            int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, pid)).size();
-                            parentMenu.setSubCount(subCount);
-                            this.updateById(parentMenu);
+                            if (parentMenu != null) {
+                                int subCount = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, pid)).size();
+                                parentMenu.setSubCount(subCount);
+                                this.updateById(parentMenu);
+                            }
                         }
                     }
                 }
@@ -160,12 +156,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                 VueRouter<Menu> router = new VueRouter<>();
                 router.setId(menu.getId());
                 router.setParentId(menu.getPid());
-                router.setPath(menu.getPid() == null ? "/" + menu.getPath() : menu.getPath());
+                router.setPath(menu.getPid() == 0 ? "/" + menu.getPath() : menu.getPath());
                 router.setName(StringUtils.isNotEmpty(menu.getName()) ? menu.getName() : menu.getTitle());
                 router.setHidden(menu.getHidden());
                 //是否为外链
                 if (!menu.getIFrame().equals(StringConstant.TRUE)) {
-                    if (menu.getPid() == null) {
+                    if (menu.getPid() == 0) {
                         router.setComponent(StringUtils.isEmpty(menu.getComponent()) ? "Layout" : menu.getComponent());
                     } else if (menu.getType() == 0) {
                         //如果不是一级菜单，且菜单类型为目录，则代表是多级菜单
@@ -188,11 +184,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Override
     public List<MenuDto> queryChildListByPid(Integer pid) {
         LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
-        if (pid == null || pid == 0) {
-            queryWrapper.isNull(Menu::getPid);
-        } else {
-            queryWrapper.eq(Menu::getPid, pid);
-        }
+        queryWrapper.eq(Menu::getPid, pid);
         List<Menu> menuList = this.baseMapper.selectList(queryWrapper);
         if (menuList != null && menuList.size() > 0) {
             return menuList.stream().map(menu -> {
@@ -229,7 +221,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
         //上级
         Menu superiorMenu = null;
-        if (currentMenu.getPid() != null) {
+        if (currentMenu.getPid() != 0) {
             superiorMenu = this.getById(currentMenu.getPid());
             menuList.add(superiorMenu);
         }
