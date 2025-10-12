@@ -51,10 +51,10 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log> implements LogSe
         if (StringUtils.isNotBlank(log.getUsername())) {
             queryWrapper.lambda().eq(Log::getUsername, log.getUsername());
         }
-        if (StringUtils.isNotBlank(log.getCreateTimeFrom()) && StringUtils.isNotBlank(log.getCreateTimeTo())) {
+        if (StringUtils.isNotBlank(log.getStartTime()) && StringUtils.isNotBlank(log.getEndTime())) {
             queryWrapper.lambda()
-                    .ge(Log::getCreateTime, log.getCreateTimeFrom())
-                    .le(Log::getCreateTime, log.getCreateTimeTo());
+                    .ge(Log::getCreateTime, log.getStartTime())
+                    .le(Log::getCreateTime, log.getEndTime());
         }
         if (StringUtils.isNotBlank(queryRequest.getOrder())) {
             queryWrapper.orderBy(true, StringConstant.ASC.equals(queryRequest.getOrder()), queryRequest.getField());

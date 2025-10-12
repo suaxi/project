@@ -65,12 +65,12 @@ public class Log implements Serializable {
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
-    @ApiModelProperty(value = "创建起始时间")
+    @ApiModelProperty(value = "起始时间")
     @TableField(exist = false)
-    private String createTimeFrom;
+    private String startTime;
 
-    @ApiModelProperty(value = "创建结束时间")
+    @ApiModelProperty(value = "结束时间")
     @TableField(exist = false)
-    private String createTimeTo;
+    private String endTime;
 
 }

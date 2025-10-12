@@ -33,7 +33,10 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     public boolean add(Dept dept) {
         dept.setCreateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.save(dept);
-        if (dept.getPid() != null) {
+        if (flag) {
+            if (dept.getPid() == 0) {
+                return true;
+            }
             Dept parentDept = this.getById(dept.getPid());
             if (parentDept != null) {
                 parentDept.setSubCount(parentDept.getSubCount() + 1);

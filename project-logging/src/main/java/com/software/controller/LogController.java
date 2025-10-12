@@ -12,6 +12,7 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -43,9 +44,9 @@ public class LogController {
         return new ResponseResult<>(HttpStatus.OK.value(), result ? "删除成功！" : "删除失败！", ids);
     }
 
-    @GetMapping("/queryPage")
+    @GetMapping("/page")
     @ApiOperation("分页查询日志信息")
-    public ResponseResult<Page<Log>> queryPage(Log log, QueryRequest queryRequest) {
-        return new ResponseResult<>(HttpStatus.OK.value(), logService.queryPage(log, queryRequest));
+    public ResponseEntity<Page<Log>> queryPage(Log log, QueryRequest queryRequest) {
+        return new ResponseEntity<>(logService.queryPage(log, queryRequest), HttpStatus.OK);
     }
 }
