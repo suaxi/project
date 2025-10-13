@@ -96,10 +96,10 @@ public class DeptController {
     }
 
     @ApiOperation("查询部门树")
-    @GetMapping("/dept-tree")
+    @PostMapping("/dept-tree")
     @PreAuthorize("@pre.check('user:list', 'dept:list')")
-    public ResponseEntity<List<? extends Tree<?>>> deptTree() {
-        return new ResponseEntity<>(deptService.queryDeptTree(), HttpStatus.OK);
+    public ResponseEntity<List<? extends Tree<?>>> deptTree(@RequestBody Dept dept) {
+        return new ResponseEntity<>(deptService.queryDeptTree(dept), HttpStatus.OK);
     }
 
     @ApiOperation("根据id查找同级与上级部门树")

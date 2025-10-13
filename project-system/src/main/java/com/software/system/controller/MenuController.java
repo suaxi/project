@@ -3,6 +3,7 @@ package com.software.system.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.annotation.OperationLog;
 import com.software.dto.QueryRequest;
+import com.software.dto.Tree;
 import com.software.entity.VueRouter;
 import com.software.system.dto.MenuDto;
 import com.software.system.entity.Menu;
@@ -115,5 +116,12 @@ public class MenuController {
     public ResponseEntity<Map<String, Object>> superiorMenuList(@RequestParam("id") Integer id) {
         List<MenuDto> menuDtoList = menuService.querySameLevelAndSuperiorMenuListById(id);
         return new ResponseEntity<>(ProjectUtils.toPageData(menuDtoList, menuDtoList.size()), HttpStatus.OK);
+    }
+
+    @ApiOperation("查询菜单树")
+    @PostMapping("/menu-tree")
+    @PreAuthorize("@pre.check('menu:list')")
+    public ResponseEntity<List<? extends Tree<?>>> menuTree(@RequestBody Menu menu) {
+        return new ResponseEntity<>(menuService.menuTree(menu), HttpStatus.OK);
     }
 }

@@ -83,7 +83,7 @@ public interface DeptService {
      *
      * @return 部门树
      */
-    List<? extends Tree<?>> queryDeptTree();
+    List<? extends Tree<?>> queryDeptTree(Dept dept);
 
     /**
      * 根据id查找同级与上级部门数据

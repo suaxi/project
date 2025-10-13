@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
+import com.software.dto.Tree;
 import com.software.entity.RouterMeta;
 import com.software.entity.VueRouter;
 import com.software.system.dto.MenuDto;
+import com.software.system.dto.MenuDtoTree;
 import com.software.system.entity.Menu;
 import com.software.system.mapper.MenuMapper;
 import com.software.system.service.MenuService;
@@ -239,7 +241,43 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                 return menuDto;
             }).collect(Collectors.toList());
         }
-        return null;
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<? extends Tree<?>> menuTree(Menu menu) {
+        LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotEmpty(menu.getTitle())) {
+            queryWrapper.like(Menu::getTitle, menu.getTitle());
+        }
+        List<Menu> menuList = this.list(queryWrapper);
+        if (menuList != null && menuList.size() > 0) {
+            Set<Menu> menuSet = new HashSet<>();
+            this.queryParentMenuList(menuList, menuSet);
+            if (menuSet.size() > 0) {
+                List<MenuDtoTree> trees = new ArrayList<>();
+                for (Menu item : menuSet) {
+                    MenuDtoTree tree = new MenuDtoTree();
+                    tree.setId(item.getId());
+                    tree.setParentId(item.getPid());
+                    tree.setLabel(item.getTitle());
+                    tree.setTitle(item.getTitle());
+                    tree.setName(item.getName());
+                    tree.setComponent(item.getComponent());
+                    tree.setIcon(item.getIcon());
+                    tree.setPath(item.getPath());
+                    tree.setIFrame(item.getIFrame());
+                    tree.setCache(item.getCache());
+                    tree.setHidden(item.getHidden());
+                    tree.setPermission(item.getPermission());
+                    tree.setSort(item.getSort());
+                    tree.setCreateTime(item.getCreateTime());
+                    trees.add(tree);
+                }
+                return TreeUtil.build(trees);
+            }
+        }
+        return Collections.emptyList();
     }
 
     /**
@@ -255,6 +293,28 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             List<Menu> menus = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, menu.getId()));
             if (menus != null && menus.size() > 0) {
                 queryChildMenuList(menus, menuSet);
+            }
+        }
+        return menuSet;
+    }
+
+    /**
+     * 根据id向上递归查找父级菜单
+     *
+     * @param menuList 菜单列表
+     * @param menuSet  查询结果集
+     * @return 父级菜单列表
+     */
+    private Set<Menu> queryParentMenuList(List<Menu> menuList, Set<Menu> menuSet) {
+        for (Menu menu : menuList) {
+            menuSet.add(menu);
+            if (menu.getPid() == 0) {
+                continue;
+            }
+
+            List<Menu> menus = this.baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getId, menu.getPid()));
+            if (menus != null && menus.size() > 0) {
+                queryParentMenuList(menus, menuSet);
             }
         }
         return menuSet;

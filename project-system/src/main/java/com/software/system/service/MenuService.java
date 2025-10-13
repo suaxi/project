@@ -2,6 +2,7 @@ package com.software.system.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.dto.QueryRequest;
+import com.software.dto.Tree;
 import com.software.entity.VueRouter;
 import com.software.system.dto.MenuDto;
 import com.software.system.entity.Menu;
@@ -110,4 +111,12 @@ public interface MenuService {
      * @return 同级与上级菜单列表
      */
     List<MenuDto> querySameLevelAndSuperiorMenuListById(Integer id);
+
+    /**
+     * 查询菜单树
+     *
+     * @param menu 菜单信息
+     * @return 菜单树
+     */
+    List<? extends Tree<?>> menuTree(Menu menu);
 }

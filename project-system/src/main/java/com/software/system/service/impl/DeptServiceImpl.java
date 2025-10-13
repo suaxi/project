@@ -154,21 +154,33 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     }
 
     @Override
-    public List<? extends Tree<?>> queryDeptTree() {
-        List<Dept> deptList = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getEnabled, true));
+    public List<? extends Tree<?>> queryDeptTree(Dept dept) {
+        LambdaQueryWrapper<Dept> queryWrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotEmpty(dept.getName())) {
+            queryWrapper.like(Dept::getName, dept.getName());
+        }
+        if (dept.getEnabled() != null) {
+            queryWrapper.eq(Dept::getEnabled, dept.getEnabled());
+        }
+        List<Dept> deptList = this.list(queryWrapper);
         if (deptList != null && deptList.size() > 0) {
-            List<DeptDtoTree> trees = new ArrayList<>();
-            deptList.forEach(dept -> {
-                DeptDtoTree tree = new DeptDtoTree();
-                tree.setId(dept.getId());
-                tree.setParentId(dept.getPid());
-                tree.setLabel(dept.getName());
-                tree.setSubCount(dept.getSubCount());
-                tree.setName(dept.getName());
-                tree.setSort(dept.getSort());
-                trees.add(tree);
-            });
-            return TreeUtil.build(trees);
+            Set<Dept> deptSet = new HashSet<>();
+            this.queryParentDeptList(deptList, deptSet);
+            if (deptSet.size() > 0) {
+                List<DeptDtoTree> trees = new ArrayList<>();
+                for (Dept item : deptSet) {
+                    DeptDtoTree tree = new DeptDtoTree();
+                    tree.setId(item.getId());
+                    tree.setParentId(item.getPid());
+                    tree.setLabel(item.getName());
+                    tree.setSubCount(item.getSubCount());
+                    tree.setName(item.getName());
+                    tree.setEnabled(item.getEnabled());
+                    tree.setSort(item.getSort());
+                    trees.add(tree);
+                }
+                return TreeUtil.build(trees);
+            }
         }
         return Collections.emptyList();
     }
@@ -196,6 +208,28 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
             }
         }
         return result;
+    }
+
+    /**
+     * 根据id向上递归查找父级部门
+     *
+     * @param deptList 部门列表
+     * @param deptSet  查询结果集
+     * @return 父级部门列表
+     */
+    private Set<Dept> queryParentDeptList(List<Dept> deptList, Set<Dept> deptSet) {
+        for (Dept dept : deptList) {
+            deptSet.add(dept);
+            if (dept.getPid() == 0) {
+                continue;
+            }
+
+            List<Dept> depts = this.baseMapper.selectList(new LambdaQueryWrapper<Dept>().eq(Dept::getId, dept.getPid()));
+            if (depts != null && depts.size() > 0) {
+                queryParentDeptList(depts, deptSet);
+            }
+        }
+        return deptSet;
     }
 
     /**
