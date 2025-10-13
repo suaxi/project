@@ -10,6 +10,7 @@ import com.software.system.mapper.DictDetailMapper;
 import com.software.system.service.DictDetailService;
 import com.software.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,20 +23,34 @@ import java.util.List;
 public class DictDetailServiceImpl extends ServiceImpl<DictDetailMapper, DictDetail> implements DictDetailService {
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean add(DictDetail dictDetail) {
         dictDetail.setCreateUser(SecurityUtils.getCurrentUsername());
         return this.save(dictDetail);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean update(DictDetail dictDetail) {
         dictDetail.setUpdateUser(SecurityUtils.getCurrentUsername());
         return this.updateById(dictDetail);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean delete(List<Long> ids) {
         return this.removeByIds(ids);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteByDictIds(List<Long> dictIds) {
+        if (dictIds == null || dictIds.isEmpty()) {
+            throw new IllegalArgumentException("字典ID不能为空！");
+        }
+        LambdaQueryWrapper<DictDetail> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(DictDetail::getDictId, dictIds);
+        return this.remove(queryWrapper);
     }
 
     @Override

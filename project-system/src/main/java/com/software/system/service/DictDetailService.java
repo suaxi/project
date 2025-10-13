@@ -37,6 +37,14 @@ public interface DictDetailService {
     boolean delete(List<Long> ids);
 
     /**
+     * 删除
+     *
+     * @param dictIds dictIds
+     * @return
+     */
+    boolean deleteByDictIds(List<Long> dictIds);
+
+    /**
      * 根据id查询数据字典详情信息
      *
      * @param id id

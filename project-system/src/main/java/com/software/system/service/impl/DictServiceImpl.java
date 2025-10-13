@@ -7,10 +7,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.dto.QueryRequest;
 import com.software.system.entity.Dict;
 import com.software.system.mapper.DictMapper;
+import com.software.system.service.DictDetailService;
 import com.software.system.service.DictService;
 import com.software.utils.SecurityUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,21 +24,31 @@ import java.util.List;
 @Service
 public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements DictService {
 
+    @Autowired
+    private DictDetailService dictDetailService;
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean add(Dict dict) {
         dict.setCreateUser(SecurityUtils.getCurrentUsername());
         return this.save(dict);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean update(Dict dict) {
         dict.setUpdateUser(SecurityUtils.getCurrentUsername());
         return this.updateById(dict);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean delete(List<Long> ids) {
-        return this.removeByIds(ids);
+        boolean flag = this.removeByIds(ids);
+        if (flag) {
+            dictDetailService.deleteByDictIds(ids);
+        }
+        return flag;
     }
 
     @Override
