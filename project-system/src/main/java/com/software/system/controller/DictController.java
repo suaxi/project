@@ -3,6 +3,7 @@ package com.software.system.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.annotation.OperationLog;
 import com.software.dto.QueryRequest;
+import com.software.system.dto.DictDto;
 import com.software.system.entity.Dict;
 import com.software.system.service.DictService;
 import io.swagger.annotations.Api;
@@ -85,5 +86,12 @@ public class DictController {
     @PreAuthorize("@pre.check('dict:list')")
     public ResponseEntity<Page<Dict>> page(Dict dict, QueryRequest queryRequest) {
         return new ResponseEntity<>(dictService.queryPage(dict, queryRequest), HttpStatus.OK);
+    }
+
+    @ApiOperation("根据名称查询数据字典、数据字典详情")
+    @PostMapping("/detail-list")
+    @PreAuthorize("@pre.check('dict:list')")
+    public ResponseEntity<List<DictDto>> list(@RequestBody List<String> dictNameList) {
+        return new ResponseEntity<>(dictService.queryListByDictName(dictNameList), HttpStatus.OK);
     }
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.software.system.mapper.DictMapper">
+    <select id="queryListByDictName" resultMap="DictDictDetailMap">
+        select
+            id,
+            `name`,
+            description
+        from
+            sys_dict
+        <where>
+            <if test="dictNameList != null and dictNameList.size() > 0">
+                and name in
+                <foreach collection="dictNameList" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="DictDictDetailMap" type="com.software.system.dto.DictDto">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <collection property="dictDetailList" javaType="ArrayList" ofType="com.software.system.entity.DictDetail" select="queryDictDetailByDictId" column="id"/>
+    </resultMap>
+
+    <select id="queryDictDetailByDictId" resultType="com.software.system.entity.DictDetail">
+        select
+            id,
+            dict_id,
+            label,
+            `value`,
+            sort
+        from
+            sys_dict_Detail
+        where
+            dict_id = #{id}
+    </select>
+</mapper>

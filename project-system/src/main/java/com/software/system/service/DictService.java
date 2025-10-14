@@ -2,6 +2,7 @@ package com.software.system.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.software.dto.QueryRequest;
+import com.software.system.dto.DictDto;
 import com.software.system.entity.Dict;
 
 import java.util.List;
@@ -67,4 +68,12 @@ public interface DictService {
      * @return
      */
     Page<Dict> queryPage(Dict dict, QueryRequest queryRequest);
+
+    /**
+     * 根据名称查询数据字典、数据字典详情
+     *
+     * @param dictNameList 数据字典名称
+     * @return
+     */
+    List<DictDto> queryListByDictName(List<String> dictNameList);
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.dto.QueryRequest;
+import com.software.system.dto.DictDto;
 import com.software.system.entity.Dict;
 import com.software.system.mapper.DictMapper;
 import com.software.system.service.DictDetailService;
@@ -77,5 +78,10 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         }
         Page<Dict> page = new Page<>(queryRequest.getPageNum(), queryRequest.getPageSize());
         return this.page(page, queryWrapper);
+    }
+
+    @Override
+    public List<DictDto> queryListByDictName(List<String> dictNameList) {
+        return this.baseMapper.queryListByDictName(dictNameList);
     }
 }
