@@ -57,7 +57,7 @@ public class UserCacheManager {
     }
 
     /**
-     * 清楚用户缓存
+     * 清除用户缓存
      *
      * @param username 用户名
      */

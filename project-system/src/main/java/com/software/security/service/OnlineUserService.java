@@ -6,6 +6,7 @@ import com.software.security.properties.SecurityProperties;
 import com.software.utils.EncryptUtils;
 import com.software.utils.ProjectUtils;
 import com.software.utils.RedisUtils;
+import com.software.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class OnlineUserService {
 
     @Autowired
     private RedisUtils redisUtils;
+
+    @Autowired
+    private UserCacheManager userCacheManager;
 
     public OnlineUserService(SecurityProperties properties, RedisUtils redisUtils) {
         this.properties = properties;
@@ -91,6 +95,7 @@ public class OnlineUserService {
     public void kickOut(String token) {
         String key = properties.getOnlineKey() + token;
         redisUtils.del(key);
+        userCacheManager.clearUserCache(SecurityUtils.getCurrentUsername());
     }
 
     /**
@@ -101,6 +106,7 @@ public class OnlineUserService {
     public void logout(String token) {
         String key = properties.getOnlineKey() + token;
         redisUtils.del(key);
+        userCacheManager.clearUserCache(SecurityUtils.getCurrentUsername());
     }
 
     /**
