@@ -41,7 +41,6 @@
         <ip2region.version>2.6.3</ip2region.version>
         <yauaa.version>6.11</yauaa.version>
         <captcha.version>1.6.2</captcha.version>
-        <flowable.version>6.8.0</flowable.version>
         <nexus.base.server>http://maven.aliyun.com/nexus/content/groups/public/</nexus.base.server>
     </properties>
 
@@ -203,13 +202,6 @@
                 <groupId>com.github.whvcse</groupId>
                 <artifactId>easy-captcha</artifactId>
                 <version>${captcha.version}</version>
-            </dependency>
-
-            <!-- flowable -->
-            <dependency>
-                <groupId>org.flowable</groupId>
-                <artifactId>flowable-spring-boot-starter</artifactId>
-                <version>${flowable.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
