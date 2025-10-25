@@ -89,7 +89,6 @@ public class MenuController {
 
     @ApiOperation("获取用户路由")
     @GetMapping("/user-routers")
-    @PreAuthorize("@pre.check('menu:list')")
     public ResponseEntity<List<VueRouter<Menu>>> userRouters() {
         return new ResponseEntity<>(menuService.getUserRouters(SecurityUtils.getCurrentUserId()), HttpStatus.OK);
     }

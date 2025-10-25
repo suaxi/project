@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.dto.QueryRequest;
 import com.software.dto.Tree;
+import com.software.exception.BadRequestException;
 import com.software.system.dto.DeptDto;
 import com.software.system.dto.DeptDtoTree;
 import com.software.system.entity.Dept;
@@ -49,6 +50,10 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements De
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(Dept dept) {
+        if (dept.getPid() != null && dept.getPid().equals(dept.getId())) {
+            throw new BadRequestException("上级部门不能是自己！");
+        }
+
         Dept oldDeptData = this.getById(dept.getId());
         dept.setUpdateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.updateById(dept);

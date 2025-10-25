@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.software.constant.StringConstant;
 import com.software.dto.QueryRequest;
+import com.software.security.properties.LoginProperties;
 import com.software.system.entity.User;
 import com.software.system.entity.UserJob;
 import com.software.system.entity.UserRole;
@@ -12,6 +13,7 @@ import com.software.system.mapper.UserMapper;
 import com.software.system.service.UserJobService;
 import com.software.system.service.UserRoleService;
 import com.software.system.service.UserService;
+import com.software.utils.RedisUtils;
 import com.software.utils.SecurityUtils;
 import com.software.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +45,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     private UserJobService userJobService;
 
+    @Autowired
+    private RedisUtils redisUtils;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(User user) {
@@ -68,6 +73,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         boolean flag = this.updateById(user);
         //用户关联属性
         if (flag) {
+            String username = user.getUsername();
+            if (redisUtils.hget(LoginProperties.CACHE_KEY, username) != null) {
+                redisUtils.hdel(LoginProperties.CACHE_KEY, username);
+            }
             return this.setUserAssociatedProperties(user);
         }
         return false;

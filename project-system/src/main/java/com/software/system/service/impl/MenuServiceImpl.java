@@ -9,6 +9,7 @@ import com.software.dto.QueryRequest;
 import com.software.dto.Tree;
 import com.software.entity.RouterMeta;
 import com.software.entity.VueRouter;
+import com.software.exception.BadRequestException;
 import com.software.system.dto.MenuDto;
 import com.software.system.dto.MenuDtoTree;
 import com.software.system.entity.Menu;
@@ -57,6 +58,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(Menu menu) {
+        if (menu.getPid() != null && menu.getPid().equals(menu.getId())) {
+            throw new BadRequestException("上级菜单不能是自己！");
+        }
+
         Menu oldMenuData = this.getById(menu.getId());
         menu.setUpdateUser(SecurityUtils.getCurrentUsername());
         boolean flag = this.updateById(menu);
